@@ -1,0 +1,214 @@
+# ============================================================
+#  .gitignore — Privacy & Compliance Edition
+#  Covers: GDPR, CCPA, HIPAA, PCI-DSS, SOC 2, PII
+#  Project: claude-agent-examples
+# ============================================================
+
+
+# ── API KEYS & CREDENTIALS ──────────────────────────────────
+# Never commit secrets — covers all major providers
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.staging
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+secrets/
+credentials/
+config/secrets.*
+*_credentials.json
+*_service_account.json
+
+# Cloud provider credentials
+.aws/
+.azure/
+.gcp/
+gcloud/
+application_default_credentials.json
+
+
+# ── PII / PERSONAL DATA (GDPR Art. 4, CCPA §1798.140) ──────
+# Any file that may contain names, emails, IDs, locations etc.
+*_pii.*
+*_personal.*
+*_user_data.*
+*_contacts.*
+*_customers.*
+*profiles.*
+*identities.*
+exports/
+data/raw/
+data/personal/
+data/users/
+data/customers/
+
+
+# ── RESEARCH & AGENT OUTPUT DATA ────────────────────────────
+# Agent outputs may contain scraped personal/company data
+outputs/
+results/
+reports/
+agent_outputs/
+scraped_data/
+research_cache/
+*.report.json
+*.report.csv
+*.analysis.json
+
+
+# ── SENSITIVE FILE TYPES ─────────────────────────────────────
+# Spreadsheets, DBs, and docs often contain PII
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.bak
+
+
+# ── HIPAA — HEALTH DATA ──────────────────────────────────────
+phi/
+hipaa/
+health_data/
+medical_records/
+patient_data/
+*_phi.*
+*_medical.*
+*_health.*
+
+
+# ── PCI-DSS — PAYMENT DATA ───────────────────────────────────
+payment_data/
+card_data/
+*_payment.*
+*_card.*
+*_billing.*
+transaction_logs/
+
+
+# ── LOGS (may capture IPs, emails, user activity) ───────────
+logs/
+*.log
+*.log.*
+log/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# ── API RESPONSE CACHES (may contain scraped personal data) ──
+cache/
+.cache/
+*.cache
+search_cache/
+ddgs_cache/
+response_cache/
+
+
+# ── PYTHON ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+instance/
+.ipynb_checkpoints
+*.ipynb          # Notebooks can contain output with PII
+
+
+# ── NODE / JS ────────────────────────────────────────────────
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+.yarn-integrity
+dist/
+build/
+
+
+# ── OS FILES ─────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# ── IDE & EDITOR ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+
+# ── TESTING & CI ─────────────────────────────────────────────
+# Test fixtures may contain synthetic PII
+test_data/
+fixtures/
+mock_data/
+coverage/
+.coverage
+htmlcov/
+
+
+# ── NOTES & DOCS WITH POTENTIAL PII ─────────────────────────
+# Scratch notes sometimes contain emails, names, API keys
+scratch/
+notes/
+TODO.md        # Remove this line if you want to commit TODOs
+personal_notes/
+
+
+# ============================================================
+#  COMPLIANCE NOTES
+#
+#  GDPR  (EU)    — Protects any data identifying EU residents.
+#                  Never commit names, emails, IPs, cookies,
+#                  device IDs, or inferred personal attributes.
+#
+#  CCPA  (CA)    — Covers California residents. Treat any
+#                  consumer identifier (incl. pseudonymous)
+#                  as protected.
+#
+#  HIPAA (US)    — 18 PHI identifiers must never be stored in
+#                  code repos (names, DOB, geo <3 digits, etc.)
+#
+#  PCI-DSS       — Card numbers, CVVs, and auth data must never
+#                  appear in source control under any encoding.
+#
+#  SOC 2         — Audit logs and access records should be
+#                  stored in secure, access-controlled systems,
+#                  not in git history.
+#
+#  Best practice — Treat your git history as public. If a
+#                  secret or PII ever gets committed, rotate
+#                  the credential and use git filter-repo to
+#                  scrub the history before next push.
+# ============================================================

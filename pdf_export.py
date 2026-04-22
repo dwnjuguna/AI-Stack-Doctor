@@ -219,27 +219,48 @@ def dark_table(data, col_widths, header_row=False):
     t.setStyle(TableStyle(style))
     return t
 
+def strip_markdown(text):
+    """Remove common markdown from text before PDF rendering."""
+    import re
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)   # bold
+    text = re.sub(r'\*(.+?)\*',   r'\1', text)   # italic
+    text = re.sub(r'`(.+?)`',       r'\1', text)   # code
+    text = re.sub(r'#+\s*',        '',     text)   # headings
+    return text.strip()
+
 def callout_box(text, styles):
-    """Highlighted exec summary box with left cyan border."""
-    inner = Paragraph(text, styles["exec_body"])
-    # Left cyan bar via a 2-col table
-    bar_data = [[
-        "",
-        inner
-    ]]
-    t = Table(bar_data, colWidths=[6, INNER_W - 6])
-    t.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (0, 0), C_CYAN),
-        ("BACKGROUND",    (1, 0), (1, 0), C_SURFACE),
-        ("BOX",           (0, 0), (-1, -1), 0.5, C_BORDER),
-        ("LEFTPADDING",   (1, 0), (1, 0), 16),
-        ("RIGHTPADDING",  (1, 0), (1, 0), 14),
-        ("TOPPADDING",    (0, 0), (-1, -1), 14),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
-        ("LEFTPADDING",   (0, 0), (0, 0), 0),
-        ("RIGHTPADDING",  (0, 0), (0, 0), 0),
+    """Highlighted exec summary — rendered as flowing paragraphs, no table constraint."""
+    clean = strip_markdown(text)
+    safe  = clean.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+    # Split into sentences/paragraphs for natural flow
+    paras = [p.strip() for p in safe.split("\n") if p.strip()]
+    items = []
+    for p in paras:
+        items.append(Paragraph(p, styles["exec_body"]))
+        items.append(Spacer(1, 4))
+    # Wrap in a surface-coloured table that CAN split across pages
+    if not items:
+        items = [Paragraph(safe, styles["exec_body"])]
+    inner_tbl = Table([[item] for item in items], colWidths=[INNER_W - 40])
+    inner_tbl.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0),(-1,-1), C_SURFACE),
+        ("LEFTPADDING",   (0,0),(-1,-1), 16),
+        ("RIGHTPADDING",  (0,0),(-1,-1), 14),
+        ("TOPPADDING",    (0,0),(-1,-1), 4),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 4),
     ]))
-    return t
+    # Outer border table — allow row splitting
+    outer = Table([[inner_tbl]], colWidths=[INNER_W])
+    outer.setStyle(TableStyle([
+        ("BOX",    (0,0),(-1,-1), 1.5, C_CYAN),
+        ("BACKGROUND", (0,0),(-1,-1), C_SURFACE),
+        ("TOPPADDING",    (0,0),(-1,-1), 10),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 10),
+        ("LEFTPADDING",   (0,0),(-1,-1), 0),
+        ("RIGHTPADDING",  (0,0),(-1,-1), 0),
+        ("SPLITBYROW", (0,0),(-1,-1), 1),
+    ]))
+    return outer
 
 def score_bar_row(label, score, total, conf, styles):
     filled = int(round((score / total) * 12))
@@ -421,7 +442,7 @@ def build_pdf(report_text, company, output_path):
     if exec_text:
         story.append(Paragraph("EXECUTIVE SUMMARY", styles["h1"]))
         story.append(cyan_rule())
-        story.append(callout_box(exec_text, styles))
+        story.append(callout_box(strip_markdown(exec_text), styles))
         story.append(Spacer(1, 0.3 * inch))
 
     # ── SCORE DASHBOARD ──────────────────────────────────────────────────────
@@ -525,7 +546,10 @@ def build_pdf(report_text, company, output_path):
             story.append(Paragraph(stripped, styles["score_bar"]))
             continue
 
-        safe = stripped.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+        clean = re.sub(r'\*\*(.+?)\*\*', r'\1', stripped)
+        clean = re.sub(r'\*(.+?)\*',   r'\1', clean)
+        clean = re.sub(r'`(.+?)`',       r'\1', clean)
+        safe  = clean.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
         story.append(Paragraph(safe, styles["body"]))
 
     # ── BUILD (two passes for page count) ────────────────────────────────────

@@ -6,7 +6,27 @@
 <title>AI Stack Doctor — Intelligence Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js">
+// ── Modal event listeners (more reliable than inline onclick) ─────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // DS option card clicks
+  document.querySelectorAll('.ds-option').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      const mode = this.getAttribute('data-mode');
+      if (mode) selectDS(mode);
+    });
+  });
+
+  // Confirm button
+  const confirmBtn = document.getElementById('dsConfirm');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', function() {
+      confirmDS();
+    });
+  }
+});
+
+</script>
 <style>
 /* ── Variables ── */
 :root {
@@ -432,19 +452,15 @@ main {
 .ds-option-icon {
   font-size: 18px; line-height: 1; margin-top: 2px; flex-shrink: 0;
 }
-.ds-option-body { flex: 1; pointer-events: none; }
+.ds-option-body { flex: 1; }
 .ds-option-title {
   font-weight: 600; font-size: 13px;
   color: var(--text); margin-bottom: 4px;
   display: flex; align-items: center; gap: 8px;
-  pointer-events: none;
 }
 .ds-option-desc {
   font-size: 12px; color: var(--text2); line-height: 1.6;
-  pointer-events: none;
 }
-.ds-option-icon { pointer-events: none; }
-.ds-compliance { pointer-events: none; }
 .ds-compliance {
   font-family: var(--mono); font-size: 9px;
   letter-spacing: 1px; color: var(--text3);
@@ -797,7 +813,7 @@ main {
     <div class="ds-options">
 
       <!-- Demo -->
-      <div class="ds-option selected" id="opt-demo" onclick="selectDS('demo')">
+      <div class="ds-option selected" id="opt-demo" data-mode="demo">
         <div class="ds-option-icon">◈</div>
         <div class="ds-option-body">
           <div class="ds-option-title">
@@ -813,7 +829,7 @@ main {
       </div>
 
       <!-- Internet -->
-      <div class="ds-option" id="opt-internet" onclick="selectDS('internet')">
+      <div class="ds-option" id="opt-internet" data-mode="internet">
         <div class="ds-option-icon">◉</div>
         <div class="ds-option-body">
           <div class="ds-option-title">
@@ -831,7 +847,7 @@ main {
       </div>
 
       <!-- Private Server -->
-      <div class="ds-option" id="opt-private" onclick="selectDS('private')">
+      <div class="ds-option" id="opt-private" data-mode="private">
         <div class="ds-option-icon">⬡</div>
         <div class="ds-option-body">
           <div class="ds-option-title">
@@ -969,7 +985,7 @@ main {
         This tool is provided for informational purposes only and does not constitute
         legal, financial, or professional advice. Use at your own discretion.
       </div>
-      <button class="ds-confirm" id="dsConfirm" onclick="confirmDS()">
+      <button class="ds-confirm" id="dsConfirm">
         Confirm &amp; Continue →
       </button>
     </div>

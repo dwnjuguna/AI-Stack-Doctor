@@ -7,11 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js">
-// ── Modal event listeners (more reliable than inline onclick) ─────────────────
-document.addEventListener('DOMContentLoaded', function() {
+// ── Modal event listeners ────────────────────────────────────────────────────
+function attachModalListeners() {
   // DS option card clicks
   document.querySelectorAll('.ds-option').forEach(function(card) {
-    card.addEventListener('click', function(e) {
+    // Remove any existing listeners by cloning
+    const newCard = card.cloneNode(true);
+    card.parentNode.replaceChild(newCard, card);
+    newCard.addEventListener('click', function(e) {
+      e.stopPropagation();
       const mode = this.getAttribute('data-mode');
       if (mode) selectDS(mode);
     });
@@ -20,11 +24,21 @@ document.addEventListener('DOMContentLoaded', function() {
   // Confirm button
   const confirmBtn = document.getElementById('dsConfirm');
   if (confirmBtn) {
-    confirmBtn.addEventListener('click', function() {
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       confirmDS();
     });
   }
-});
+}
+
+// Attach immediately AND on DOMContentLoaded to cover all timing scenarios
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', attachModalListeners);
+} else {
+  attachModalListeners();
+}
 
 </script>
 <style>

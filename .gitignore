@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# API keys — NEVER commit these
+.env.local
+secrets.json
+api_keys.json
+
+# History database — user-specific, exclude from repo
+ai_stack_history.db
+
+# Generated reports — keep out of source control
+ai_stack_report_*.txt
+ai_stack_report_*.pdf
+ai_stack_*.txt
+ai_stack_*.pdf
+
+# Search config may contain API keys — exclude by default
+# (users should create their own from search_config.json.example)
+search_config.json
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/

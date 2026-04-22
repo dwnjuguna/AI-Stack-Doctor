@@ -1,0 +1,9 @@
+{
+  "_comment": "Copy this file to search_config.json and fill in your credentials.",
+  "_comment2": "The search_config.json file is gitignored to protect your API keys.",
+  "engine": "ddg",
+  "_engines": ["ddg", "google", "bing", "serpapi", "custom"],
+  "key": "YOUR_API_KEY_HERE",
+  "cx":  "YOUR_GOOGLE_SEARCH_ENGINE_ID_HERE",
+  "url": "https://your-custom-search-endpoint.com/search?q={query}"
+}

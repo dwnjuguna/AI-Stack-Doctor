@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Stack Doctor — Intelligence Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ── Variables ── */
+:root {
+  --bg:     #06090e;
+  --bg1:    #090d14;
+  --bg2:    #0d1520;
+  --bg3:    #111d2e;
+  --card:   #0f1824;
+  --card2:  #141f30;
+  --border: #1a2840;
+  --b2:     #1f3050;
+  --cyan:   #00d4f0;
+  --cyan2:  #00a8c0;
+  --amber:  #f0a000;
+  --green:  #00c880;
+  --red:    #f04040;
+  --purple: #9060f0;
+  --text:   #c8ddf0;
+  --text2:  #7090b0;
+  --text3:  #405070;
+  --mono:   'IBM Plex Mono', monospace;
+  --display:'Bebas Neue', sans-serif;
+  --body:   'DM Sans', sans-serif;
+  --r:      4px;
+}
+
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scanlines */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 200;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px);
+  pointer-events: none;
+}
+
+/* Grid texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,212,240,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,240,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* ── Layout ── */
+.shell { position: relative; z-index: 1; display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+aside {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg1);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-mark {
+  font-family: var(--display);
+  font-size: 11px; letter-spacing: 3px;
+  color: var(--cyan); margin-bottom: 2px;
+}
+.logo-name {
+  font-family: var(--display);
+  font-size: 20px; letter-spacing: 1px;
+  color: var(--text); line-height: 1;
+}
+.logo-ver {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); letter-spacing: 1px;
+  margin-top: 6px;
+}
+.sidebar-nav { padding: 16px 0; flex: 1; }
+.nav-group-label {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); padding: 0 20px 8px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 12px; font-weight: 500;
+  color: var(--text2);
+  border-left: 2px solid transparent;
+  transition: all .15s;
+}
+.nav-item:hover { color: var(--text); background: rgba(0,212,240,.04); }
+.nav-item.active { color: var(--cyan); border-left-color: var(--cyan); background: rgba(0,212,240,.06); }
+.nav-icon { font-size: 13px; width: 16px; text-align: center; }
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3);
+}
+.status-dot {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+  margin-right: 6px;
+}
+
+/* ── Main content ── */
+main {
+  flex: 1; overflow-x: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3);
+}
+.topbar-actions { display: flex; gap: 8px; }
+.tbtn {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 14px; border-radius: var(--r);
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text2); cursor: pointer; transition: all .15s;
+}
+.tbtn:hover { border-color: var(--cyan); color: var(--cyan); }
+.tbtn.primary { background: var(--cyan); color: #000; border-color: var(--cyan); font-weight: 700; }
+.tbtn.primary:hover { background: #33dff7; box-shadow: 0 0 16px rgba(0,212,240,.3); }
+
+/* ── Sections / Pages ── */
+.page { display: none; padding: 32px; animation: fadeIn .3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Section header */
+.section-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-family: var(--display);
+  font-size: 28px; letter-spacing: 1px; color: var(--text);
+  line-height: 1;
+}
+.section-sub {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text3); margin-top: 4px;
+}
+
+/* ── Stat cards ── */
+.stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.stat-card.c-cyan::before  { background: var(--cyan); }
+.stat-card.c-amber::before { background: var(--amber); }
+.stat-card.c-green::before { background: var(--green); }
+.stat-card.c-purple::before{ background: var(--purple); }
+.stat-label {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 10px;
+}
+.stat-val {
+  font-family: var(--display);
+  font-size: 40px; letter-spacing: 1px; line-height: 1;
+}
+.stat-card.c-cyan  .stat-val { color: var(--cyan); }
+.stat-card.c-amber .stat-val { color: var(--amber); }
+.stat-card.c-green .stat-val { color: var(--green); }
+.stat-card.c-purple.stat-val { color: var(--purple); }
+.stat-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 6px; }
+
+/* ── Company grid ── */
+.company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.co-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s, box-shadow .2s;
+  position: relative; overflow: hidden;
+}
+.co-card:hover {
+  border-color: var(--b2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.co-card.selected { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan); }
+.co-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.co-name {
+  font-family: var(--display);
+  font-size: 20px; letter-spacing: 1px;
+  text-transform: capitalize;
+}
+.co-score-badge {
+  font-family: var(--mono); font-weight: 700;
+  font-size: 18px; line-height: 1;
+}
+.co-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.co-bar-track {
+  flex: 1; height: 4px;
+  background: var(--border); border-radius: 2px; overflow: hidden;
+}
+.co-bar-fill { height: 100%; border-radius: 2px; transition: width .8s ease; }
+.co-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  margin-top: 12px;
+}
+.co-delta { font-family: var(--mono); font-size: 10px; font-weight: 600; }
+.delta-up   { color: var(--green); }
+.delta-down { color: var(--red); }
+.delta-flat { color: var(--text3); }
+
+/* ── Charts ── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 24px;
+}
+.chart-card.full { grid-column: 1 / -1; }
+.chart-label {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chart-wrap { position: relative; }
+
+/* ── Trend page ── */
+.company-selector {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+}
+.co-pill {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--text3); cursor: pointer; transition: all .15s;
+}
+.co-pill:hover { border-color: var(--b2); color: var(--text2); }
+.co-pill.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,240,.08); }
+
+/* ── Table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); text-align: left;
+  padding: 10px 14px; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(26,40,64,.6);
+  color: var(--text2);
+}
+.data-table tr:hover td { background: rgba(0,212,240,.02); }
+.data-table .co-cell { font-weight: 600; color: var(--text); text-transform: capitalize; }
+.mode-badge {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 2px;
+  border: 1px solid var(--border); color: var(--text3);
+}
+
+/* ── Integration guide ── */
+.int-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 32px; }
+.int-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.int-num {
+  font-family: var(--display);
+  font-size: 48px; color: var(--cyan);
+  opacity: .25; line-height: 1;
+}
+.int-title {
+  font-family: var(--display);
+  font-size: 20px; letter-spacing: 1px; color: var(--text);
+}
+.int-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.code-block {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--cyan); line-height: 1.7;
+  overflow-x: auto; white-space: pre;
+}
+.code-block .cm { color: var(--text3); }
+.code-block .ck { color: var(--amber); }
+.code-block .cs { color: var(--green); }
+.copy-btn {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 2px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text3); cursor: pointer; transition: all .15s;
+  align-self: flex-start;
+}
+.copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.ecosystem-steps {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden; margin-bottom: 24px;
+}
+.eco-step {
+  display: flex; align-items: flex-start; gap: 20px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.eco-step:last-child { border-bottom: none; }
+.eco-step-num {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--cyan); min-width: 28px; padding-top: 2px;
+}
+.eco-step-body { flex: 1; }
+.eco-step-title { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.eco-step-desc  { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+
+/* ── Data Source Modal ── */
+.ds-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(6,9,14,.92);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: fadeIn .25s ease;
+}
+.ds-overlay.hidden { display: none; }
+
+.ds-modal {
+  background: var(--bg1);
+  border: 1px solid var(--b2);
+  border-radius: 8px;
+  width: 100%; max-width: 600px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.8);
+}
+.ds-modal-head {
+  padding: 28px 32px 0;
+}
+.ds-modal-badge {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ds-modal-badge::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan); flex-shrink: 0;
+}
+.ds-modal-title {
+  font-family: var(--display);
+  font-size: 26px; letter-spacing: 1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.ds-modal-desc {
+  font-size: 13px; color: var(--text2);
+  line-height: 1.7; margin-bottom: 24px;
+}
+.ds-options {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 0 32px;
+}
+.ds-option {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.ds-option:hover { border-color: var(--b2); background: var(--bg3); }
+.ds-option.selected {
+  border-color: var(--cyan);
+  background: rgba(0,212,240,.05);
+}
+.ds-option-icon {
+  font-size: 18px; line-height: 1; margin-top: 2px; flex-shrink: 0;
+}
+.ds-option-body { flex: 1; }
+.ds-option-title {
+  font-weight: 600; font-size: 13px;
+  color: var(--text); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ds-option-desc {
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+}
+.ds-compliance {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; color: var(--text3);
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.ds-compliance.safe  { color: var(--green); }
+.ds-compliance.warn  { color: var(--amber); }
+.ds-compliance.info  { color: var(--cyan); }
+
+.ds-private-input {
+  display: none; margin-top: 10px;
+}
+.ds-private-input.show { display: block; }
+.ds-url-field {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text); outline: none;
+  transition: border-color .15s;
+}
+.ds-url-field:focus { border-color: var(--cyan); }
+.ds-url-field::placeholder { color: var(--text3); }
+
+.ds-modal-foot {
+  padding: 20px 32px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px;
+}
+.ds-legal {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); max-width: 300px; line-height: 1.6;
+}
+.ds-confirm {
+  padding: 11px 28px;
+  background: var(--cyan); color: #000;
+  border: none; border-radius: 4px;
+  font-family: var(--mono); font-size: 11px;
+  font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.ds-confirm:hover { background: #33dff7; box-shadow: 0 0 16px rgba(0,212,240,.3); }
+.ds-confirm:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Sidebar data source indicator ── */
+.ds-indicator {
+  margin: 0 12px 4px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.ds-indicator:hover { border-color: var(--b2); }
+.ds-ind-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 5px;
+}
+.ds-ind-mode {
+  font-family: var(--mono); font-size: 10px;
+  font-weight: 600; display: flex; align-items: center; gap: 6px;
+}
+.ds-ind-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.ds-ind-url {
+  font-family: var(--mono); font-size: 8px;
+  color: var(--text3); margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Topbar source badge ── */
+.src-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 3px;
+  border: 1px solid var(--border);
+  cursor: pointer; transition: all .15s;
+}
+.src-badge:hover { border-color: var(--b2); }
+.src-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+
+/* ── Search Engine Panel ── */
+.se-panel {
+  display: none;
+  margin: 12px 32px 0;
+  padding: 16px 18px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  animation: fadeIn .2s ease;
+}
+.se-panel.show { display: block; }
+.se-panel-title {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.se-panel-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.se-engines {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+}
+.se-chip {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text2); cursor: pointer;
+  transition: all .15s;
+}
+.se-chip:hover { border-color: var(--b2); color: var(--text); }
+.se-chip.active {
+  border-color: var(--cyan);
+  background: rgba(0,212,240,.08);
+  color: var(--cyan);
+}
+.se-chip-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+.se-default-tag {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 1px 5px; border-radius: 2px;
+  background: rgba(0,200,128,.12);
+  color: var(--green); border: 1px solid rgba(0,200,128,.25);
+}
+.se-fields {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.se-field-row {
+  display: flex; gap: 8px; align-items: center;
+}
+.se-field-label {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); width: 80px; flex-shrink: 0;
+}
+.se-field-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 7px 12px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text); outline: none;
+  transition: border-color .15s;
+}
+.se-field-input:focus { border-color: var(--cyan); }
+.se-field-input::placeholder { color: var(--text3); }
+.se-note {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); line-height: 1.6; margin-top: 8px;
+}
+.se-note a { color: var(--cyan); text-decoration: none; }
+.se-note a:hover { text-decoration: underline; }
+
+
+/* ── Compliance Page ── */
+.compliance-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.comp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .2s, transform .15s;
+}
+.comp-card:hover { border-color: var(--b2); transform: translateY(-1px); }
+.comp-card-head {
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+}
+.comp-card-name {
+  font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4;
+}
+.comp-tier {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 2px; flex-shrink: 0;
+  margin-top: 2px;
+}
+.comp-tier.CRITICAL {
+  background: rgba(240,64,64,.12); color: #f04040;
+  border: 1px solid rgba(240,64,64,.25);
+}
+.comp-tier.HIGH {
+  background: rgba(240,160,0,.1); color: var(--amber);
+  border: 1px solid rgba(240,160,0,.25);
+}
+.comp-tier.MEDIUM {
+  background: rgba(0,212,240,.08); color: var(--cyan);
+  border: 1px solid rgba(0,212,240,.2);
+}
+.comp-card-body { padding: 12px 18px 14px; }
+.comp-meta {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.comp-meta-pill {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 2px;
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text3);
+}
+.comp-scope {
+  font-size: 11px; color: var(--text2); line-height: 1.6; margin-bottom: 10px;
+}
+.comp-reqs {
+  list-style: none; display: flex; flex-direction: column; gap: 4px;
+  margin-bottom: 10px;
+}
+.comp-reqs li {
+  font-size: 11px; color: var(--text2); line-height: 1.5;
+  padding-left: 12px; position: relative;
+}
+.comp-reqs li::before {
+  content: '▸'; position: absolute; left: 0;
+  color: var(--cyan); font-size: 9px; top: 2px;
+}
+.comp-penalties {
+  font-family: var(--mono); font-size: 9px;
+  color: #f04040; margin-bottom: 8px;
+}
+.comp-link {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--cyan); text-decoration: none; letter-spacing: .5px;
+}
+.comp-link:hover { text-decoration: underline; }
+.comp-filter-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+  align-items: center;
+}
+.cf-pill {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text3); cursor: pointer; transition: all .15s;
+}
+.cf-pill:hover { border-color: var(--b2); color: var(--text2); }
+.cf-pill.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,240,.08); }
+.comp-search {
+  flex: 1; min-width: 200px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 7px 14px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text); outline: none;
+}
+.comp-search:focus { border-color: var(--cyan); }
+.comp-search::placeholder { color: var(--text3); }
+
+
+/* ── Disclaimer ── */
+.disclaimer-banner {
+  background: rgba(240,160,0,.06);
+  border: 1px solid rgba(240,160,0,.2);
+  border-radius: var(--r);
+  padding: 11px 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3); line-height: 1.7;
+  margin-bottom: 20px;
+}
+.disclaimer-banner .disc-icon {
+  color: var(--amber); font-size: 12px; flex-shrink: 0; margin-top: 1px;
+}
+.disclaimer-banner a { color: var(--amber); text-decoration: none; }
+.disclaimer-banner a:hover { text-decoration: underline; }
+.disclaimer-banner strong { color: #c0900a; }
+
+.dashboard-footer {
+  border-top: 1px solid var(--border);
+  padding: 18px 32px;
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); line-height: 1.8;
+  background: var(--bg1);
+}
+.dashboard-footer a { color: var(--text3); text-decoration: none; }
+.dashboard-footer a:hover { color: var(--cyan); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg1); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── Animations ── */
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+@keyframes spin   { to { transform: rotate(360deg); } }
+
+/* ── Empty state ── */
+.empty {
+  text-align: center; padding: 80px 24px;
+  font-family: var(--mono); color: var(--text3);
+}
+.empty-icon { font-size: 40px; margin-bottom: 16px; opacity: .4; }
+.empty-title { font-size: 13px; letter-spacing: 1px; margin-bottom: 8px; }
+.empty-sub { font-size: 11px; color: var(--text3); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  background: var(--card2); border: 1px solid var(--cyan);
+  border-radius: var(--r); padding: 12px 20px;
+  font-family: var(--mono); font-size: 11px; color: var(--cyan);
+  transform: translateY(80px); opacity: 0;
+  transition: all .3s ease;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  aside { display: none; }
+  .stat-row { grid-template-columns: repeat(2,1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+  .int-grid   { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Data Source Modal ── -->
+<div class="ds-overlay" id="dsOverlay">
+  <div class="ds-modal">
+    <div class="ds-modal-head">
+      <div class="ds-modal-badge">Data Source Configuration</div>
+      <div class="ds-modal-title">SELECT DATA SOURCE</div>
+      <div class="ds-modal-desc">
+        Choose how AI Stack Doctor connects to data. This controls what information
+        leaves your environment — important for legal, privacy, and compliance requirements.
+        You can change this at any time from the sidebar.
+      </div>
+    </div>
+
+    <div class="ds-options">
+
+      <!-- Demo -->
+      <div class="ds-option selected" id="opt-demo" onclick="selectDS('demo')">
+        <div class="ds-option-icon">◈</div>
+        <div class="ds-option-body">
+          <div class="ds-option-title">
+            Demo Mode
+            <span style="font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:2px;background:rgba(0,200,128,.12);color:var(--green);border:1px solid rgba(0,200,128,.3)">RECOMMENDED START</span>
+          </div>
+          <div class="ds-option-desc">
+            Fully offline. Uses 22 pre-loaded company profiles (Meta, Google, NVIDIA, OpenAI, Anthropic, Stability AI, DeepL, Synthesia, Aleph Alpha, ElevenLabs, and more).
+            built directly into the dashboard. No network calls are made. No data leaves your machine.
+          </div>
+          <div class="ds-compliance safe">✓ COMPLIANT — Zero external data transfer · GDPR / HIPAA / SOC 2 safe</div>
+        </div>
+      </div>
+
+      <!-- Internet -->
+      <div class="ds-option" id="opt-internet" onclick="selectDS('internet')">
+        <div class="ds-option-icon">◉</div>
+        <div class="ds-option-body">
+          <div class="ds-option-title">
+            Internet Mode
+            <span style="font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:2px;background:rgba(240,160,0,.1);color:var(--amber);border:1px solid rgba(240,160,0,.3)">EXTERNAL QUERIES</span>
+          </div>
+          <div class="ds-option-desc">
+            Connects to your local <code style="font-family:var(--mono);font-size:11px;color:var(--cyan)">dashboard_server.py</code> running on
+            <code style="font-family:var(--mono);font-size:11px;color:var(--cyan)">localhost:5050</code>,
+            which uses live DuckDuckGo web search to research companies in real time.
+            Company names you query will be sent to an external search engine.
+          </div>
+          <div class="ds-compliance warn">⚠ REVIEW REQUIRED — Company names sent to DuckDuckGo · Check your data handling policy</div>
+        </div>
+      </div>
+
+      <!-- Private Server -->
+      <div class="ds-option" id="opt-private" onclick="selectDS('private')">
+        <div class="ds-option-icon">⬡</div>
+        <div class="ds-option-body">
+          <div class="ds-option-title">
+            Private Server Mode
+            <span style="font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:2px;background:rgba(0,212,240,.1);color:var(--cyan);border:1px solid rgba(0,212,240,.3)">ENTERPRISE</span>
+          </div>
+          <div class="ds-option-desc">
+            Connects to your own hosted instance of <code style="font-family:var(--mono);font-size:11px;color:var(--cyan)">dashboard_server.py</code>
+            running on your internal infrastructure. All data stays within your network perimeter.
+            Specify the server URL below.
+          </div>
+          <div class="ds-compliance info">◈ ENTERPRISE SAFE — All data on-premises · Full network control</div>
+          <div class="ds-private-input" id="privateUrlWrap">
+            <input class="ds-url-field" id="privateUrl"
+              placeholder="http://your-internal-server:5050"
+              onclick="event.stopPropagation()"
+              onkeyup="validatePrivateUrl()"
+              value=""/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── Search Engine Panel (shown for internet/private modes) ── -->
+    <div class="se-panel" id="sePanel">
+      <div class="se-panel-title">Search Engine</div>
+
+      <div class="se-engines">
+        <div class="se-chip active" id="se-ddg" onclick="selectEngine('ddg')">
+          <span class="se-chip-dot"></span>
+          DuckDuckGo
+          <span class="se-default-tag">DEFAULT</span>
+        </div>
+        <div class="se-chip" id="se-google" onclick="selectEngine('google')">
+          <span class="se-chip-dot"></span>
+          Google Custom Search
+        </div>
+        <div class="se-chip" id="se-bing" onclick="selectEngine('bing')">
+          <span class="se-chip-dot"></span>
+          Bing Search API
+        </div>
+        <div class="se-chip" id="se-serpapi" onclick="selectEngine('serpapi')">
+          <span class="se-chip-dot"></span>
+          SerpAPI
+        </div>
+        <div class="se-chip" id="se-custom" onclick="selectEngine('custom')">
+          <span class="se-chip-dot"></span>
+          Custom / BYO
+        </div>
+      </div>
+
+      <!-- DuckDuckGo — no config needed -->
+      <div class="se-fields" id="sef-ddg">
+        <div class="se-note">
+          ◈ DuckDuckGo search is free, requires no API key, and is privacy-respecting.
+          Company names will be sent to DuckDuckGo's servers.
+          <a href="https://duckduckgo.com/privacy" target="_blank">Privacy policy →</a>
+        </div>
+      </div>
+
+      <!-- Google Custom Search -->
+      <div class="se-fields" id="sef-google" style="display:none">
+        <div class="se-field-row">
+          <span class="se-field-label">API Key</span>
+          <input class="se-field-input" id="se-google-key" placeholder="AIza..." oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-field-row">
+          <span class="se-field-label">Engine ID</span>
+          <input class="se-field-input" id="se-google-cx" placeholder="017....:abc" oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-note">
+          Requires a Google Cloud API key with Custom Search JSON API enabled and a
+          Programmable Search Engine ID.
+          <a href="https://developers.google.com/custom-search/v1/introduction" target="_blank">Setup guide →</a>
+        </div>
+      </div>
+
+      <!-- Bing Search -->
+      <div class="se-fields" id="sef-bing" style="display:none">
+        <div class="se-field-row">
+          <span class="se-field-label">API Key</span>
+          <input class="se-field-input" id="se-bing-key" placeholder="Azure subscription key" oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-note">
+          Requires a Microsoft Azure account with Bing Search v7 API enabled.
+          <a href="https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/overview" target="_blank">Setup guide →</a>
+        </div>
+      </div>
+
+      <!-- SerpAPI -->
+      <div class="se-fields" id="sef-serpapi" style="display:none">
+        <div class="se-field-row">
+          <span class="se-field-label">API Key</span>
+          <input class="se-field-input" id="se-serpapi-key" placeholder="serpapi_key_..." oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-note">
+          SerpAPI supports Google, Bing, Yahoo, and more via a single key.
+          Free tier available (100 searches/month).
+          <a href="https://serpapi.com" target="_blank">serpapi.com →</a>
+        </div>
+      </div>
+
+      <!-- Custom / BYO -->
+      <div class="se-fields" id="sef-custom" style="display:none">
+        <div class="se-field-row">
+          <span class="se-field-label">Endpoint</span>
+          <input class="se-field-input" id="se-custom-url"
+            placeholder="https://your-search-api.com/search?q={query}"
+            oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-field-row">
+          <span class="se-field-label">API Key</span>
+          <input class="se-field-input" id="se-custom-key"
+            placeholder="optional — sent as Authorization: Bearer header"
+            oninput="saveEngineConfig()"/>
+        </div>
+        <div class="se-note">
+          Your endpoint must accept a <code style="color:var(--cyan)">q</code> query parameter
+          and return JSON. The placeholder <code style="color:var(--cyan)">{query}</code>
+          in the URL will be replaced with the search term.
+          The agent will pass results directly to Claude for analysis.
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-modal-foot">
+      <div class="ds-legal">
+        <strong style="color:var(--amber)">⚠ Public Information Notice</strong><br>
+        All company intelligence is derived solely from publicly available sources
+        (engineering blogs, job postings, press releases, research papers, official
+        documentation). No proprietary, confidential, or insider information is used.
+        Scores and assessments are analytical estimates, not verified facts.
+        This tool is provided for informational purposes only and does not constitute
+        legal, financial, or professional advice. Use at your own discretion.
+      </div>
+      <button class="ds-confirm" id="dsConfirm" onclick="confirmDS()">
+        Confirm &amp; Continue →
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- Sidebar -->
+<aside>
+  <div class="sidebar-logo">
+    <div class="logo-mark">AI STACK</div>
+    <div class="logo-name">DOCTOR</div>
+    <div class="logo-ver">v3.0 · Intelligence Dashboard</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Navigation</div>
+    <div class="nav-item active" onclick="goTo('overview')">
+      <span class="nav-icon">◈</span> Overview
+    </div>
+    <div class="nav-item" onclick="goTo('companies')">
+      <span class="nav-icon">◉</span> Company Cards
+    </div>
+    <div class="nav-item" onclick="goTo('trends')">
+      <span class="nav-icon">◆</span> Trend Analysis
+    </div>
+    <div class="nav-item" onclick="goTo('compare')">
+      <span class="nav-icon">◇</span> Comparison
+    </div>
+    <div class="nav-item" onclick="goTo('history')">
+      <span class="nav-icon">▣</span> Audit History
+    </div>
+    <div class="nav-group-label" style="margin-top:20px">Resources</div>
+    <div class="nav-item" onclick="goTo('compliance')">
+      <span class="nav-icon">⚖</span> Compliance
+    </div>
+    <div class="nav-item" onclick="goTo('integrate')">
+      <span class="nav-icon">⬡</span> Integration Guide
+    </div>
+  </nav>
+  <div class="ds-indicator" onclick="openDS()" title="Click to change data source">
+    <div class="ds-ind-label">Data Source</div>
+    <div class="ds-ind-mode" id="sidebarDSMode">
+      <span class="ds-ind-dot" id="sidebarDSDot"></span>
+      <span id="sidebarDSLabel">Demo Mode</span>
+    </div>
+    <div class="ds-ind-url" id="sidebarDSUrl"></div>
+  </div>
+  <div class="sidebar-footer">
+    <span class="status-dot"></span>System Online<br>
+    <span style="color:var(--text3);font-size:8px;display:block;margin-top:4px">
+      DB: ai_stack_history.db
+    </span>
+  </div>
+</aside>
+
+<!-- Main -->
+<main>
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="topbar-title" id="topbarTitle">// Overview Dashboard</div>
+      <div class="src-badge" onclick="openDS()" id="topbarSrcBadge" title="Change data source">
+        <span class="src-dot" id="topbarSrcDot"></span>
+        <span id="topbarSrcLabel">Demo</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="tbtn" onclick="seedDemo()">Load Demo Data</button>
+      <button class="tbtn" onclick="exportCSV()">Export CSV</button>
+      <button class="tbtn primary" onclick="refreshAll()">↻ Refresh</button>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Overview ── -->
+  <div class="page active" id="page-overview">
+    <div class="section-head">
+      <div>
+        <div class="section-title">INTELLIGENCE OVERVIEW</div>
+        <div class="section-sub">// Aggregate health metrics across all audited companies</div>
+      </div>
+    </div>
+
+    <div class="disclaimer-banner">
+      <span class="disc-icon">⚠</span>
+      <span>
+        <strong>Public Information Notice:</strong>
+        All company profiles, stack intelligence, and scores are derived exclusively from
+        publicly available sources — engineering blogs, job postings, press releases,
+        research papers, and official product documentation.
+        No confidential, proprietary, or insider information is used or implied.
+        Assessments are analytical estimates for informational purposes only and do not
+        constitute verified facts, legal advice, or professional recommendations.
+        Company names and trademarks belong to their respective owners.
+      </span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card c-cyan">
+        <div class="stat-label">Total Audits</div>
+        <div class="stat-val" id="stat-total">—</div>
+        <div class="stat-sub">reports in history</div>
+      </div>
+      <div class="stat-card c-green">
+        <div class="stat-label">Companies Tracked</div>
+        <div class="stat-val" id="stat-companies">—</div>
+        <div class="stat-sub">unique organizations</div>
+      </div>
+      <div class="stat-card c-amber">
+        <div class="stat-label">Avg Stack Score</div>
+        <div class="stat-val" id="stat-avg">—</div>
+        <div class="stat-sub">out of 100</div>
+      </div>
+      <div class="stat-card c-purple">
+        <div class="stat-label">Last Audit</div>
+        <div class="stat-val" style="font-size:22px;color:var(--purple)" id="stat-latest">—</div>
+        <div class="stat-sub">most recent run</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <div class="chart-label">
+          <span>Score Distribution — All Companies</span>
+          <span style="color:var(--text3)">Latest audit per company</span>
+        </div>
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-label">Category Avg Scores</div>
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="catAvgChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-label">Score Bands Distribution</div>
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="donutChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Company Cards ── -->
+  <div class="page" id="page-companies">
+    <div class="section-head">
+      <div>
+        <div class="section-title">COMPANY CARDS</div>
+        <div class="section-sub">// Click a card to view trend detail</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="tbtn" onclick="sortCards('score')">Sort by Score</button>
+        <button class="tbtn" onclick="sortCards('name')">Sort by Name</button>
+      </div>
+    </div>
+    <div class="company-grid" id="companyGrid">
+      <div class="empty">
+        <div class="empty-icon">◈</div>
+        <div class="empty-title">No audits found</div>
+        <div class="empty-sub">Run an audit or click "Load Demo Data"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Trends ── -->
+  <div class="page" id="page-trends">
+    <div class="section-head">
+      <div>
+        <div class="section-title">TREND ANALYSIS</div>
+        <div class="section-sub">// Score trajectories over time</div>
+      </div>
+    </div>
+    <div class="company-selector" id="trendSelector"></div>
+    <div class="chart-card full" style="margin-bottom:24px">
+      <div class="chart-label">
+        <span id="trendChartLabel">Overall Score — Select a company above</span>
+      </div>
+      <div class="chart-wrap" style="height:300px">
+        <canvas id="trendLineChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-label"><span>Category Breakdown — Latest Audit</span></div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="trendCatChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Comparison ── -->
+  <div class="page" id="page-compare">
+    <div class="section-head">
+      <div>
+        <div class="section-title">STACK COMPARISON</div>
+        <div class="section-sub">// Multi-company radar — top 8 by score</div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <div class="chart-label">AI Domain Radar — All Tracked Companies</div>
+        <div class="chart-wrap" style="height:440px">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card full">
+        <div class="chart-label">Ranked Score Table</div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="compareTable">
+            <thead>
+              <tr>
+                <th>#</th><th>Company</th><th>Overall</th>
+                <th>GenAI</th><th>Agentic</th><th>ML</th>
+                <th>Data Eng</th><th>AI Platform</th><th>MLOps</th><th>Cloud AI</th>
+              </tr>
+            </thead>
+            <tbody id="compareBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: History ── -->
+  <div class="page" id="page-history">
+    <div class="section-head">
+      <div>
+        <div class="section-title">AUDIT HISTORY</div>
+        <div class="section-sub">// Full chronological audit log</div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Company</th><th>Mode</th><th>Score</th><th>Delta</th><th>Audits</th><th>Last Run</th></tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ── PAGE: Compliance Reference ── -->
+  <div class="page" id="page-compliance">
+    <div class="section-head">
+      <div>
+        <div class="section-title">COMPLIANCE REFERENCE</div>
+        <div class="section-sub">// Key global AI regulatory frameworks — rated by criticality</div>
+      </div>
+    </div>
+
+    <div class="disclaimer-banner">
+      <span class="disc-icon">⚠</span>
+      <span>
+        <strong>Regulatory Information Notice:</strong>
+        The compliance frameworks listed are summaries for reference and awareness only.
+        They do not constitute legal advice. Regulatory requirements change frequently —
+        always consult qualified legal counsel before making compliance decisions.
+        Links point to official government and standards body sources.
+      </span>
+    </div>
+
+    <div class="comp-filter-row">
+      <div class="cf-pill active" onclick="filterComp('ALL')">All</div>
+      <div class="cf-pill" onclick="filterComp('CRITICAL')">Critical</div>
+      <div class="cf-pill" onclick="filterComp('HIGH')">High</div>
+      <div class="cf-pill" onclick="filterComp('EU')">European Union</div>
+      <div class="cf-pill" onclick="filterComp('US')">United States</div>
+      <div class="cf-pill" onclick="filterComp('GLOBAL')">Global / ISO</div>
+      <input class="comp-search" id="compSearch" placeholder="Search frameworks..." oninput="filterComp()"/>
+    </div>
+
+    <div class="compliance-grid" id="complianceGrid"></div>
+  </div>
+
+  <!-- ── PAGE: Integration Guide ── -->
+  <div class="page" id="page-integrate">
+    <div class="section-head">
+      <div>
+        <div class="section-title">INTEGRATION GUIDE</div>
+        <div class="section-sub">// Three ways to plug AI Stack Doctor into your ecosystem</div>
+      </div>
+    </div>
+
+    <div class="int-grid">
+      <!-- CLI -->
+      <div class="int-card">
+        <div class="int-num">01</div>
+        <div class="int-title">Command Line</div>
+        <div class="int-desc">The fastest way to get started. Run audits interactively, export to PDF or TXT, and browse history — all from your terminal.</div>
+        <div class="code-block"><span class="cm"># Install dependencies</span>
+pip3 install anthropic ddgs rich flask
+
+<span class="cm"># Set your API key</span>
+<span class="ck">export</span> ANTHROPIC_API_KEY=<span class="cs">"sk-..."</span>
+
+<span class="cm"># Run interactive audit</span>
+python3 ai_stack_health_agent_v3.py
+
+<span class="cm"># Browse history</span>
+python3 ai_stack_health_agent_v3.py --history
+
+<span class="cm"># Start dashboard</span>
+python3 dashboard_server.py</div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <!-- REST API -->
+      <div class="int-card">
+        <div class="int-num">02</div>
+        <div class="int-title">REST API</div>
+        <div class="int-desc">Expose the agent as a local REST endpoint. Integrate with your existing tooling, CI/CD pipelines, or internal dashboards.</div>
+        <div class="code-block"><span class="cm"># Start the API server</span>
+python3 ai_stack_health_agent_v3.py --api
+
+<span class="cm"># Run an audit via POST</span>
+curl -X POST http://localhost:8080/audit \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{"company":"Stripe","mode":"competitor"}'</span>
+
+<span class="cm"># Get history</span>
+curl http://localhost:8080/history
+
+<span class="cm"># List top-tier companies</span>
+curl http://localhost:8080/companies</div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+
+      <!-- Python module -->
+      <div class="int-card">
+        <div class="int-num">03</div>
+        <div class="int-title">Python Module</div>
+        <div class="int-desc">Import directly into your Python codebase. Use the agent programmatically, export PDFs, or chain with your own data pipelines.</div>
+        <div class="code-block"><span class="ck">from</span> ai_stack_health_agent_v3 <span class="ck">import</span> (
+    run_agent, save_to_history,
+    get_last_report, export_report_to_pdf
+)
+<span class="ck">from</span> pdf_export <span class="ck">import</span> export_report_to_pdf
+
+<span class="cm"># Run a programmatic audit</span>
+report = run_agent(<span class="cs">"Stripe"</span>, <span class="cs">"competitor"</span>)
+
+<span class="cm"># Export to dark-themed PDF</span>
+path = export_report_to_pdf(report, <span class="cs">"Stripe"</span>)
+<span class="ck">print</span>(f<span class="cs">"PDF saved: {path}"</span>)</div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:8px">
+      <div>
+        <div class="section-title" style="font-size:22px">ECOSYSTEM INTEGRATION</div>
+        <div class="section-sub">// Embedding AI Stack Doctor into your technology workflow</div>
+      </div>
+    </div>
+
+    <div class="ecosystem-steps">
+      <div class="eco-step">
+        <div class="eco-step-num">01</div>
+        <div class="eco-step-body">
+          <div class="eco-step-title">Quarterly Audit Cadence</div>
+          <div class="eco-step-desc">Schedule recurring audits using cron or your existing orchestration tool (Airflow, Prefect, GitHub Actions). The SQLite history DB automatically tracks deltas so you can see improvement or regression between runs. Recommended: quarterly for competitors, monthly for your own stack.</div>
+        </div>
+      </div>
+      <div class="eco-step">
+        <div class="eco-step-num">02</div>
+        <div class="eco-step-body">
+          <div class="eco-step-title">CI/CD Integration</div>
+          <div class="eco-step-desc">Use the REST API endpoint in your deployment pipeline. Trigger a self-audit after major infrastructure changes to track how architectural decisions affect your AI stack health score over time. Set score thresholds to gate releases.</div>
+        </div>
+      </div>
+      <div class="eco-step">
+        <div class="eco-step-num">03</div>
+        <div class="eco-step-body">
+          <div class="eco-step-title">Executive Reporting</div>
+          <div class="eco-step-desc">The PDF export produces a board-ready dark-themed report with score rings, peer benchmarking tables, and executive summaries. Embed into your quarterly business review cycle or investor update. Compatible with Google Slides, PowerPoint, and Notion.</div>
+        </div>
+      </div>
+      <div class="eco-step">
+        <div class="eco-step-num">04</div>
+        <div class="eco-step-body">
+          <div class="eco-step-title">Competitive Intelligence Workflow</div>
+          <div class="eco-step-desc">Build a competitor monitoring dashboard by scheduling weekly audits of key competitors. The delta tracking system will surface meaningful shifts in their AI stack — new tool adoptions, governance changes, or platform migrations — before they appear in press releases.</div>
+        </div>
+      </div>
+      <div class="eco-step">
+        <div class="eco-step-num">05</div>
+        <div class="eco-step-body">
+          <div class="eco-step-title">Open Source & Extension</div>
+          <div class="eco-step-desc">The entire codebase is open source (MIT license). Add new companies to the intelligence layer by extending COMPANY_INTEL. Add new scoring categories by updating the system prompt and tool definitions. Contribute back via the GitHub repo at github.com/dwnjuguna/AI-Stack-Doctor.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:24px">
+      <div class="chart-label" style="margin-bottom:16px">File Structure</div>
+      <div class="code-block">ai-stack-doctor/
+├── <span class="cs">ai_stack_health_agent_v3.py</span>  <span class="cm"># Main agent (CLI + API)</span>
+├── <span class="cs">pdf_export.py</span>                <span class="cm"># Dark-themed PDF generator</span>
+├── <span class="cs">dashboard_server.py</span>          <span class="cm"># History dashboard backend</span>
+├── <span class="cs">dashboard.html</span>               <span class="cm"># This dashboard UI</span>
+├── <span class="cs">ai_stack_history.db</span>          <span class="cm"># SQLite audit history (auto-created)</span>
+└── <span class="cs">README.md</span>                    <span class="cm"># Setup & usage guide</span></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ─────────────────────────────────────────────────────────────────
+const API = '';   // same origin
+const CATS = ['GenAI / LLMs','Agentic AI','Machine Learning',
+              'Data Engineering','AI Platforms','MLOps / LLMOps','Cloud AI Services'];
+const CAT_SHORT = ['GenAI','Agentic','ML','Data Eng','AI Plat','MLOps','Cloud'];
+const PALETTE = [
+  '#00d4f0','#f0a000','#00c880','#9060f0',
+  '#f04040','#00a8c0','#d4a000','#60c080',
+  '#a080f0','#f06060','#40b8d0','#b08000',
+];
+Chart.defaults.color = '#405070';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+
+let companiesData = [];
+let trendCharts   = {};
+let activeTrendCo = null;
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().toLowerCase().includes(page.replace('-', ' '))) {
+      n.classList.add('active');
+    }
+  });
+  const titles = {
+    overview: '// Overview Dashboard', companies: '// Company Cards',
+    trends: '// Trend Analysis', compare: '// Comparison Radar',
+    history: '// Audit History', compliance: '// Compliance Reference', integrate: '// Integration Guide'
+  };
+  document.getElementById('topbarTitle').textContent = titles[page] || '//';
+
+  if (page === 'trends')     buildTrendSelectors();
+  if (page === 'compare')    loadCompare();
+  if (page === 'history')    loadHistory();
+  if (page === 'compliance') renderComplianceGrid();
+}
+
+// ── Score color ─────────────────────────────────────────────────────────────
+function scoreColor(s, alpha = 1) {
+  if (s >= 80) return `rgba(0,200,128,${alpha})`;
+  if (s >= 60) return `rgba(240,160,0,${alpha})`;
+  return `rgba(240,64,64,${alpha})`;
+}
+
+// ── Toast ───────────────────────────────────────────────────────────────────
+function toast(msg, dur=2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
+}
+
+
+}
+
+// ── Summary stats ────────────────────────────────────────────────────────────
+function renderSummary(s) {
+  document.getElementById('stat-total').textContent     = s.total     || '0';
+  document.getElementById('stat-companies').textContent = s.companies || '0';
+  document.getElementById('stat-avg').textContent       = s.avg_score || '—';
+  document.getElementById('stat-latest').textContent    = s.latest   || '—';
+}
+
+// ── Overview charts ───────────────────────────────────────────────────────────
+let barChartInst, catAvgInst, donutInst;
+function renderOverviewCharts(cos) {
+  if (!cos.length) return;
+
+  // Bar chart — per company latest score
+  const labels = cos.map(c => c.company.charAt(0).toUpperCase()+c.company.slice(1));
+  const scores  = cos.map(c => c.overall || 0);
+  const bColors = scores.map(s => scoreColor(s, .8));
+
+  if (barChartInst) barChartInst.destroy();
+  barChartInst = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: scores, backgroundColor: bColors, borderRadius: 3, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(26,40,64,.5)' }, ticks: { font: { size: 9 } } },
+        y: { min: 0, max: 100, grid: { color: 'rgba(26,40,64,.5)' },
+             ticks: { callback: v => v+'/100', font: { size: 9 } } }
+      }
+    }
+  });
+
+  // Category avg radar
+  const catAvgs = CATS.map(cat => {
+    const vals = cos.map(c => {
+      const s = c.scores[cat];
+      return s ? Math.round((s.score / s.total) * 100) : 0;
+    }).filter(v => v > 0);
+    return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+  });
+
+  if (catAvgInst) catAvgInst.destroy();
+  catAvgInst = new Chart(document.getElementById('catAvgChart'), {
+    type: 'bar',
+    data: {
+      labels: CAT_SHORT,
+      datasets: [{ data: catAvgs, backgroundColor: 'rgba(0,212,240,.5)',
+                   borderColor: 'rgba(0,212,240,.9)', borderWidth: 1, borderRadius: 3 }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { min: 0, max: 100, grid: { color: 'rgba(26,40,64,.5)' }, ticks: { font:{size:9} } },
+        y: { grid: { display: false }, ticks: { font:{size:9} } }
+      }
+    }
+  });
+
+  // Donut — healthy / attention / risk
+  const h = scores.filter(s=>s>=80).length;
+  const a = scores.filter(s=>s>=60&&s<80).length;
+  const r = scores.filter(s=>s<60).length;
+
+  if (donutInst) donutInst.destroy();
+  donutInst = new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Healthy (80-100)', 'Needs Attention (60-79)', 'At Risk (<60)'],
+      datasets: [{ data: [h,a,r],
+                   backgroundColor: ['rgba(0,200,128,.7)','rgba(240,160,0,.7)','rgba(240,64,64,.7)'],
+                   borderColor: ['#00c880','#f0a000','#f04040'],
+                   borderWidth: 1.5 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: { legend: { position:'right', labels:{ font:{size:10}, padding:16 } } }
+    }
+  });
+}
+
+// ── Company cards ─────────────────────────────────────────────────────────────
+let cardSort = 'score';
+function renderCompanyCards(cos) {
+  const grid = document.getElementById('companyGrid');
+  if (!cos.length) return;
+
+  const sorted = [...cos].sort((a,b) =>
+    cardSort === 'score' ? (b.overall||0) - (a.overall||0)
+                         : a.company.localeCompare(b.company)
+  );
+
+  grid.innerHTML = sorted.map(c => {
+    const pct   = Math.round(((c.overall||0)/100)*100);
+    const col   = scoreColor(c.overall||0);
+    const delta = c.delta;
+    const dCls  = delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-flat';
+    const dSym  = delta > 0 ? `▲ +${delta}` : delta < 0 ? `▼ ${delta}` : '── 0';
+    const audits= c.audit_count;
+
+    const catBars = CATS.map(cat => {
+      const s = c.scores[cat];
+      if (!s) return '';
+      const p = Math.round((s.score/s.total)*100);
+      return `<div style="margin-bottom:4px">
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">
+          <span>${cat}</span><span style="color:${scoreColor(p)}">${s.score}/${s.total}</span>
+        </div>
+        <div class="co-bar-track">
+          <div class="co-bar-fill" style="width:${p}%;background:${scoreColor(p)}"></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="co-card" onclick="selectCompany('${c.company}')">
+      <div class="co-card-top">
+        <div class="co-name">${c.company}</div>
+        <div class="co-score-badge" style="color:${col}">${c.overall||'—'}</div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="co-bar-track" style="height:6px">
+          <div class="co-bar-fill" style="width:${pct}%;background:${col};box-shadow:0 0 8px ${col}66"></div>
+        </div>
+      </div>
+      ${catBars}
+      <div class="co-meta">
+        <span>${c.last_audit}</span>
+        <span class="co-delta ${dCls}">${dSym}</span>
+        <span>${audits} audit${audits>1?'s':''}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function sortCards(by) { cardSort = by; renderCompanyCards(companiesData); }
+
+function selectCompany(co) {
+  document.querySelectorAll('.co-card').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  goTo('trends');
+  setTimeout(() => loadTrend(co), 100);
+}
+
+// ── Trend page ────────────────────────────────────────────────────────────────
+function buildTrendSelectors() {
+  const sel = document.getElementById('trendSelector');
+  const cos  = [...new Set(companiesData.map(c=>c.company))];
+  sel.innerHTML = cos.map(co =>
+    `<div class="co-pill${activeTrendCo===co?' active':''}" onclick="loadTrend('${co}')">${co}</div>`
+  ).join('');
+}
+
+let trendLineInst, trendCatInst;
+async function loadTrend(co) {
+  activeTrendCo = co;
+  buildTrendSelectors();
+  document.getElementById('trendChartLabel').textContent = `Overall Score Trend — ${co.charAt(0).toUpperCase()+co.slice(1)}`;
+
+  let data = await safeFetch(apiUrl(`/api/trend/${co}`));
+  if (!data || !data.length) {
+    // Fall back to built-in trend data
+    data = DEMO_TRENDS[co] || [companiesData.find(c=>c.company===co)].filter(Boolean).map(c=>({
+      overall: c.overall, date: c.last_audit, mode: c.mode, scores: c.scores
+    }));
+  }
+  if (!data.length) return;
+
+  const dates   = data.map(d=>d.date);
+  const overall = data.map(d=>d.overall||0);
+
+  if (trendLineInst) trendLineInst.destroy();
+  trendLineInst = new Chart(document.getElementById('trendLineChart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Overall Score',
+        data: overall,
+        borderColor: '#00d4f0',
+        backgroundColor: 'rgba(0,212,240,.08)',
+        fill: true, tension: .3, pointRadius: 5,
+        pointBackgroundColor: overall.map(s=>scoreColor(s)),
+        pointBorderColor: '#00d4f0', borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid:{color:'rgba(26,40,64,.5)'}, ticks:{font:{size:9}} },
+        y: { min:0, max:100, grid:{color:'rgba(26,40,64,.5)'}, ticks:{callback:v=>v, font:{size:9}} }
+      }
+    }
+  });
+
+  // Latest audit category breakdown
+  const latest = data[data.length-1];
+  const catScores = CATS.map(cat => {
+    const s = latest.scores[cat];
+    return s ? Math.round((s.score/s.total)*100) : 0;
+  });
+
+  if (trendCatInst) trendCatInst.destroy();
+  trendCatInst = new Chart(document.getElementById('trendCatChart'), {
+    type: 'bar',
+    data: {
+      labels: CAT_SHORT,
+      datasets: [{
+        data: catScores,
+        backgroundColor: catScores.map(s=>scoreColor(s,.7)),
+        borderColor: catScores.map(s=>scoreColor(s)),
+        borderWidth: 1, borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false} },
+      scales: {
+        x: { grid:{display:false}, ticks:{font:{size:9}} },
+        y: { min:0, max:100, grid:{color:'rgba(26,40,64,.5)'}, ticks:{font:{size:9}} }
+      }
+    }
+  });
+}
+
+// ── Comparison radar ──────────────────────────────────────────────────────────
+let radarInst;
+async function loadCompare() {
+  let data = await safeFetch(apiUrl('/api/compare'));
+  if (!data || !data.length) {
+    // Fallback: use top 8 from demo data
+    data = [...companiesData]
+      .sort((a,b)=>(b.overall||0)-(a.overall||0))
+      .slice(0,8)
+      .map(c=>({company:c.company, overall:c.overall, scores:c.scores}));
+  }
+  if (!data.length) return;
+
+  const datasets = data.map((c,i) => ({
+    label: c.company.charAt(0).toUpperCase()+c.company.slice(1),
+    data: CATS.map(cat => {
+      const s = c.scores[cat];
+      return s ? Math.round((s.score/s.total)*100) : 0;
+    }),
+    borderColor: PALETTE[i % PALETTE.length],
+    backgroundColor: PALETTE[i % PALETTE.length].replace(')', ',.08)').replace('rgb','rgba'),
+    borderWidth: 1.5, pointRadius: 3,
+  }));
+
+  if (radarInst) radarInst.destroy();
+  radarInst = new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: { labels: CATS, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{ position:'right', labels:{font:{size:9}, padding:12} } },
+      scales: {
+        r: {
+          min:0, max:100, ticks:{ stepSize:25, font:{size:8}, backdropColor:'transparent' },
+          grid:{ color:'rgba(26,40,64,.8)' },
+          angleLines:{ color:'rgba(26,40,64,.8)' },
+          pointLabels:{ font:{size:9} }
+        }
+      }
+    }
+  });
+
+  // Table
+  const tb = document.getElementById('compareBody');
+  tb.innerHTML = data.map((c,i) => {
+    const vals = CATS.map(cat => {
+      const s = c.scores[cat];
+      return s ? `<td style="color:${scoreColor(Math.round((s.score/s.total)*100))};font-family:var(--mono)">${s.score}/${s.total}</td>` : '<td style="color:var(--text3)">—</td>';
+    }).join('');
+    return `<tr>
+      <td style="font-family:var(--mono);color:var(--text3)">${i+1}</td>
+      <td class="co-cell">${c.company}</td>
+      <td style="font-family:var(--mono);font-weight:700;color:${scoreColor(c.overall||0)}">${c.overall||'—'}</td>
+      ${vals}
+    </tr>`;
+  }).join('');
+}
+
+// ── History table ─────────────────────────────────────────────────────────────
+function loadHistory() {
+  const tb = document.getElementById('historyBody');
+  if (!companiesData.length) { tb.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:32px;font-family:var(--mono)">No data — run an audit or load demo data</td></tr>`; return; }
+  tb.innerHTML = companiesData.map((c,i) => {
+    const delta = c.delta;
+    const dCls  = delta>0?'delta-up':delta<0?'delta-down':'delta-flat';
+    const dTxt  = delta>0?`▲ +${delta}`:delta<0?`▼ ${delta}`:'──';
+    return `<tr>
+      <td style="font-family:var(--mono);color:var(--text3)">${i+1}</td>
+      <td class="co-cell">${c.company}</td>
+      <td><span class="mode-badge">${c.mode}</span></td>
+      <td style="font-family:var(--mono);font-weight:700;color:${scoreColor(c.overall||0)}">${c.overall||'—'}</td>
+      <td class="co-delta ${dCls}" style="font-family:var(--mono)">${dTxt}</td>
+      <td style="font-family:var(--mono)">${c.audit_count}</td>
+      <td style="font-family:var(--mono);color:var(--text3)">${c.last_audit}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Load all data ────────────────────────────────────────────────────────────
+async function refreshAll() {
+  const [sum, cos] = await Promise.all([
+    safeFetch(apiUrl('/api/summary')),
+    safeFetch(apiUrl('/api/companies')),
+  ]);
+  if (cos && Array.isArray(cos) && cos.length > 0) {
+    companiesData = cos;
+    if (sum) renderSummary(sum);
+    renderCompanyCards(cos);
+    renderOverviewCharts(cos);
+    buildTrendSelectors();
+    toast('Live data refreshed');
+  } else {
+    toast('Server not reachable — showing demo data');
+    await seedDemo();
+  }
+}
+
+// ── Built-in demo data (works with no server) ────────────────────────────────
+const DEMO_COMPANIES = [
+  {company:"google",    mode:"competitor", overall:94, delta:0,  audit_count:1, last_audit:"2026-02-03", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"microsoft", mode:"competitor", overall:91, delta:0,  audit_count:1, last_audit:"2026-01-20", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"nvidia",    mode:"competitor", overall:90, delta:0,  audit_count:1, last_audit:"2026-02-18", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:14,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"meta",      mode:"competitor", overall:92, delta:3,  audit_count:2, last_audit:"2026-01-12", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
+  {company:"openai",    mode:"competitor", overall:88, delta:0,  audit_count:1, last_audit:"2026-02-10", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"anthropic", mode:"competitor", overall:85, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"netflix",   mode:"competitor", overall:84, delta:0,  audit_count:1, last_audit:"2026-04-01", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:8,total:14,conf:"L"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:14,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"tesla",     mode:"competitor", overall:81, delta:0,  audit_count:1, last_audit:"2026-03-22", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"apple",     mode:"competitor", overall:79, delta:0,  audit_count:1, last_audit:"2026-03-10", scores:{"GenAI / LLMs":{score:10,total:14,conf:"M"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
+  {company:"amazon",    mode:"competitor", overall:87, delta:0,  audit_count:1, last_audit:"2026-03-01", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:11,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"mistral",   mode:"competitor", overall:77, delta:0,  audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:7,total:14,conf:"M"},"AI Platforms":{score:8,total:14,conf:"M"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:17,total:16,conf:"M"}}},
+  {company:"salesforce",mode:"competitor", overall:76, delta:0,  audit_count:1, last_audit:"2026-03-15", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"adobe",     mode:"competitor", overall:73, delta:0,  audit_count:1, last_audit:"2026-03-28", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"amd",       mode:"competitor", overall:71, delta:0,  audit_count:1, last_audit:"2026-04-10", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:10,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
+  {company:"oracle",    mode:"competitor", overall:68, delta:0,  audit_count:1, last_audit:"2026-04-05", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"broadcom",  mode:"competitor", overall:65, delta:0,  audit_count:1, last_audit:"2026-04-12", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
+  {company:"intel",     mode:"competitor", overall:63, delta:0,  audit_count:1, last_audit:"2026-04-15", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:5,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"stability ai", mode:"competitor", overall:72, delta:0, audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"M"}}},
+  {company:"deepl",       mode:"competitor", overall:69, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:6,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"synthesia",   mode:"competitor", overall:67, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
+  {company:"aleph alpha", mode:"competitor", overall:66, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:9,total:16,conf:"M"}}},
+  {company:"elevenlabs",  mode:"competitor", overall:70, delta:0,  audit_count:1, last_audit:"2026-04-21", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
+];
+
+const DEMO_TRENDS = {
+  meta: [
+    {overall:89, date:"2025-10-15", mode:"competitor", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+    {overall:92, date:"2026-01-12", mode:"competitor", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
+  ],
+};
+
+
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPLIANCE REFERENCE DATA + RENDERING
+// ══════════════════════════════════════════════════════════════════════════════
+const COMPLIANCE_FRAMEWORKS = [
+  {
+    name: "EU AI Act (2024)", tier: "CRITICAL", jurisdiction: "European Union",
+    effective: "Aug 2024 — phased to 2027",
+    scope: "All AI systems deployed in the EU, regardless of where developed",
+    requirements: [
+      "Prohibited practices banned Feb 2025: social scoring, real-time biometric surveillance",
+      "High-risk AI requires conformity assessment, registration, human oversight",
+      "GPAI models >10²⁵ FLOPs face systemic risk obligations",
+      "Foundation model providers must document training data, energy use, capabilities",
+      "Transparency for AI-generated content: deepfakes, chatbots must be labelled",
+      "Right to explanation for high-risk AI decisions affecting individuals",
+    ],
+    penalties: "Up to €35M or 7% global annual turnover",
+    url: "https://artificialintelligenceact.eu",
+    tags: ["EU","AI-specific"],
+  },
+  {
+    name: "GDPR (2018) + AI Implications", tier: "CRITICAL", jurisdiction: "European Union",
+    effective: "May 2018 — ongoing enforcement",
+    scope: "Any processing of personal data of EU residents",
+    requirements: [
+      "Lawful basis required for training AI on personal data",
+      "Data minimisation — only collect what AI genuinely needs",
+      "Right to erasure ('right to be forgotten') must be honoured in AI systems",
+      "Art. 22: Right to human review of automated decisions",
+      "DPIA mandatory for high-risk AI processing activities",
+      "Cross-border data transfers require adequacy decision or SCCs",
+    ],
+    penalties: "Up to €20M or 4% global annual turnover",
+    url: "https://gdpr.eu",
+    tags: ["EU","Data Privacy"],
+  },
+  {
+    name: "EU Data Act (2024)", tier: "HIGH", jurisdiction: "European Union",
+    effective: "September 2025",
+    scope: "Data from IoT devices, cloud services, data spaces in the EU",
+    requirements: [
+      "Data sharing obligations between businesses and consumers",
+      "Cloud switching rights — portability and interoperability required",
+      "B2G data sharing in public emergency situations",
+      "Contractual protections for data holders in B2B relationships",
+    ],
+    penalties: "Up to €20M or 4% global turnover",
+    url: "https://digital-strategy.ec.europa.eu/en/policies/data-act",
+    tags: ["EU","Data Privacy"],
+  },
+  {
+    name: "EU Digital Services Act / DSA (2022)", tier: "HIGH", jurisdiction: "European Union",
+    effective: "Feb 2024 (VLOPs from Aug 2023)",
+    scope: "Online platforms and search engines with EU users",
+    requirements: [
+      "Algorithmic transparency for recommender systems",
+      "Annual systemic risk assessments for Very Large Online Platforms",
+      "Ad targeting restrictions — profiling of minors prohibited",
+      "Researcher access to platform data and algorithms",
+    ],
+    penalties: "Up to 6% global turnover; repeat offenders can be banned",
+    url: "https://digital-strategy.ec.europa.eu/en/policies/digital-services-act-package",
+    tags: ["EU","Platforms"],
+  },
+  {
+    name: "US Executive Order on AI (Oct 2023)", tier: "CRITICAL", jurisdiction: "United States",
+    effective: "Oct 2023 — ongoing agency rulemaking",
+    scope: "Federal agencies, US government contractors, dual-use AI developers",
+    requirements: [
+      "Safety testing for foundation models before deployment (NIST AI RMF alignment)",
+      "Mandatory reporting for models trained above compute thresholds",
+      "Watermarking and authentication of AI-generated content",
+      "Equity and civil rights protections in AI system design",
+    ],
+    penalties: "Contractual and procurement consequences for federal contractors",
+    url: "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/",
+    tags: ["US","AI-specific"],
+  },
+  {
+    name: "CCPA / CPRA (2020/2023)", tier: "CRITICAL", jurisdiction: "United States — California",
+    effective: "Jan 2020 / Jan 2023",
+    scope: "Businesses collecting personal data of California residents",
+    requirements: [
+      "Right to know what personal data is collected and used in AI training",
+      "Right to opt-out of sale or sharing of personal data",
+      "Sensitive data (biometrics, health, race) subject to stricter controls",
+      "Automated decision-making: right to opt-out and obtain explanation",
+    ],
+    penalties: "Up to $7,500 per intentional violation",
+    url: "https://cppa.ca.gov",
+    tags: ["US","Data Privacy"],
+  },
+  {
+    name: "NIST AI Risk Management Framework (2023)", tier: "HIGH", jurisdiction: "United States (globally adopted)",
+    effective: "January 2023",
+    scope: "Voluntary framework for any organisation managing AI risk",
+    requirements: [
+      "GOVERN: AI risk culture, policies, accountability structures",
+      "MAP: Identify and categorise AI risks in operational context",
+      "MEASURE: Analyse risks with quantitative and qualitative metrics",
+      "MANAGE: Prioritise and treat AI risks with defined controls",
+    ],
+    penalties: "Voluntary — but referenced in US federal procurement and regulation",
+    url: "https://www.nist.gov/artificial-intelligence",
+    tags: ["US","GLOBAL","Framework"],
+  },
+  {
+    name: "US State AI Laws — 2024-25 Wave", tier: "HIGH", jurisdiction: "United States — Multiple States",
+    effective: "2024-2026 (varies by state)",
+    scope: "Colorado, Illinois, Texas, Connecticut, Virginia AI regulation",
+    requirements: [
+      "Colorado SB 205: High-risk AI developer and deployer obligations (2026)",
+      "Illinois BIPA: Biometric data and AI facial recognition consent",
+      "Texas: Restrictions on AI use in employment hiring decisions",
+      "Virginia VCDPA: Automated profiling opt-out rights",
+    ],
+    penalties: "Up to $50K per violation (Colorado); varies by state",
+    url: "https://www.ncsl.org/technology-and-communication/artificial-intelligence-2024-legislation",
+    tags: ["US"],
+  },
+  {
+    name: "UK AI Regulation (Pro-Innovation)", tier: "HIGH", jurisdiction: "United Kingdom",
+    effective: "2024 onwards — existing law + sector guidance",
+    scope: "AI systems developed or deployed in the UK",
+    requirements: [
+      "Principles: safety, transparency, fairness, accountability, contestability",
+      "Sector regulators enforce AI rules (FCA, ICO, CMA, MHRA)",
+      "ICO Guidance on AI and data protection (UK GDPR equivalent)",
+      "AI Safety Institute evaluates frontier model capabilities",
+    ],
+    penalties: "ICO: up to £17.5M or 4% global turnover",
+    url: "https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach",
+    tags: ["UK"],
+  },
+  {
+    name: "China Generative AI Regulations (2023)", tier: "CRITICAL", jurisdiction: "China",
+    effective: "August 2023",
+    scope: "Generative AI services provided to users in China",
+    requirements: [
+      "Content must adhere to socialist core values; prohibited content list enforced",
+      "Training data must have clear IP and copyright licensing",
+      "Mandatory labelling of all AI-generated content",
+      "Security assessment required before public deployment",
+      "User data must be localised within China",
+    ],
+    penalties: "Service suspension, fines, criminal liability for severe violations",
+    url: "https://www.cac.gov.cn",
+    tags: ["GLOBAL","AI-specific"],
+  },
+  {
+    name: "ISO/IEC 42001 — AI Management System (2023)", tier: "HIGH", jurisdiction: "Global (ISO Standard)",
+    effective: "December 2023",
+    scope: "Any organisation developing, providing, or deploying AI systems",
+    requirements: [
+      "Establish an AI Management System (AIMS) with documented policies",
+      "AI risk and impact assessment procedures with defined criteria",
+      "Clear roles and responsibilities for AI governance",
+      "Continuous monitoring, measurement, and improvement of AI systems",
+    ],
+    penalties: "Voluntary — increasingly required in enterprise procurement",
+    url: "https://www.iso.org/standard/81230.html",
+    tags: ["GLOBAL","Framework"],
+  },
+  {
+    name: "HIPAA + AI (US Healthcare)", tier: "CRITICAL", jurisdiction: "United States — Healthcare",
+    effective: "Ongoing — HHS AI guidance updated 2024",
+    scope: "AI systems processing Protected Health Information (PHI)",
+    requirements: [
+      "PHI cannot train AI models without explicit authorisation or de-identification",
+      "Business Associate Agreements (BAA) required with all AI vendors",
+      "AI clinical decision support tools may require FDA clearance",
+      "Audit trails mandatory for AI-assisted clinical decisions",
+    ],
+    penalties: "Up to $1.9M per violation category per year",
+    url: "https://www.hhs.gov/hipaa/index.html",
+    tags: ["US","Healthcare"],
+  },
+  {
+    name: "PCI-DSS v4.0 + AI (Payments)", tier: "HIGH", jurisdiction: "Global — Payment Industry",
+    effective: "March 2024",
+    scope: "AI systems handling cardholder data or payment processes",
+    requirements: [
+      "AI fraud detection must not store raw PAN data beyond need",
+      "Penetration testing must include AI/ML pipeline components",
+      "Targeted risk analysis for AI-customised security controls",
+      "Automated security testing of AI systems in card data scope",
+    ],
+    penalties: "Fines from card brands; loss of ability to process payments",
+    url: "https://www.pcisecuritystandards.org",
+    tags: ["GLOBAL","Payments"],
+  },
+  {
+    name: "SOC 2 Type II + AI Controls", tier: "HIGH", jurisdiction: "Global (AICPA — widely required)",
+    effective: "Ongoing — annual audits",
+    scope: "SaaS and cloud AI service providers",
+    requirements: [
+      "AI model access controls and logical security boundaries",
+      "Change management for model updates, retraining, and versioning",
+      "Availability SLAs for AI inference services",
+      "Processing integrity — AI outputs are complete, accurate, and timely",
+    ],
+    penalties: "Loss of enterprise customers; failed procurement and vendor assessments",
+    url: "https://www.aicpa.org/resources/article/soc-2-reporting-on-an-examination-of-controls",
+    tags: ["GLOBAL","Framework"],
+  },
+];
+
+let compFilter = 'ALL';
+
+function renderComplianceGrid() {
+  const grid   = document.getElementById('complianceGrid');
+  const search = document.getElementById('compSearch')?.value.toLowerCase() || '';
+
+  const filtered = COMPLIANCE_FRAMEWORKS.filter(fw => {
+    const matchFilter =
+      compFilter === 'ALL' ||
+      compFilter === fw.tier ||
+      fw.tags.includes(compFilter);
+    const matchSearch =
+      !search ||
+      fw.name.toLowerCase().includes(search) ||
+      fw.scope.toLowerCase().includes(search) ||
+      fw.jurisdiction.toLowerCase().includes(search) ||
+      fw.requirements.some(r => r.toLowerCase().includes(search));
+    return matchFilter && matchSearch;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">⚖</div><div class="empty-title">No frameworks match your filter</div></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(fw => `
+    <div class="comp-card">
+      <div class="comp-card-head">
+        <div class="comp-card-name">${fw.name}</div>
+        <div class="comp-tier ${fw.tier}">${fw.tier}</div>
+      </div>
+      <div class="comp-card-body">
+        <div class="comp-meta">
+          <span class="comp-meta-pill">${fw.jurisdiction}</span>
+          <span class="comp-meta-pill">${fw.effective}</span>
+          ${fw.tags.map(t=>`<span class="comp-meta-pill">${t}</span>`).join('')}
+        </div>
+        <div class="comp-scope">${fw.scope}</div>
+        <ul class="comp-reqs">
+          ${fw.requirements.map(r=>`<li>${r}</li>`).join('')}
+        </ul>
+        <div class="comp-penalties">⚠ ${fw.penalties}</div>
+        <a class="comp-link" href="${fw.url}" target="_blank">Official reference →</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterComp(tag) {
+  if (tag !== undefined) {
+    compFilter = tag;
+    document.querySelectorAll('.cf-pill').forEach(p => {
+      p.classList.toggle('active', p.textContent.trim().toUpperCase() === tag || (tag === 'ALL' && p.textContent.trim() === 'All'));
+    });
+  }
+  renderComplianceGrid();
+}
+
+// Render on page load
+window.addEventListener('load', () => { renderComplianceGrid(); }, { once: false });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// SEARCH ENGINE CONFIGURATION
+// ══════════════════════════════════════════════════════════════════════════════
+
+const SE_KEY = 'asd_searchengine';
+
+// State
+let seEngine = 'ddg';           // active engine id
+let seConfig = {};              // engine-specific fields { key, cx, url, ... }
+
+const SE_ENGINES = {
+  ddg:     { label: 'DuckDuckGo',          fields: [] },
+  google:  { label: 'Google Custom Search', fields: ['key','cx'] },
+  bing:    { label: 'Bing Search API',      fields: ['key'] },
+  serpapi: { label: 'SerpAPI',              fields: ['key'] },
+  custom:  { label: 'Custom / BYO',         fields: ['url','key'] },
+};
+
+function saveSE() {
+  localStorage.setItem(SE_KEY, JSON.stringify({ engine: seEngine, config: seConfig }));
+}
+
+function loadSE() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SE_KEY) || 'null');
+    if (saved && saved.engine) {
+      seEngine = saved.engine;
+      seConfig = saved.config || {};
+      return true;
+    }
+  } catch(_) {}
+  return false;
+}
+
+function selectEngine(id) {
+  seEngine = id;
+
+  // Update chip states
+  document.querySelectorAll('.se-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('se-' + id)?.classList.add('active');
+
+  // Show correct fields panel
+  Object.keys(SE_ENGINES).forEach(eid => {
+    const el = document.getElementById('sef-' + eid);
+    if (el) el.style.display = eid === id ? 'flex' : 'none';
+  });
+
+  // Restore saved values for this engine
+  const cfg = seConfig[id] || {};
+  if (id === 'google') {
+    const k = document.getElementById('se-google-key');
+    const cx = document.getElementById('se-google-cx');
+    if (k)  k.value  = cfg.key || '';
+    if (cx) cx.value = cfg.cx  || '';
+  } else if (id === 'bing') {
+    const k = document.getElementById('se-bing-key');
+    if (k) k.value = cfg.key || '';
+  } else if (id === 'serpapi') {
+    const k = document.getElementById('se-serpapi-key');
+    if (k) k.value = cfg.key || '';
+  } else if (id === 'custom') {
+    const u = document.getElementById('se-custom-url');
+    const k = document.getElementById('se-custom-key');
+    if (u) u.value = cfg.url || '';
+    if (k) k.value = cfg.key || '';
+  }
+
+  saveSE();
+}
+
+function saveEngineConfig() {
+  // Read current field values for active engine and persist
+  if (seEngine === 'google') {
+    seConfig.google = {
+      key: document.getElementById('se-google-key')?.value || '',
+      cx:  document.getElementById('se-google-cx')?.value  || '',
+    };
+  } else if (seEngine === 'bing') {
+    seConfig.bing = { key: document.getElementById('se-bing-key')?.value || '' };
+  } else if (seEngine === 'serpapi') {
+    seConfig.serpapi = { key: document.getElementById('se-serpapi-key')?.value || '' };
+  } else if (seEngine === 'custom') {
+    seConfig.custom = {
+      url: document.getElementById('se-custom-url')?.value || '',
+      key: document.getElementById('se-custom-key')?.value || '',
+    };
+  }
+  saveSE();
+}
+
+function syncSEPanel() {
+  // Called when ds mode changes — show/hide the search engine panel
+  const show = dsMode === 'internet' || dsMode === 'private';
+  document.getElementById('sePanel')?.classList.toggle('show', show);
+
+  // Restore chip selection
+  selectEngine(seEngine);
+}
+
+// Expose active engine config to server via confirmDS save payload
+function getSearchPayload() {
+  const cfg = seConfig[seEngine] || {};
+  return { engine: seEngine, ...cfg };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA SOURCE MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════════════
+
+const DS_KEY = 'asd_datasource';   // localStorage key
+
+// State
+let dsMode = 'demo';          // 'demo' | 'internet' | 'private'
+let dsUrl  = '';              // custom server URL for private mode
+let dsConfirmed = false;      // has the user confirmed a choice this session
+
+// ── Persistence ───────────────────────────────────────────────────────────────
+function saveDS() {
+  localStorage.setItem(DS_KEY, JSON.stringify({ mode: dsMode, url: dsUrl }));
+}
+
+function loadDS() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DS_KEY) || 'null');
+    if (saved && saved.mode) {
+      dsMode = saved.mode;
+      dsUrl  = saved.url || '';
+      loadSE();      // also restore search engine preference
+      return true;   // had a saved preference
+    }
+  } catch(_) {}
+  return false;      // first visit
+}
+
+// ── Effective API base URL ────────────────────────────────────────────────────
+function getApiBase() {
+  if (dsMode === 'internet') return 'http://localhost:5050';
+  if (dsMode === 'private')  return dsUrl.replace(/\/$/, '');
+  return null;   // demo mode — no server
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+const DS_CONFIG = {
+  demo:     { label: 'Demo Mode',    color: '#00c880', urlHint: 'Offline — no server required' },
+  internet: { label: 'Internet',     color: '#f0a000', urlHint: 'localhost:5050' },
+  private:  { label: 'Private Srv',  color: '#00d4f0', urlHint: dsUrl || 'your-server' },
+};
+
+function updateDSIndicators() {
+  const cfg = DS_CONFIG[dsMode] || DS_CONFIG.demo;
+  const urlHint = dsMode === 'private' ? (dsUrl || 'url not set') : cfg.urlHint;
+
+  // Sidebar indicator
+  const dot   = document.getElementById('sidebarDSDot');
+  const label = document.getElementById('sidebarDSLabel');
+  const url   = document.getElementById('sidebarDSUrl');
+  if (dot)   { dot.style.background = cfg.color; dot.style.boxShadow = `0 0 6px ${cfg.color}`; }
+  if (label) label.textContent = cfg.label;
+  if (url)   url.textContent   = urlHint;
+
+  // Topbar badge
+  const tbDot   = document.getElementById('topbarSrcDot');
+  const tbLabel = document.getElementById('topbarSrcLabel');
+  if (tbDot)   { tbDot.style.background = cfg.color; tbDot.style.boxShadow = `0 0 5px ${cfg.color}`; }
+  if (tbLabel) tbLabel.textContent = cfg.label;
+}
+
+// ── Modal controls ────────────────────────────────────────────────────────────
+function openDS() {
+  // Sync UI to current state
+  document.querySelectorAll('.ds-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('opt-' + dsMode)?.classList.add('selected');
+  document.getElementById('privateUrlWrap').classList.toggle('show', dsMode === 'private');
+  document.getElementById('privateUrl').value = dsUrl;
+  syncSEPanel();   // restore search engine panel state
+  document.getElementById('dsOverlay').classList.remove('hidden');
+}
+
+function selectDS(mode) {
+  dsMode = mode;
+  document.querySelectorAll('.ds-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('opt-' + mode)?.classList.add('selected');
+  const wrap = document.getElementById('privateUrlWrap');
+  wrap.classList.toggle('show', mode === 'private');
+  validatePrivateUrl();
+  syncSEPanel();   // show/hide search engine panel
+}
+
+function validatePrivateUrl() {
+  const val = document.getElementById('privateUrl').value.trim();
+  const btn = document.getElementById('dsConfirm');
+  if (dsMode === 'private') {
+    const valid = /^https?:\/\/.+/.test(val);
+    btn.disabled = !valid;
+    btn.title    = valid ? '' : 'Enter a valid URL (http:// or https://)';
+  } else {
+    btn.disabled = false;
+    btn.title    = '';
+  }
+}
+
+async function confirmDS() {
+  if (dsMode === 'private') {
+    dsUrl = document.getElementById('privateUrl').value.trim();
+  } else {
+    dsUrl = '';
+  }
+
+  // Persist both data source and search engine prefs
+  saveEngineConfig();
+  saveDS();
+  saveSE();
+  updateDSIndicators();
+  document.getElementById('dsOverlay').classList.add('hidden');
+  dsConfirmed = true;
+
+  const engineLabel = SE_ENGINES[seEngine]?.label || seEngine;
+  toast(`Data source: ${DS_CONFIG[dsMode]?.label} · Search: ${engineLabel}`);
+
+  // If live mode — push search engine config to the server so the agent uses it
+  if (dsMode !== 'demo') {
+    const base = getApiBase();
+    if (base) {
+      fetch(base + '/api/set-search-engine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(getSearchPayload()),
+      }).catch(() => {});   // best-effort, non-blocking
+    }
+  }
+
+  // Load appropriate data
+  if (dsMode === 'demo') {
+    await seedDemo();
+  } else {
+    await refreshAll();
+  }
+}
+
+// Allow clicking outside modal to dismiss (only if already confirmed once)
+document.getElementById('dsOverlay').addEventListener('click', function(e) {
+  if (e.target === this && dsConfirmed) {
+    this.classList.add('hidden');
+  }
+});
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && dsConfirmed) {
+    document.getElementById('dsOverlay').classList.add('hidden');
+  }
+});
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Safe JSON fetch (returns null on any error) ───────────────────────────────
+async function safeFetch(url) {
+  // In demo mode never make network calls
+  if (dsMode === 'demo') return null;
+  try {
+    const res = await fetch(url);
+    const ct  = res.headers.get('content-type') || '';
+    if (!res.ok || !ct.includes('application/json')) return null;
+    return await res.json();
+  } catch(_) { return null; }
+}
+
+// Build a full API URL using the active data source base
+function apiUrl(path) {
+  const base = getApiBase();
+  return base ? base + path : null;
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+async function seedDemo() {
+  // Always loads from built-in demo data — no server required
+  companiesData = [...DEMO_COMPANIES];
+  renderSummary({
+    total: companiesData.length,
+    companies: companiesData.length,
+    avg_score: Math.round(companiesData.reduce((a,c)=>a+(c.overall||0),0)/companiesData.length),
+    latest: companiesData[0]?.last_audit || '—'
+  });
+  renderCompanyCards(companiesData);
+  renderOverviewCharts(companiesData);
+  buildTrendSelectors();
+  toast(`Demo data loaded — ${companiesData.length} company profiles`);
+}
+
+function exportCSV() {
+  if (!companiesData.length) { toast('No data to export'); return; }
+  const header = ['company','mode','overall','last_audit','audit_count','delta',
+                  ...CATS].join(',');
+  const rows = companiesData.map(c => {
+    const catVals = CATS.map(cat => {
+      const s = c.scores[cat]; return s ? s.score : '';
+    });
+    return [c.company, c.mode, c.overall, c.last_audit, c.audit_count, c.delta, ...catVals].join(',');
+  });
+  const csv  = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'ai_stack_doctor_export.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV exported');
+}
+
+function copyCode(btn) {
+  const code = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', async () => {
+  const hadSaved = loadDS();       // restore saved preference
+  updateDSIndicators();            // paint indicators immediately
+
+  if (hadSaved) {
+    // Returning user — skip modal, load their preferred source
+    document.getElementById('dsOverlay').classList.add('hidden');
+    dsConfirmed = true;
+    if (dsMode === 'demo') {
+      await seedDemo();
+    } else {
+      await refreshAll();
+    }
+  } else {
+    // First visit — pre-load demo data so charts are visible behind the modal
+    await seedDemo();
+    // Modal stays visible until user confirms
+  }
+});
+</script>
+</body>
+</html>

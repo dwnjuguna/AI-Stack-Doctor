@@ -229,38 +229,16 @@ def strip_markdown(text):
     return text.strip()
 
 def callout_box(text, styles):
-    """Highlighted exec summary — rendered as flowing paragraphs, no table constraint."""
+    """
+    Exec summary rendered as plain flowing paragraphs with a cyan left rule.
+    Returns a LIST of flowables (not a table) so ReportLab can paginate freely.
+    """
     clean = strip_markdown(text)
-    safe  = clean.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-    # Split into sentences/paragraphs for natural flow
-    paras = [p.strip() for p in safe.split("\n") if p.strip()]
-    items = []
-    for p in paras:
-        items.append(Paragraph(p, styles["exec_body"]))
-        items.append(Spacer(1, 4))
-    # Wrap in a surface-coloured table that CAN split across pages
-    if not items:
-        items = [Paragraph(safe, styles["exec_body"])]
-    inner_tbl = Table([[item] for item in items], colWidths=[INNER_W - 40])
-    inner_tbl.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0),(-1,-1), C_SURFACE),
-        ("LEFTPADDING",   (0,0),(-1,-1), 16),
-        ("RIGHTPADDING",  (0,0),(-1,-1), 14),
-        ("TOPPADDING",    (0,0),(-1,-1), 4),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 4),
-    ]))
-    # Outer border table — allow row splitting
-    outer = Table([[inner_tbl]], colWidths=[INNER_W])
-    outer.setStyle(TableStyle([
-        ("BOX",    (0,0),(-1,-1), 1.5, C_CYAN),
-        ("BACKGROUND", (0,0),(-1,-1), C_SURFACE),
-        ("TOPPADDING",    (0,0),(-1,-1), 10),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 10),
-        ("LEFTPADDING",   (0,0),(-1,-1), 0),
-        ("RIGHTPADDING",  (0,0),(-1,-1), 0),
-        ("SPLITBYROW", (0,0),(-1,-1), 1),
-    ]))
-    return outer
+    # Take only first 3 sentences to keep it tight on the page
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', clean) if s.strip()]
+    summary   = " ".join(sentences[:5])   # max 5 sentences
+    safe      = summary.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+    return Paragraph(safe, styles["exec_body"])
 
 def score_bar_row(label, score, total, conf, styles):
     filled = int(round((score / total) * 12))
@@ -442,7 +420,19 @@ def build_pdf(report_text, company, output_path):
     if exec_text:
         story.append(Paragraph("EXECUTIVE SUMMARY", styles["h1"]))
         story.append(cyan_rule())
-        story.append(callout_box(strip_markdown(exec_text), styles))
+        # Render exec summary as a highlighted paragraph block
+        exec_para = callout_box(strip_markdown(exec_text), styles)
+        # Simple surface background via single-cell table with NO nesting
+        exec_tbl = Table([[exec_para]], colWidths=[INNER_W])
+        exec_tbl.setStyle(TableStyle([
+            ("BACKGROUND",    (0,0),(-1,-1), C_SURFACE),
+            ("BOX",           (0,0),(-1,-1), 1.5, C_CYAN),
+            ("LEFTPADDING",   (0,0),(-1,-1), 16),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 16),
+            ("TOPPADDING",    (0,0),(-1,-1), 14),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 14),
+        ]))
+        story.append(exec_tbl)
         story.append(Spacer(1, 0.3 * inch))
 
     # ── SCORE DASHBOARD ──────────────────────────────────────────────────────

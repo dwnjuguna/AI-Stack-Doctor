@@ -500,8 +500,13 @@ def build_pdf(report_text, company, output_path):
         re.compile(r'^\d+\.\s+[\w /]+[█░]+\s*\d+/\d+', re.I),
         re.compile(r'^OVERALL[:\s]+\d+/100', re.I),
         re.compile(r'^PEER BENCHMARKING\s*$', re.I),
-        re.compile(r'^\|.*\|$'),
-        re.compile(r'^\|[-| :]+\|$'),
+        re.compile(r'^\|.*\|\s*$'),           # pipe table rows (any ending)
+        re.compile(r'^\|[-| :─━]+\|\s*$'),    # pipe table separators
+        re.compile(r'^\s*\|.*\|\s*$'),        # pipe rows with leading spaces
+        re.compile(r'.*\|.*\|.*\|.*'),          # any line with 3+ pipe chars
+        re.compile(r'^SCORE DELTA', re.I),        # delta section header
+        re.compile(r'^Generated:', re.I),          # timestamp lines
+        re.compile(r'^Mode:', re.I),               # mode line
     ]
     section_re = re.compile(r'^([A-Z][A-Z &/\-]{3,})$')
     bullet_re  = re.compile(r'^[\-\*•▸►]\s+(.+)')

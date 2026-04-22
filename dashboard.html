@@ -432,15 +432,19 @@ main {
 .ds-option-icon {
   font-size: 18px; line-height: 1; margin-top: 2px; flex-shrink: 0;
 }
-.ds-option-body { flex: 1; }
+.ds-option-body { flex: 1; pointer-events: none; }
 .ds-option-title {
   font-weight: 600; font-size: 13px;
   color: var(--text); margin-bottom: 4px;
   display: flex; align-items: center; gap: 8px;
+  pointer-events: none;
 }
 .ds-option-desc {
   font-size: 12px; color: var(--text2); line-height: 1.6;
+  pointer-events: none;
 }
+.ds-option-icon { pointer-events: none; }
+.ds-compliance { pointer-events: none; }
 .ds-compliance {
   font-family: var(--mono); font-size: 9px;
   letter-spacing: 1px; color: var(--text3);
@@ -2158,12 +2162,14 @@ function saveEngineConfig() {
 }
 
 function syncSEPanel() {
-  // Called when ds mode changes — show/hide the search engine panel
-  const show = dsMode === 'internet' || dsMode === 'private';
-  document.getElementById('sePanel')?.classList.toggle('show', show);
-
-  // Restore chip selection
-  selectEngine(seEngine);
+  try {
+    const show = dsMode === 'internet' || dsMode === 'private';
+    const panel = document.getElementById('sePanel');
+    if (panel) panel.classList.toggle('show', show);
+    selectEngine(seEngine);
+  } catch(e) {
+    // non-critical — ignore SE panel errors
+  }
 }
 
 // Expose active engine config to server via confirmDS save payload
@@ -2270,40 +2276,50 @@ function validatePrivateUrl() {
 }
 
 async function confirmDS() {
-  if (dsMode === 'private') {
-    dsUrl = document.getElementById('privateUrl').value.trim();
-  } else {
-    dsUrl = '';
-  }
-
-  // Persist both data source and search engine prefs
-  saveEngineConfig();
-  saveDS();
-  saveSE();
-  updateDSIndicators();
-  document.getElementById('dsOverlay').classList.add('hidden');
-  dsConfirmed = true;
-
-  const engineLabel = SE_ENGINES[seEngine]?.label || seEngine;
-  toast(`Data source: ${DS_CONFIG[dsMode]?.label} · Search: ${engineLabel}`);
-
-  // If live mode — push search engine config to the server so the agent uses it
-  if (dsMode !== 'demo') {
-    const base = getApiBase();
-    if (base) {
-      fetch(base + '/api/set-search-engine', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(getSearchPayload()),
-      }).catch(() => {});   // best-effort, non-blocking
+  try {
+    if (dsMode === 'private') {
+      dsUrl = document.getElementById('privateUrl').value.trim();
+    } else {
+      dsUrl = '';
     }
-  }
 
-  // Load appropriate data
-  if (dsMode === 'demo') {
+    // Persist preferences
+    try { saveEngineConfig(); } catch(e) {}
+    try { saveDS(); } catch(e) {}
+    try { saveSE(); } catch(e) {}
+    try { updateDSIndicators(); } catch(e) {}
+
+    // Always close modal and confirm
+    document.getElementById('dsOverlay').classList.add('hidden');
+    dsConfirmed = true;
+
+    const modeLabel = DS_CONFIG[dsMode]?.label || dsMode;
+    toast(`Connected: ${modeLabel}`);
+
+    // Push search engine config to server (best-effort)
+    if (dsMode !== 'demo') {
+      const base = getApiBase();
+      if (base) {
+        fetch(base + '/api/set-search-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(getSearchPayload()),
+        }).catch(() => {});
+      }
+    }
+
+    // Load data
+    if (dsMode === 'demo') {
+      await seedDemo();
+    } else {
+      await refreshAll();
+    }
+  } catch(err) {
+    console.error('confirmDS error:', err);
+    // Force close modal even if something fails
+    document.getElementById('dsOverlay').classList.add('hidden');
+    dsConfirmed = true;
     await seedDemo();
-  } else {
-    await refreshAll();
   }
 }
 

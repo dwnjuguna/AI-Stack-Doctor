@@ -477,7 +477,8 @@ def build_pdf(report_text, company, output_path):
         if overall is not None:
             items.append(Spacer(1, 12))
             items.append(overall_score_block(overall, styles))
-        story.append(KeepTogether(items))
+        for item in items:
+            story.append(item)
         story.append(Spacer(1, 0.3 * inch))
 
     # ── PEER BENCHMARKING TABLE ──────────────────────────────────────────────
@@ -519,6 +520,7 @@ def build_pdf(report_text, company, output_path):
     story.append(PageBreak())
     story.append(Paragraph("FULL REPORT", styles["h1"]))
     story.append(cyan_rule())
+    story.append(Spacer(1, 0.1 * inch))
 
     skip_re = [
         re.compile(r'^[━═─]{4,}$'),
@@ -569,7 +571,10 @@ def build_pdf(report_text, company, output_path):
         clean = re.sub(r'\*(.+?)\*',   r'\1', clean)
         clean = re.sub(r'`(.+?)`',       r'\1', clean)
         safe  = clean.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+        # Use a minimum space check — add small spacer so paragraph never
+        # lands alone at the very bottom of a frame
         story.append(Paragraph(safe, styles["body"]))
+        story.append(Spacer(1, 1))
 
     # ── BUILD (two passes for page count) ────────────────────────────────────
     from io import BytesIO

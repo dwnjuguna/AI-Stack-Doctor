@@ -1,0 +1,6 @@
+anthropic
+duckduckgo-search
+rich
+flask
+reportlab
+gunicorn

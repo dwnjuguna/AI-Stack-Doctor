@@ -11,7 +11,7 @@ Requirements:
     pip3 install flask
 """
 
-import sqlite3, json, re, argparse, webbrowser
+import sqlite3, json, re, argparse, webbrowser, os
 from datetime import datetime
 from pathlib import Path
 from flask import Flask, jsonify, send_from_directory
@@ -193,13 +193,26 @@ def index():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=5050)
+    parser.add_argument("--port", type=int, default=None)
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
+
+    # Render.com injects PORT as env variable — always respect it
+    port = args.port or int(os.environ.get("PORT", 5050))
+
+    # Check API key is set
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print("WARNING: ANTHROPIC_API_KEY environment variable not set.")
+        print("Set it with: export ANTHROPIC_API_KEY=sk-ant-...")
+
     print(f"\n🤖 AI Stack Doctor — History Dashboard")
-    print(f"   Open: http://localhost:{args.port}")
+    print(f"   Open: http://localhost:{port}")
     print(f"   Tip:  If the DB is empty, visit /api/seed to load demo data\n")
-    if not args.no_browser:
-        import threading, time
-        threading.Timer(1.2, lambda: webbrowser.open(f"http://localhost:{args.port}")).start()
-    app.run(host="0.0.0.0", port=args.port, debug=False)
+
+    # Only open browser when running locally (not on Render)
+    is_local = not os.environ.get("RENDER")
+    if is_local and not args.no_browser:
+        import threading
+        threading.Timer(1.2, lambda: webbrowser.open(f"http://localhost:{port}")).start()
+
+    app.run(host="0.0.0.0", port=port, debug=False)

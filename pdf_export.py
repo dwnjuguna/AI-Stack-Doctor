@@ -511,10 +511,29 @@ def build_pdf(report_text, company, output_path):
     section_re = re.compile(r'^([A-Z][A-Z &/\-]{3,})$')
     bullet_re  = re.compile(r'^[\-\*•▸►]\s+(.+)')
 
+    # Pre-compile emoji pattern once
+    emoji_re = re.compile(
+        u'[\U0001F300-\U0001F9FF\U00002600-\U000027BF\U0000FE00-\U0000FE0F'
+        u'\U0001FA00-\U0001FA9F\U00002500-\U00002BEF]+',
+        re.UNICODE
+    )
+
     for line in report_text.splitlines():
         stripped = line.strip()
         if not stripped:
             story.append(Spacer(1, 4))
+            continue
+        # Skip ANY line with 2+ pipe characters (all table variants)
+        if stripped.count('|') >= 2:
+            continue
+        # Strip markdown heading markers, bold/italic, and all emojis early
+        stripped = re.sub(r'^#{1,6}\s*', '', stripped)          # ## headings
+        stripped = re.sub(r'\*\*(.+?)\*\*', r'\1', stripped)  # **bold**
+        stripped = re.sub(r'\*(.+?)\*',   r'\1', stripped)      # *italic*
+        stripped = re.sub(r'`(.+?)`',       r'\1', stripped)      # `code`
+        stripped = emoji_re.sub('', stripped).strip()              # all emojis
+        stripped = stripped.strip('#* ')                            # leftover markers
+        if not stripped:
             continue
         if any(p.match(stripped) for p in skip_re):
             continue

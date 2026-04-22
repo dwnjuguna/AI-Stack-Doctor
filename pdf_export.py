@@ -420,20 +420,16 @@ def build_pdf(report_text, company, output_path):
     if exec_text:
         story.append(Paragraph("EXECUTIVE SUMMARY", styles["h1"]))
         story.append(cyan_rule())
-        # Render exec summary as a highlighted paragraph block
-        exec_para = callout_box(strip_markdown(exec_text), styles)
-        # Simple surface background via single-cell table with NO nesting
-        exec_tbl = Table([[exec_para]], colWidths=[INNER_W])
-        exec_tbl.setStyle(TableStyle([
-            ("BACKGROUND",    (0,0),(-1,-1), C_SURFACE),
-            ("BOX",           (0,0),(-1,-1), 1.5, C_CYAN),
-            ("LEFTPADDING",   (0,0),(-1,-1), 16),
-            ("RIGHTPADDING",  (0,0),(-1,-1), 16),
-            ("TOPPADDING",    (0,0),(-1,-1), 14),
-            ("BOTTOMPADDING", (0,0),(-1,-1), 14),
-        ]))
-        story.append(exec_tbl)
-        story.append(Spacer(1, 0.3 * inch))
+        # Render exec summary as plain flowing paragraphs — NO table wrapper
+        # This lets ReportLab paginate freely regardless of length
+        clean_exec = strip_markdown(exec_text)
+        # Split on newlines and render each as its own paragraph
+        exec_lines = [l.strip() for l in clean_exec.splitlines() if l.strip()]
+        for line in exec_lines:
+            safe_line = line.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+            story.append(Paragraph(safe_line, styles["exec_body"]))
+            story.append(Spacer(1, 4))
+        story.append(Spacer(1, 0.2 * inch))
 
     # ── SCORE DASHBOARD ──────────────────────────────────────────────────────
     scores = parse_scores(report_text)

@@ -191,6 +191,12 @@ def seed():
 def index():
     return send_from_directory(".", "dashboard.html")
 
+@app.route("/legal")
+@app.route("/legal/<section>")
+def legal(section=None):
+    """Serve the legal & privacy page."""
+    return send_from_directory(".", "legal.html")
+
 @app.route("/intake")
 @app.route("/intake/<persona>")
 def intake(persona=None):

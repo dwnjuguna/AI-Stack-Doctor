@@ -737,6 +737,124 @@ main {
 .dashboard-footer a { color: var(--text3); text-decoration: none; }
 .dashboard-footer a:hover { color: var(--cyan); }
 
+
+/* ── Persona Intake Cards ── */
+.intake-grid {
+  display: grid; grid-template-columns: repeat(2,1fr);
+  gap: 14px; margin-bottom: 28px;
+}
+.intake-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px; cursor: pointer;
+  text-decoration: none;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.intake-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+}
+.intake-card.ic-consultant::before { background: var(--cyan); }
+.intake-card.ic-executive::before  { background: var(--amber); }
+.intake-card.ic-marketer::before   { background: var(--green); }
+.intake-card.ic-general::before    { background: var(--purple); }
+.intake-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.intake-card.ic-consultant:hover { border-color: var(--cyan); }
+.intake-card.ic-executive:hover  { border-color: var(--amber); }
+.intake-card.ic-marketer:hover   { border-color: var(--green); }
+.intake-card.ic-general:hover    { border-color: var(--purple); }
+.ic-icon  { font-size: 20px; }
+.ic-title {
+  font-family: var(--display); font-size: 18px;
+  letter-spacing: 1px; line-height: 1;
+}
+.intake-card.ic-consultant .ic-title { color: var(--cyan); }
+.intake-card.ic-executive .ic-title  { color: var(--amber); }
+.intake-card.ic-marketer .ic-title   { color: var(--green); }
+.intake-card.ic-general .ic-title    { color: var(--purple); }
+.ic-desc  { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.ic-url   {
+  font-family: var(--mono); font-size: 8px;
+  color: var(--text3); margin-top: 4px;
+  letter-spacing: .5px;
+}
+.ic-time  {
+  font-family: var(--mono); font-size: 8px;
+  color: var(--text3); border-top: 1px solid var(--border);
+  padding-top: 8px; margin-top: 4px;
+}
+
+/* ── Cookie Consent Banner ── */
+.cookie-banner {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 20px;
+  z-index: 300; flex-wrap: wrap;
+  animation: slideUp .4s ease both;
+}
+.cookie-banner.hidden { display: none; }
+.cookie-text {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text2); line-height: 1.7; flex: 1;
+}
+.cookie-text a { color: var(--cyan); text-decoration: none; }
+.cookie-text a:hover { text-decoration: underline; }
+.cookie-btns { display: flex; gap: 8px; flex-shrink: 0; }
+.cookie-accept {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 3px;
+  background: var(--cyan); color: #000;
+  border: none; cursor: pointer; font-weight: 700;
+  transition: background .15s;
+}
+.cookie-accept:hover { background: #33dff7; }
+.cookie-decline {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 3px;
+  background: transparent; color: var(--text3);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: all .15s;
+}
+.cookie-decline:hover { border-color: var(--b2); color: var(--text2); }
+
+/* ── Legal Footer ── */
+.legal-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 32px;
+  background: var(--bg1);
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); line-height: 1.8;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.legal-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.legal-links a {
+  color: var(--text3); text-decoration: none;
+  transition: color .15s; letter-spacing: .5px;
+}
+.legal-links a:hover { color: var(--cyan); }
+.legal-copy { color: var(--text3); }
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@media (max-width: 650px) {
+  .intake-grid { grid-template-columns: 1fr; }
+  .cookie-banner { flex-direction: column; align-items: flex-start; }
+  .legal-footer { flex-direction: column; gap: 8px; }
+}
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg1); }
@@ -774,7 +892,25 @@ main {
   .int-grid   { grid-template-columns: 1fr; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js">
+// ── Cookie Consent ─────────────────────────────────────────────────────────────
+function initCookieBanner() {
+  const consent = localStorage.getItem('asd_cookie_consent');
+  if (!consent) {
+    document.getElementById('cookieBanner').classList.remove('hidden');
+  }
+}
+function acceptCookies() {
+  localStorage.setItem('asd_cookie_consent', 'accepted');
+  document.getElementById('cookieBanner').classList.add('hidden');
+}
+function declineCookies() {
+  localStorage.setItem('asd_cookie_consent', 'essential');
+  document.getElementById('cookieBanner').classList.add('hidden');
+}
+window.addEventListener('load', initCookieBanner, { once: false });
+
+</script>
 </head>
 <body>
 
@@ -1258,6 +1394,52 @@ main {
       <div>
         <div class="section-title">INTEGRATION GUIDE</div>
         <div class="section-sub">// Three ways to plug AI Stack Doctor into your ecosystem</div>
+      </div>
+    </div>
+
+    <!-- ── Personalized Audit section ── -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-bottom:28px;border-left:3px solid var(--cyan)">
+      <div style="font-family:var(--display);font-size:22px;letter-spacing:1px;color:var(--text);margin-bottom:6px">RUN A PERSONALIZED AUDIT</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">
+        Send a tailored intake form link directly to your client, executive, or team.
+        Each persona gets a focused set of questions — no irrelevant fields, no friction.
+        The completed intake feeds directly into a high-accuracy AI stack audit.
+      </div>
+      <div class="intake-grid">
+        <a href="/intake/consultant" target="_blank" class="intake-card ic-consultant">
+          <div class="ic-icon">📊</div>
+          <div class="ic-title">CONSULTANT</div>
+          <div class="ic-desc">Deep stack inventory, client pain points, gap analysis, and competitor benchmarking. Hand this to a client before an engagement.</div>
+          <div class="ic-url">ai-stack-doctor.onrender.com/intake/consultant</div>
+          <div class="ic-time">⏱ ~10 minutes</div>
+        </a>
+        <a href="/intake/executive" target="_blank" class="intake-card ic-executive">
+          <div class="ic-icon">🏢</div>
+          <div class="ic-title">C-SUITE / EXEC</div>
+          <div class="ic-desc">Strategic AI maturity, compliance exposure, investment case, and competitive positioning. Board-ready output.</div>
+          <div class="ic-url">ai-stack-doctor.onrender.com/intake/executive</div>
+          <div class="ic-time">⏱ ~8 minutes</div>
+        </a>
+        <a href="/intake/marketer" target="_blank" class="intake-card ic-marketer">
+          <div class="ic-icon">📣</div>
+          <div class="ic-title">MARKETER / GROWTH</div>
+          <div class="ic-desc">MarTech AI stack, content tools, analytics, personalization, and growth AI goals. Tailored for CMOs and Growth Leads.</div>
+          <div class="ic-url">ai-stack-doctor.onrender.com/intake/marketer</div>
+          <div class="ic-time">⏱ ~7 minutes</div>
+        </a>
+        <a href="/intake/general" target="_blank" class="intake-card ic-general">
+          <div class="ic-icon">🔍</div>
+          <div class="ic-title">GENERAL / QUICK START</div>
+          <div class="ic-desc">Lightweight 5-question self-assessment. Perfect for first-time users or anyone exploring AI Stack Doctor for the first time.</div>
+          <div class="ic-url">ai-stack-doctor.onrender.com/intake/general</div>
+          <div class="ic-time">⏱ ~5 minutes</div>
+        </a>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);line-height:1.7;padding:12px 14px;background:var(--bg2);border-radius:3px;border:1px solid var(--border)">
+        💡 <strong style="color:var(--text2)">Consultant tip:</strong>
+        Copy the consultant link and paste it into your client onboarding email before the first call.
+        By the time you meet, you already have their full stack declared — no guesswork, no shallow web research.
+        The intake data feeds directly into the audit as high-confidence ground truth.
       </div>
     </div>
 
@@ -2488,5 +2670,20 @@ window.addEventListener('load', function() {
   attachModalListeners();
 });
 </script>
+
+<!-- ── Legal Footer ── -->
+<div class="legal-footer">
+  <div class="legal-copy">
+    © 2026 AI Stack Doctor · Open Source (MIT) · All company intelligence derived from publicly available sources only
+  </div>
+  <div class="legal-links">
+    <a href="/legal#terms" target="_blank">Terms of Service</a>
+    <a href="/legal#privacy" target="_blank">Privacy Policy</a>
+    <a href="/legal#cookies" target="_blank">Cookie Policy</a>
+    <a href="/legal#data" target="_blank">Data Processing</a>
+    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">GitHub</a>
+  </div>
+</div>
+
 </body>
 </html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Stack Doctor — Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06090e;--bg1:#090d14;--bg2:#0d1520;--card:#0f1824;--border:#1a2840;--cyan:#00d4f0;--green:#00c880;--amber:#f0a000;--text:#c8ddf0;--text2:#7090b0;--text3:#405070;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,240,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,240,.015) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.shell{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:0 24px 80px}
+/* Header */
+.header{padding:24px 0 28px;border-bottom:1px solid var(--border);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:32px;height:32px;border:2px solid var(--cyan);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--cyan)}
+.logo-name{font-family:var(--display);font-size:18px;letter-spacing:2px}
+.back-link{font-family:var(--mono);font-size:9px;color:var(--text3);text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .15s}
+.back-link:hover{color:var(--cyan)}
+/* TOC */
+.toc{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px 24px;margin-bottom:40px}
+.toc-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.toc-links{display:flex;flex-direction:column;gap:8px}
+.toc-links a{font-family:var(--mono);font-size:11px;color:var(--text2);text-decoration:none;transition:color .15s;display:flex;align-items:center;gap:8px}
+.toc-links a::before{content:'▸';color:var(--cyan);font-size:9px}
+.toc-links a:hover{color:var(--cyan)}
+/* Last updated */
+.last-updated{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:40px;padding:8px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:3px;display:inline-block}
+/* Sections */
+.legal-section{margin-bottom:48px;scroll-margin-top:24px}
+.sec-badge{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.sec-title{font-family:var(--display);font-size:28px;letter-spacing:1px;color:var(--text);margin-bottom:6px;line-height:1}
+.sec-sub{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px}
+hr.sec-rule{border:none;border-top:1.5px solid var(--cyan);margin-bottom:20px}
+/* Content */
+.legal-block{margin-bottom:20px}
+.legal-h3{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.legal-p{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:10px}
+.legal-ul{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:10px;padding-left:4px}
+.legal-ul li{font-size:13px;color:var(--text2);line-height:1.6;padding-left:16px;position:relative}
+.legal-ul li::before{content:'▸';position:absolute;left:0;color:var(--cyan);font-size:9px;top:3px}
+.legal-ul li strong{color:var(--text)}
+/* Callout boxes */
+.callout{padding:14px 18px;border-radius:4px;margin-bottom:16px;font-size:12px;line-height:1.7}
+.callout-cyan{background:rgba(0,212,240,.06);border:1px solid rgba(0,212,240,.2);color:var(--text2)}
+.callout-green{background:rgba(0,200,128,.06);border:1px solid rgba(0,200,128,.2);color:var(--text2)}
+.callout-amber{background:rgba(240,160,0,.06);border:1px solid rgba(240,160,0,.2);color:var(--text2)}
+.callout strong{color:var(--text)}
+/* Table */
+.legal-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.legal-table th{font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);text-align:left;padding:9px 12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.legal-table td{padding:9px 12px;color:var(--text2);border-bottom:1px solid rgba(26,40,64,.5);vertical-align:top}
+.legal-table tr:hover td{background:rgba(0,212,240,.02)}
+/* Contact */
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px 24px;margin-top:48px}
+.contact-title{font-family:var(--display);font-size:22px;letter-spacing:1px;color:var(--cyan);margin-bottom:8px}
+.contact-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.contact-links{display:flex;gap:16px;flex-wrap:wrap}
+.contact-links a{font-family:var(--mono);font-size:10px;color:var(--cyan);text-decoration:none;letter-spacing:.5px}
+.contact-links a:hover{text-decoration:underline}
+/* Footer */
+.legal-footer{border-top:1px solid var(--border);padding:16px 0;margin-top:40px;font-family:var(--mono);font-size:9px;color:var(--text3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.legal-footer a{color:var(--text3);text-decoration:none}
+.legal-footer a:hover{color:var(--cyan)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">Dx</div>
+    <div class="logo-name">AI STACK DOCTOR</div>
+  </div>
+  <a href="/" class="back-link">← Dashboard</a>
+</div>
+
+<div style="margin-bottom:12px">
+  <div style="font-family:var(--display);font-size:40px;letter-spacing:2px;color:var(--text);line-height:1;margin-bottom:8px">LEGAL &amp; PRIVACY</div>
+  <div style="font-size:13px;color:var(--text2);line-height:1.7">Terms of Service · Privacy Policy · Cookie Policy · Data Processing</div>
+</div>
+
+<div class="last-updated">Last updated: May 15, 2026 · Version 1.0</div>
+
+<div class="callout callout-cyan">
+  <strong>Plain English Summary:</strong> AI Stack Doctor is a free, open-source tool. We don't sell your data, we don't show ads, and we don't share anything with third parties. The intake form data you submit is used only to generate your audit report. If you're using the hosted version at ai-stack-doctor.onrender.com, read the full policies below for complete details.
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <div class="toc-links">
+    <a href="#terms">Terms of Service</a>
+    <a href="#privacy">Privacy Policy</a>
+    <a href="#cookies">Cookie Policy</a>
+    <a href="#data">Data Processing Agreement</a>
+    <a href="#ai-disclosure">AI & Automated Processing Disclosure</a>
+    <a href="#gdpr">GDPR Rights (EU/UK Users)</a>
+    <a href="#ccpa">CCPA Rights (California Users)</a>
+    <a href="#contact">Contact & Data Requests</a>
+  </div>
+</div>
+
+<!-- ── TERMS OF SERVICE ── -->
+<div class="legal-section" id="terms">
+  <div class="sec-badge">// Document 01</div>
+  <div class="sec-title">TERMS OF SERVICE</div>
+  <div class="sec-sub">By accessing or using AI Stack Doctor, you agree to these terms.</div>
+  <hr class="sec-rule"/>
+
+  <div class="legal-block">
+    <div class="legal-h3">1. Acceptance of Terms</div>
+    <div class="legal-p">By accessing AI Stack Doctor at ai-stack-doctor.onrender.com, its GitHub repository, or any associated services, you agree to be bound by these Terms of Service. If you do not agree, do not use the service.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">2. Description of Service</div>
+    <div class="legal-p">AI Stack Doctor is an AI-powered infrastructure audit tool that analyzes company AI stacks using publicly available information and user-submitted intake data. The service provides:</div>
+    <ul class="legal-ul">
+      <li>AI stack health scoring across 7 domains</li>
+      <li>Peer benchmarking against industry comparables</li>
+      <li>Governance and compliance gap analysis</li>
+      <li>Strategic recommendations based on audit findings</li>
+      <li>Historical trend tracking and report export</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">3. Use of Public Information</div>
+    <div class="callout callout-amber">
+      <strong>⚠ Important:</strong> All company intelligence profiles are derived exclusively from publicly available sources — engineering blogs, job postings, press releases, research papers, and official product documentation. No proprietary, confidential, or insider information is used or implied. Scores are analytical estimates, not verified facts.
+    </div>
+    <div class="legal-p">Company names and trademarks referenced in audit reports are the property of their respective owners. Reference to any company does not imply endorsement, affiliation, or partnership with AI Stack Doctor.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">4. Acceptable Use</div>
+    <div class="legal-p">You agree not to:</div>
+    <ul class="legal-ul">
+      <li>Use the service for any unlawful purpose or in violation of applicable regulations</li>
+      <li>Submit false, misleading, or fraudulent information through intake forms</li>
+      <li>Attempt to reverse-engineer, scrape, or abuse the service's API or infrastructure</li>
+      <li>Use audit outputs to make financial, investment, or legal decisions without independent verification</li>
+      <li>Represent AI Stack Doctor audit scores as verified facts or official ratings</li>
+      <li>Resell or sublicense the service without explicit written permission</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">5. Disclaimer of Warranties</div>
+    <div class="legal-p">AI Stack Doctor is provided "as is" and "as available" without warranty of any kind. We do not warrant that:</div>
+    <ul class="legal-ul">
+      <li>Audit scores are accurate, complete, or up-to-date</li>
+      <li>The service will be uninterrupted, error-free, or secure</li>
+      <li>Results constitute professional legal, financial, or technical advice</li>
+      <li>Company intelligence reflects current or actual technology deployments</li>
+    </ul>
+    <div class="legal-p"><strong>Always consult qualified professionals before making significant business, technology, or compliance decisions based on audit outputs.</strong></div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">6. Limitation of Liability</div>
+    <div class="legal-p">To the maximum extent permitted by applicable law, AI Stack Doctor and its contributors shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service, including but not limited to business decisions made based on audit results.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">7. Open Source License</div>
+    <div class="legal-p">The AI Stack Doctor codebase is licensed under the MIT License. You are free to use, copy, modify, and distribute the software subject to the conditions of that license. The hosted service at ai-stack-doctor.onrender.com may have additional terms for future paid tiers.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">8. Changes to Terms</div>
+    <div class="legal-p">We reserve the right to modify these Terms at any time. Material changes will be indicated by updating the "Last updated" date above. Continued use of the service after changes constitutes acceptance of the revised Terms.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">9. Governing Law</div>
+    <div class="legal-p">These Terms are governed by applicable law. For EU users, nothing in these Terms limits your rights under applicable EU consumer protection laws. For California users, nothing limits your rights under the CCPA/CPRA.</div>
+  </div>
+</div>
+
+<!-- ── PRIVACY POLICY ── -->
+<div class="legal-section" id="privacy">
+  <div class="sec-badge">// Document 02</div>
+  <div class="sec-title">PRIVACY POLICY</div>
+  <div class="sec-sub">How we collect, use, and protect your information.</div>
+  <hr class="sec-rule"/>
+
+  <div class="callout callout-green">
+    <strong>Short version:</strong> We collect only what's necessary to run the service. We don't sell your data. We don't use it for advertising. We don't share it with third parties except where required by law.
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">1. Information We Collect</div>
+    <table class="legal-table">
+      <thead><tr><th>Type</th><th>What</th><th>Why</th><th>Retention</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intake Form Data</strong></td><td>Company name, industry, AI tools declared, goals, contact name and email</td><td>To generate your personalized audit report</td><td>Stored locally on your machine or our server; deleted on request</td></tr>
+        <tr><td><strong>Audit History</strong></td><td>Audit scores, timestamps, company names audited</td><td>To enable trend tracking and delta comparison</td><td>SQLite DB on server; exportable and deletable</td></tr>
+        <tr><td><strong>Usage Data</strong></td><td>Pages visited, dashboard interactions (no personal identifiers)</td><td>To improve the service</td><td>Session only — not persisted</td></tr>
+        <tr><td><strong>Technical Data</strong></td><td>IP address, browser type (server logs)</td><td>Security and uptime monitoring</td><td>30 days — Render.com infrastructure logs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">2. How We Use Your Information</div>
+    <ul class="legal-ul">
+      <li><strong>To generate audit reports</strong> — intake form data feeds directly into the AI analysis engine</li>
+      <li><strong>To enable history tracking</strong> — audit scores stored to show trends over time</li>
+      <li><strong>To improve the service</strong> — aggregated, anonymized usage patterns only</li>
+      <li><strong>To communicate with you</strong> — only if you provide your email and request follow-up</li>
+    </ul>
+    <div class="legal-p">We do <strong>not</strong> use your data for advertising, profiling, or sale to third parties.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">3. Third-Party Services</div>
+    <table class="legal-table">
+      <thead><tr><th>Service</th><th>Purpose</th><th>Data Shared</th><th>Their Policy</th></tr></thead>
+      <tbody>
+        <tr><td>Render.com</td><td>Hosting infrastructure</td><td>Server logs, IP addresses</td><td><a href="https://render.com/privacy" style="color:var(--cyan)">render.com/privacy</a></td></tr>
+        <tr><td>Anthropic API</td><td>AI analysis engine</td><td>Company name, search queries (not personal data)</td><td><a href="https://www.anthropic.com/privacy" style="color:var(--cyan)">anthropic.com/privacy</a></td></tr>
+        <tr><td>DuckDuckGo (default)</td><td>Web search for research</td><td>Company name search queries</td><td><a href="https://duckduckgo.com/privacy" style="color:var(--cyan)">duckduckgo.com/privacy</a></td></tr>
+        <tr><td>Google Fonts</td><td>Typography</td><td>IP address (font request)</td><td><a href="https://policies.google.com/privacy" style="color:var(--cyan)">policies.google.com/privacy</a></td></tr>
+      </tbody>
+    </table>
+    <div class="legal-p">If you configure a different search engine (Google Custom Search, Bing, SerpAPI), their respective privacy policies apply to search queries made through that engine.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">4. Data Security</div>
+    <ul class="legal-ul">
+      <li>All data transmitted over HTTPS (TLS encryption)</li>
+      <li>Intake form submissions stored in server-side JSON files with restricted access</li>
+      <li>No passwords or payment data collected or stored</li>
+      <li>Audit history stored in SQLite — exportable and deletable at any time</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">5. Data Retention</div>
+    <div class="legal-p">We retain data only as long as necessary:</div>
+    <ul class="legal-ul">
+      <li>Intake form submissions: until you request deletion or the service is discontinued</li>
+      <li>Audit history: indefinitely unless you request deletion</li>
+      <li>Server logs: 30 days (Render.com infrastructure)</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">6. Children's Privacy</div>
+    <div class="legal-p">AI Stack Doctor is not directed at individuals under 16 years of age. We do not knowingly collect personal data from children. If you believe a child has submitted data through our service, contact us immediately.</div>
+  </div>
+</div>
+
+<!-- ── COOKIE POLICY ── -->
+<div class="legal-section" id="cookies">
+  <div class="sec-badge">// Document 03</div>
+  <div class="sec-title">COOKIE POLICY</div>
+  <div class="sec-sub">What cookies we use and why.</div>
+  <hr class="sec-rule"/>
+
+  <div class="legal-block">
+    <div class="legal-h3">Cookies We Use</div>
+    <table class="legal-table">
+      <thead><tr><th>Cookie / Storage</th><th>Type</th><th>Purpose</th><th>Duration</th></tr></thead>
+      <tbody>
+        <tr><td>asd_cookie_consent</td><td>Essential</td><td>Stores your cookie consent preference</td><td>1 year</td></tr>
+        <tr><td>asd_datasource</td><td>Functional</td><td>Remembers your selected data source (Demo/Internet/Private)</td><td>1 year</td></tr>
+        <tr><td>asd_searchengine</td><td>Functional</td><td>Remembers your configured search engine preference</td><td>1 year</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-green">
+      <strong>✓ No tracking cookies.</strong> AI Stack Doctor uses no advertising, analytics tracking, or cross-site cookies. All storage is in your browser's localStorage and contains only your own preferences — no personal identifiers.
+    </div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Managing Cookies</div>
+    <div class="legal-p">You can clear all AI Stack Doctor preferences at any time by opening your browser's developer tools and clearing localStorage for this domain. You can also click "Essential Only" on the cookie banner to limit storage to the consent preference only.</div>
+  </div>
+</div>
+
+<!-- ── DATA PROCESSING ── -->
+<div class="legal-section" id="data">
+  <div class="sec-badge">// Document 04</div>
+  <div class="sec-title">DATA PROCESSING</div>
+  <div class="sec-sub">How client intake data is processed — relevant for enterprise and consulting use.</div>
+  <hr class="sec-rule"/>
+
+  <div class="callout callout-amber">
+    <strong>⚠ For Consultants:</strong> If you submit client data through the intake form on behalf of a client organization, you are responsible for ensuring you have the appropriate authorization and legal basis to share that data. You should inform your clients that their technology stack information will be processed by this service.
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Data Controller</div>
+    <div class="legal-p">For the purposes of GDPR and similar regulations, the operator of AI Stack Doctor (the GitHub repository owner) acts as the Data Controller for any personal data submitted through the hosted service.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Legal Basis for Processing (GDPR)</div>
+    <ul class="legal-ul">
+      <li><strong>Legitimate Interest (Art. 6(1)(f))</strong> — processing intake data to generate the requested audit report</li>
+      <li><strong>Consent (Art. 6(1)(a))</strong> — where you explicitly confirm submission of your data</li>
+      <li><strong>Contract (Art. 6(1)(b))</strong> — where a paid service agreement exists (future paid tier)</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">What Data Is Processed</div>
+    <ul class="legal-ul">
+      <li>Company name, industry, size, and location</li>
+      <li>AI tools and platforms declared in the intake form</li>
+      <li>Contact name and email (if provided)</li>
+      <li>Maturity self-assessment and audit goals</li>
+    </ul>
+    <div class="legal-p">This data is processed by the Anthropic Claude API to generate the audit report. Anthropic's data processing terms apply. Company names may be used as search queries through your configured search engine.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">International Transfers</div>
+    <div class="legal-p">The hosted service runs on Render.com infrastructure (United States). If you are an EU/UK user, data processed through this service is transferred to the US. Anthropic (AI processing) is also US-based. We rely on Standard Contractual Clauses (SCCs) and the EU-US Data Privacy Framework where applicable.</div>
+    <div class="legal-p"><strong>For EU enterprise users with strict data residency requirements:</strong> We recommend deploying the self-hosted version using the Private Server Mode, which keeps all data within your own infrastructure.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Data Minimisation</div>
+    <div class="legal-p">We collect only the information necessary to generate your audit. You are never required to submit revenue figures, budget details, or contact information — these are optional fields. The audit will function with only company name, industry, and size.</div>
+  </div>
+</div>
+
+<!-- ── AI DISCLOSURE ── -->
+<div class="legal-section" id="ai-disclosure">
+  <div class="sec-badge">// Document 05</div>
+  <div class="sec-title">AI & AUTOMATED PROCESSING</div>
+  <div class="sec-sub">Disclosure of AI use in accordance with EU AI Act and international best practices.</div>
+  <hr class="sec-rule"/>
+
+  <div class="legal-block">
+    <div class="legal-h3">How AI Is Used</div>
+    <div class="legal-p">AI Stack Doctor uses Anthropic's Claude large language model to:</div>
+    <ul class="legal-ul">
+      <li>Research and synthesize publicly available information about company AI stacks</li>
+      <li>Score companies across 7 AI infrastructure domains</li>
+      <li>Generate strategic recommendations based on identified gaps</li>
+      <li>Produce peer benchmarking comparisons</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">AI Limitations and Accuracy</div>
+    <div class="callout callout-amber">
+      <strong>⚠ Important Limitations:</strong> AI-generated audit reports may contain inaccuracies, hallucinations, or outdated information. Scores reflect the AI model's analysis of publicly available data at the time of the audit and should not be treated as authoritative assessments. Always verify significant findings independently.
+    </div>
+    <ul class="legal-ul">
+      <li>Reports are generated by AI and have not been verified by human experts</li>
+      <li>Company stack information may be incomplete, outdated, or inaccurate</li>
+      <li>Compliance assessments are indicative only — not legal advice</li>
+      <li>Confidence scores ([H/M/L]) indicate data quality, not certainty</li>
+    </ul>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">EU AI Act Compliance</div>
+    <div class="legal-p">AI Stack Doctor is classified as a <strong>General Purpose AI application</strong> used for informational and analytical purposes. It does not make decisions with legal or similarly significant effects on individuals. It is not used in high-risk domains as defined in the EU AI Act Annex III (employment decisions, credit scoring, law enforcement, etc.).</div>
+    <div class="legal-p">Users retain full control over how they use audit outputs. No automated decisions are made without human review.</div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Right to Human Review</div>
+    <div class="legal-p">You always have the right to request human review of any AI-generated output. Contact us if you believe an audit report contains significant errors or has caused harm.</div>
+  </div>
+</div>
+
+<!-- ── GDPR RIGHTS ── -->
+<div class="legal-section" id="gdpr">
+  <div class="sec-badge">// Document 06</div>
+  <div class="sec-title">GDPR RIGHTS</div>
+  <div class="sec-sub">Rights for EU and UK residents under GDPR and UK GDPR.</div>
+  <hr class="sec-rule"/>
+
+  <div class="legal-block">
+    <div class="legal-h3">Your Rights</div>
+    <table class="legal-table">
+      <thead><tr><th>Right</th><th>What It Means</th><th>How to Exercise</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Access (Art. 15)</strong></td><td>Request a copy of all personal data we hold about you</td><td>Email data request (see Contact section)</td></tr>
+        <tr><td><strong>Rectification (Art. 16)</strong></td><td>Request correction of inaccurate personal data</td><td>Email data request</td></tr>
+        <tr><td><strong>Erasure (Art. 17)</strong></td><td>Request deletion of your personal data ("right to be forgotten")</td><td>Email data request — we will delete within 30 days</td></tr>
+        <tr><td><strong>Portability (Art. 20)</strong></td><td>Receive your data in a structured, machine-readable format</td><td>Use Download buttons in the dashboard, or email request</td></tr>
+        <tr><td><strong>Restriction (Art. 18)</strong></td><td>Request that we limit processing of your data</td><td>Email data request</td></tr>
+        <tr><td><strong>Object (Art. 21)</strong></td><td>Object to processing based on legitimate interests</td><td>Email data request</td></tr>
+        <tr><td><strong>Automated Decisions (Art. 22)</strong></td><td>Right not to be subject to solely automated decisions with legal effect</td><td>N/A — all outputs require human review before action</td></tr>
+      </tbody>
+    </table>
+    <div class="legal-p">You also have the right to lodge a complaint with your local Data Protection Authority (DPA). In the EU, find your DPA at <a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" style="color:var(--cyan)">edpb.europa.eu</a>. In the UK, contact the <a href="https://ico.org.uk" style="color:var(--cyan)">ICO</a>.</div>
+  </div>
+</div>
+
+<!-- ── CCPA RIGHTS ── -->
+<div class="legal-section" id="ccpa">
+  <div class="sec-badge">// Document 07</div>
+  <div class="sec-title">CCPA / CPRA RIGHTS</div>
+  <div class="sec-sub">Rights for California residents under the California Consumer Privacy Act.</div>
+  <hr class="sec-rule"/>
+
+  <div class="legal-block">
+    <div class="legal-h3">Your California Rights</div>
+    <ul class="legal-ul">
+      <li><strong>Right to Know</strong> — what personal information we collect, use, disclose, and sell</li>
+      <li><strong>Right to Delete</strong> — request deletion of personal information we collected from you</li>
+      <li><strong>Right to Correct</strong> — request correction of inaccurate personal information</li>
+      <li><strong>Right to Opt-Out</strong> — we do not sell or share personal information for cross-context behavioral advertising</li>
+      <li><strong>Right to Non-Discrimination</strong> — we will not discriminate against you for exercising your CCPA rights</li>
+      <li><strong>Right to Limit Sensitive Data</strong> — we do not process sensitive personal information beyond what is necessary</li>
+    </ul>
+    <div class="callout callout-green">
+      <strong>✓ We do not sell your personal information.</strong> We do not share personal information with third parties for advertising purposes. We do not use automated profiling for decisions that have significant legal or financial effects.
+    </div>
+  </div>
+
+  <div class="legal-block">
+    <div class="legal-h3">Categories of Personal Information Collected</div>
+    <ul class="legal-ul">
+      <li>Identifiers (name, email) — only if voluntarily provided in intake form</li>
+      <li>Professional information (company, industry, job function) — from intake form</li>
+      <li>Internet or network activity (server logs) — IP address, browser type</li>
+    </ul>
+    <div class="legal-p">To exercise your California rights, contact us using the information in the Contact section below. We will respond within 45 days.</div>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="contact-card" id="contact">
+  <div class="contact-title">CONTACT & DATA REQUESTS</div>
+  <div class="contact-desc">For privacy requests, data deletion, corrections, or legal inquiries — contact us through any of the following channels. We aim to respond to all data requests within 30 days.</div>
+  <div class="contact-links">
+    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor/issues" target="_blank">GitHub Issues →</a>
+    <a href="https://github.com/dwnjuguna" target="_blank">GitHub Profile →</a>
+  </div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:14px;line-height:1.7">
+    For data deletion requests, please include: your name, email address used (if any), and the company name(s) associated with any intake submissions. We will confirm deletion within 30 days.
+  </div>
+</div>
+
+<div class="legal-footer">
+  <div>© 2026 AI Stack Doctor · MIT License · <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">github.com/dwnjuguna/AI-Stack-Doctor</a></div>
+  <div><a href="/">Dashboard</a> · <a href="/intake">Intake Form</a> · <a href="#terms">Top ↑</a></div>
+</div>
+
+</div><!-- /shell -->
+</body>
+</html>

@@ -191,11 +191,6 @@ def seed():
 def index():
     return send_from_directory(".", "dashboard.html")
 
-@app.route("/guide")
-def guide():
-    """Serve the non-technical user guide / landing page."""
-    return send_from_directory(".", "guide.html")
-
 @app.route("/legal")
 @app.route("/legal/<section>")
 def legal(section=None):

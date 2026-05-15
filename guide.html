@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="AI Stack Doctor — Know exactly where your AI infrastructure stands. Free health audit in 90 seconds."/>
+<title>AI Stack Doctor — User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06090e;--bg1:#090d14;--bg2:#0d1520;--bg3:#111d2e;
+  --card:#0f1824;--border:#1a2840;--b2:#1f3050;
+  --cyan:#00d4f0;--green:#00c880;--amber:#f0a000;
+  --red:#f04040;--purple:#9060f0;
+  --text:#c8ddf0;--text2:#7090b0;--text3:#405070;
+  --mono:'IBM Plex Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden}
+
+/* Grid background */
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(0,212,240,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,240,.018) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(6,9,14,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-mark{width:30px;height:30px;border:2px solid var(--cyan);border-radius:5px;
+  display:grid;place-items:center;font-family:var(--mono);font-size:10px;
+  font-weight:700;color:var(--cyan);box-shadow:0 0 10px rgba(0,212,240,.2)}
+.nav-name{font-family:var(--display);font-size:17px;letter-spacing:2px;color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text3);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-cta{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:8px 18px;border-radius:3px;background:var(--cyan);color:#000;
+  text-decoration:none;font-weight:700;transition:all .15s;border:none;cursor:pointer}
+.nav-cta:hover{background:#33dff7;box-shadow:0 0 16px rgba(0,212,240,.3)}
+
+/* ── SECTIONS ── */
+section{position:relative;z-index:1}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:80px 32px 60px;text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,212,240,.06) 0%,transparent 70%);
+}
+.hero-inner{max-width:760px;margin:0 auto}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:24px;
+  padding:6px 16px;border-radius:20px;
+  background:rgba(0,212,240,.08);border:1px solid rgba(0,212,240,.2);
+}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 2s infinite}
+.hero-h1{
+  font-family:var(--display);
+  font-size:clamp(52px,9vw,96px);
+  letter-spacing:2px;line-height:.9;
+  margin-bottom:24px;
+  background:linear-gradient(135deg,#e2f0ff 0%,var(--cyan) 50%,#80e8ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(16px,2.5vw,20px);color:var(--text2);
+  line-height:1.7;max-width:560px;margin:0 auto 40px;font-weight:300;
+}
+.hero-sub strong{color:var(--text);font-weight:600}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{
+  font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:14px 32px;border-radius:4px;background:var(--cyan);color:#000;
+  text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:#33dff7;box-shadow:0 0 24px rgba(0,212,240,.4);transform:translateY(-1px)}
+.btn-secondary{
+  font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:14px 32px;border-radius:4px;background:transparent;color:var(--text2);
+  text-decoration:none;font-weight:500;transition:all .2s;
+  border:1px solid var(--border);display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{border-color:var(--b2);color:var(--text);transform:translateY(-1px)}
+.hero-stats{
+  display:flex;gap:32px;justify-content:center;flex-wrap:wrap;
+  padding-top:40px;border-top:1px solid var(--border);
+}
+.hero-stat{text-align:center}
+.hs-num{font-family:var(--display);font-size:36px;letter-spacing:1px;color:var(--cyan)}
+.hs-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text3);margin-top:4px}
+
+/* ── SECTION SHARED ── */
+.section-wrap{max-width:1000px;margin:0 auto;padding:80px 32px}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.section-h2{font-family:var(--display);font-size:clamp(36px,5vw,56px);
+  letter-spacing:1px;line-height:1;margin-bottom:14px}
+.section-desc{font-size:15px;color:var(--text2);line-height:1.8;max-width:560px}
+
+/* ── HOW IT WORKS ── */
+.how-section{background:var(--bg1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;
+  background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.step{
+  background:var(--card);padding:32px 28px;
+  position:relative;transition:background .2s;
+}
+.step:hover{background:var(--bg3)}
+.step-num{
+  font-family:var(--display);font-size:72px;letter-spacing:-2px;
+  color:rgba(0,212,240,.08);position:absolute;top:16px;right:20px;line-height:1;
+}
+.step-icon{font-size:28px;margin-bottom:16px}
+.step-title{font-family:var(--display);font-size:22px;letter-spacing:1px;
+  color:var(--text);margin-bottom:10px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.step-detail{
+  margin-top:14px;padding:10px 14px;
+  background:var(--bg2);border-radius:3px;
+  font-family:var(--mono);font-size:10px;color:var(--cyan);line-height:1.6;
+}
+
+/* ── WHO IT'S FOR ── */
+.personas{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+.persona-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:6px;padding:28px 24px;
+  text-decoration:none;transition:all .2s;
+  display:flex;flex-direction:column;gap:10px;
+  position:relative;overflow:hidden;
+}
+.persona-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.persona-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.persona-card:hover::before{opacity:1}
+.pc-c::before{background:var(--cyan)}
+.pc-e::before{background:var(--amber)}
+.pc-m::before{background:var(--green)}
+.pc-g::before{background:var(--purple)}
+.persona-card:hover.pc-c{border-color:var(--cyan)}
+.persona-card:hover.pc-e{border-color:var(--amber)}
+.persona-card:hover.pc-m{border-color:var(--green)}
+.persona-card:hover.pc-g{border-color:var(--purple)}
+.pcard-icon{font-size:28px}
+.pcard-role{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:2px}
+.pc-c .pcard-role{color:var(--cyan)}
+.pc-e .pcard-role{color:var(--amber)}
+.pc-m .pcard-role{color:var(--green)}
+.pc-g .pcard-role{color:var(--purple)}
+.pcard-title{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--text)}
+.pcard-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.pcard-gets{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.pcard-get{font-family:var(--mono);font-size:9px;color:var(--text3);
+  display:flex;align-items:center;gap:6px}
+.pcard-get::before{content:'✓';color:var(--green);font-size:9px}
+.pcard-cta{
+  margin-top:auto;padding-top:14px;border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  transition:color .15s;display:flex;align-items:center;gap:6px;
+}
+.pc-c .pcard-cta{color:var(--cyan)}
+.pc-e .pcard-cta{color:var(--amber)}
+.pc-m .pcard-cta{color:var(--green)}
+.pc-g .pcard-cta{color:var(--purple)}
+
+/* ── WHAT YOU GET ── */
+.gets-section{background:var(--bg1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.gets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.get-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:24px 20px;
+  transition:border-color .2s;
+}
+.get-card:hover{border-color:var(--b2)}
+.get-icon{font-size:24px;margin-bottom:14px}
+.get-title{font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.get-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.get-sample{
+  margin-top:12px;padding:10px 12px;background:var(--bg2);
+  border-radius:3px;font-family:var(--mono);font-size:9px;
+  color:var(--text3);line-height:1.8;border-left:2px solid var(--cyan);
+}
+
+/* ── REPORT PREVIEW ── */
+.report-preview{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;margin-top:48px;overflow:hidden;
+}
+.rp-header{
+  background:var(--bg2);padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.rp-dot{width:10px;height:10px;border-radius:50%}
+.rp-title{font-family:var(--mono);font-size:10px;color:var(--text3);
+  letter-spacing:1px;margin-left:8px}
+.rp-body{padding:24px;font-family:var(--mono);font-size:11px;
+  color:var(--text2);line-height:1.9;overflow-x:auto}
+.rp-h{color:var(--cyan);font-weight:600}
+.rp-score{color:var(--green)}
+.rp-amber{color:var(--amber)}
+.rp-dim{color:var(--text3)}
+.rp-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:10px}
+.rp-table td,.rp-table th{padding:5px 10px;border:1px solid var(--border);text-align:left}
+.rp-table th{color:var(--text3);background:var(--bg2);font-size:9px;letter-spacing:1px;text-transform:uppercase}
+
+/* ── FAQ ── */
+.faqs{margin-top:48px;display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{
+  padding:20px 0;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-size:15px;font-weight:500;color:var(--text);
+  transition:color .15s;user-select:none;
+}
+.faq-q:hover{color:var(--cyan)}
+.faq-arrow{font-family:var(--mono);font-size:12px;color:var(--text3);
+  transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--cyan)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;
+  font-size:13px;color:var(--text2);line-height:1.8;
+}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:20px}
+.faq-a strong{color:var(--text)}
+.faq-a a{color:var(--cyan);text-decoration:none}
+.faq-a a:hover{text-decoration:underline}
+
+/* ── CTA BAND ── */
+.cta-band{
+  background:linear-gradient(135deg,rgba(0,212,240,.08) 0%,rgba(0,200,128,.05) 100%);
+  border-top:1px solid rgba(0,212,240,.15);
+  border-bottom:1px solid rgba(0,212,240,.15);
+  text-align:center;padding:80px 32px;
+}
+.cta-band h2{font-family:var(--display);font-size:clamp(36px,5vw,64px);
+  letter-spacing:2px;line-height:.95;margin-bottom:16px}
+.cta-band h2 span{color:var(--cyan)}
+.cta-band p{font-size:15px;color:var(--text2);line-height:1.7;
+  max-width:480px;margin:0 auto 36px}
+.cta-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.cta-note{font-family:var(--mono);font-size:9px;color:var(--text3);
+  margin-top:20px;letter-spacing:1px;text-transform:uppercase}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--bg1);border-top:1px solid var(--border);
+  padding:32px;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.footer-logo{font-family:var(--display);font-size:16px;letter-spacing:2px;color:var(--text2)}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-family:var(--mono);font-size:9px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text3);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--cyan)}
+.footer-copy{font-family:var(--mono);font-size:9px;color:var(--text3);width:100%;
+  padding-top:16px;border-top:1px solid var(--border);text-align:center;line-height:1.7}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp .6s ease forwards}
+.fade-up:nth-child(1){animation-delay:.1s}
+.fade-up:nth-child(2){animation-delay:.2s}
+.fade-up:nth-child(3){animation-delay:.3s}
+.fade-up:nth-child(4){animation-delay:.4s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .steps,.gets-grid{grid-template-columns:1fr}
+  .personas{grid-template-columns:1fr}
+  nav .nav-links{display:none}
+  .hero-stats{gap:20px}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-mark">Dx</div>
+    <div class="nav-name">AI STACK DOCTOR</div>
+  </a>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#who">Who It's For</a>
+    <a href="#report">Sample Report</a>
+    <a href="#faq">FAQ</a>
+    <a href="/legal">Legal</a>
+  </div>
+  <a href="/intake" class="nav-cta">Start Free Audit →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Free · Open Source · No signup required</div>
+    <h1 class="hero-h1">KNOW YOUR<br>AI STACK<br>HEALTH</h1>
+    <p class="hero-sub">
+      AI Stack Doctor gives any company a <strong>complete health check</strong> of their
+      AI infrastructure — in plain English, with scores, benchmarks, and a clear
+      action plan. <strong>No technical background required.</strong>
+    </p>
+    <div class="hero-actions">
+      <a href="/intake" class="btn-primary">◈ Start Free Audit</a>
+      <a href="/" class="btn-secondary">⬡ View Live Dashboard</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hs-num">22</div>
+        <div class="hs-label">Company Profiles</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num">7</div>
+        <div class="hs-label">AI Domains Scored</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num">14</div>
+        <div class="hs-label">Compliance Frameworks</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num">90s</div>
+        <div class="hs-label">Average Audit Time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-wrap">
+    <div class="section-eyebrow">// How It Works</div>
+    <h2 class="section-h2">THREE STEPS.<br>ZERO JARGON.</h2>
+    <p class="section-desc">You don't need to be technical to understand your AI health score. Here's exactly what happens.</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">01</div>
+        <div class="step-icon">📋</div>
+        <div class="step-title">TELL US ABOUT YOUR COMPANY</div>
+        <div class="step-desc">Fill out a short intake form — about 5–10 minutes depending on your role. Tell us what AI tools you use, what you're trying to achieve, and who your competitors are.</div>
+        <div class="step-detail">
+          No technical knowledge needed.<br>
+          We ask plain English questions.<br>
+          Your answers stay private.
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">WE RUN THE ANALYSIS</div>
+        <div class="step-desc">Our AI agent researches your company across 7 areas of AI infrastructure — from the tools you use to how well they're governed, monitored, and integrated with each other.</div>
+        <div class="step-detail">
+          Powered by Anthropic Claude.<br>
+          Cross-references public sources.<br>
+          Takes about 90 seconds.
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">03</div>
+        <div class="step-icon">📊</div>
+        <div class="step-title">GET YOUR REPORT</div>
+        <div class="step-desc">You receive a detailed health report with a score out of 100, a comparison to your competitors, specific gaps identified, and a prioritized action plan with ROI estimates.</div>
+        <div class="step-detail">
+          Score out of 100 per domain.<br>
+          ROI estimate per recommendation.<br>
+          Export to PDF for your team.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section id="who">
+  <div class="section-wrap">
+    <div class="section-eyebrow">// Who It's For</div>
+    <h2 class="section-h2">BUILT FOR<br>EVERY ROLE.</h2>
+    <p class="section-desc">Different roles get different questions and different report formats — all from the same tool.</p>
+
+    <div class="personas">
+      <a href="/intake/consultant" class="persona-card pc-c">
+        <div class="pcard-icon">📊</div>
+        <div class="pcard-role">For Consultants</div>
+        <div class="pcard-title">MANAGEMENT CONSULTANT</div>
+        <div class="pcard-desc">Walk into any client meeting with a complete AI stack analysis of their top 3 competitors already in hand. Turn a 2-week engagement into a 90-second insight.</div>
+        <div class="pcard-gets">
+          <div class="pcard-get">Client-ready PDF report</div>
+          <div class="pcard-get">Competitor benchmarking table</div>
+          <div class="pcard-get">Prioritized recommendations with ROI</div>
+          <div class="pcard-get">Gap cost estimates ($K/year)</div>
+        </div>
+        <div class="pcard-cta">Start consultant intake → ⏱ 10 min</div>
+      </a>
+
+      <a href="/intake/executive" class="persona-card pc-e">
+        <div class="pcard-icon">🏢</div>
+        <div class="pcard-role">For Executives</div>
+        <div class="pcard-title">CTO / CDO / COO</div>
+        <div class="pcard-desc">Get a board-ready view of your AI maturity, compliance exposure, and competitive positioning — without needing your engineering team to prepare a presentation.</div>
+        <div class="pcard-gets">
+          <div class="pcard-get">Strategic maturity score</div>
+          <div class="pcard-get">Compliance risk assessment</div>
+          <div class="pcard-get">Executive ROI summary table</div>
+          <div class="pcard-get">Investment case framing</div>
+        </div>
+        <div class="pcard-cta">Start executive intake → ⏱ 8 min</div>
+      </a>
+
+      <a href="/intake/marketer" class="persona-card pc-m">
+        <div class="pcard-icon">📣</div>
+        <div class="pcard-role">For Marketers</div>
+        <div class="pcard-title">CMO / GROWTH LEAD</div>
+        <div class="pcard-desc">Understand which AI tools are powering your competitors' marketing and where your MarTech stack is falling behind. Find the gaps before they show up in your numbers.</div>
+        <div class="pcard-gets">
+          <div class="pcard-get">MarTech AI stack assessment</div>
+          <div class="pcard-get">Content AI gap analysis</div>
+          <div class="pcard-get">Personalization maturity score</div>
+          <div class="pcard-get">Competitor AI marketing tools</div>
+        </div>
+        <div class="pcard-cta">Start marketer intake → ⏱ 7 min</div>
+      </a>
+
+      <a href="/intake/general" class="persona-card pc-g">
+        <div class="pcard-icon">🔍</div>
+        <div class="pcard-role">For Everyone</div>
+        <div class="pcard-title">QUICK SELF-ASSESSMENT</div>
+        <div class="pcard-desc">Not sure where to start? Take the 5-minute general assessment. You'll get a clear picture of where your company stands on AI maturity and what to prioritize next.</div>
+        <div class="pcard-gets">
+          <div class="pcard-get">Overall AI maturity score</div>
+          <div class="pcard-get">Top 3 priorities identified</div>
+          <div class="pcard-get">Plain English recommendations</div>
+          <div class="pcard-get">No technical knowledge needed</div>
+        </div>
+        <div class="pcard-cta">Start quick assessment → ⏱ 5 min</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="gets-section" id="report">
+  <div class="section-wrap">
+    <div class="section-eyebrow">// What You Get</div>
+    <h2 class="section-h2">YOUR REPORT<br>EXPLAINED.</h2>
+    <p class="section-desc">Here's exactly what's in every audit report — and what each section means for your business.</p>
+
+    <div class="gets-grid">
+      <div class="get-card">
+        <div class="get-icon">🎯</div>
+        <div class="get-title">Health Score</div>
+        <div class="get-desc">A single number out of 100 across 7 AI domains. Green (80+) means healthy. Amber (60–79) means attention needed. Red means at risk.</div>
+        <div class="get-sample">
+          GenAI / LLMs     ████████░░  9/14<br>
+          Machine Learning ████████████ 14/14<br>
+          MLOps / LLMOps   █████░░░░░   7/14<br>
+          <span style="color:var(--green)">OVERALL: 82/100 🟢 Healthy</span>
+        </div>
+      </div>
+      <div class="get-card">
+        <div class="get-icon">📈</div>
+        <div class="get-title">ROI Analysis</div>
+        <div class="get-desc">Every gap comes with a dollar estimate of what it's costing you today, what it costs to fix, and how quickly you'd see a return.</div>
+        <div class="get-sample">
+          Gap Cost: $150K–$500K/year<br>
+          Fix Cost: ~$40K<br>
+          Projected ROI: <span style="color:var(--green)">350%</span><br>
+          Payback: <span style="color:var(--cyan)">3 months</span>
+        </div>
+      </div>
+      <div class="get-card">
+        <div class="get-icon">🏆</div>
+        <div class="get-title">Competitor Benchmarks</div>
+        <div class="get-desc">See how your AI stack compares to 3 industry peers — what they're doing better, where you're ahead, and what's worth closing the gap on.</div>
+        <div class="get-sample">
+          Your Company  82/100  Scaling<br>
+          Competitor A  91/100  Optimizing<br>
+          Competitor B  74/100  Building<br>
+          <span style="color:var(--amber)">Gap to leader: 9 points</span>
+        </div>
+      </div>
+      <div class="get-card">
+        <div class="get-icon">⚖️</div>
+        <div class="get-title">Compliance Check</div>
+        <div class="get-desc">Flags your exposure to 14 global regulations — EU AI Act, GDPR, CCPA, HIPAA, and more — based on your industry and geographic markets.</div>
+        <div class="get-sample">
+          EU AI Act      <span style="color:var(--amber)">⚠ Review needed</span><br>
+          GDPR           <span style="color:var(--green)">✓ Signals present</span><br>
+          SOC 2          <span style="color:var(--amber)">⚠ Gap detected</span><br>
+          HIPAA          <span style="color:var(--text3)">— Not applicable</span>
+        </div>
+      </div>
+      <div class="get-card">
+        <div class="get-icon">🗺️</div>
+        <div class="get-title">Action Plan</div>
+        <div class="get-desc">Prioritized recommendations — not just what to fix, but in what order, who should own it, when to do it, and what quick wins you can start this week.</div>
+        <div class="get-sample">
+          1. Add LLMOps monitoring  <span style="color:var(--red)">High</span><br>
+          2. Formalize AI policy    <span style="color:var(--red)">High</span><br>
+          3. Consolidate vector DBs <span style="color:var(--amber)">Medium</span><br>
+          Quick Win: Free LangSmith tier →
+        </div>
+      </div>
+      <div class="get-card">
+        <div class="get-icon">📄</div>
+        <div class="get-title">PDF Export</div>
+        <div class="get-desc">Every report exports to a dark-themed, board-ready PDF. Share it with your leadership team, attach it to a board deck, or use it to kick off a consulting engagement.</div>
+        <div class="get-sample">
+          Dark-themed executive design<br>
+          All sections included<br>
+          Shareable & printable<br>
+          <span style="color:var(--cyan)">→ Download after every audit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini report preview -->
+    <div class="report-preview">
+      <div class="rp-header">
+        <div class="rp-dot" style="background:#f04040"></div>
+        <div class="rp-dot" style="background:#f0a000;margin-left:6px"></div>
+        <div class="rp-dot" style="background:#00c880;margin-left:6px"></div>
+        <div class="rp-title">ai_stack_report_yourcompany.pdf — Sample output</div>
+      </div>
+      <div class="rp-body">
+<span class="rp-h">🤖 AI STACK HEALTH REPORT v4: YOUR COMPANY</span>
+<span class="rp-dim">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span class="rp-h">EXECUTIVE ROI SUMMARY</span>
+<table class="rp-table">
+  <tr><th>Priority</th><th>Gap</th><th>Annual Cost</th><th>Fix Cost</th><th>ROI</th><th>Payback</th></tr>
+  <tr><td>1</td><td>LLMOps observability</td><td class="rp-amber">$150K–$500K</td><td>~$40K</td><td class="rp-score">350%</td><td>3 months</td></tr>
+  <tr><td>2</td><td>GenAI adoption</td><td class="rp-amber">$150K–$800K</td><td>~$30K</td><td class="rp-score">400%</td><td>2 months</td></tr>
+  <tr><td>3</td><td>Governance gaps</td><td style="color:var(--red)">$500K–$50M+</td><td>~$80K</td><td class="rp-score">5000%</td><td>Immediate</td></tr>
+</table>
+<span class="rp-dim">Total Gap Cost: $800K–$1.3M/year  |  Fix Investment: ~$150K  |  Blended ROI: 520%</span>
+
+<span class="rp-h">CATEGORY SCORES</span>
+<span class="rp-score">1. GenAI / LLMs       ████████░░░░  9/14  [Confidence: M]</span>
+2. Agentic AI         ██████░░░░░░  7/14  [Confidence: L]
+<span class="rp-score">3. Machine Learning   ████████████ 14/14  [Confidence: H]</span>
+4. Data Engineering   █████████░░░ 11/14  [Confidence: H]
+5. AI Platforms       ████████░░░░  9/14  [Confidence: M]
+<span class="rp-amber">6. MLOps / LLMOps     █████░░░░░░░  7/14  [Confidence: M]</span>
+<span class="rp-score">7. Cloud AI Services  █████████░░░ 13/16  [Confidence: H]</span>
+
+<span class="rp-h">OVERALL: 82/100  🟢 Healthy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-wrap">
+    <div class="section-eyebrow">// FAQ</div>
+    <h2 class="section-h2">QUESTIONS<br>ANSWERED.</h2>
+    <p class="section-desc">Everything you need to know before you start your first audit.</p>
+
+    <div class="faqs">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Do I need to be technical to use this?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          <strong>Not at all.</strong> The intake form uses plain English questions — no code, no configuration, no setup required. If you know what tools your company uses for AI (even just "we use ChatGPT"), you have enough to get started. The report is also written in plain English, not engineer-speak.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Is my company data private and secure?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          Yes. The information you submit in the intake form is used only to generate your audit report. We do not sell your data, share it with third parties, or use it for advertising. Company names may be used as search queries through DuckDuckGo (privacy-respecting). Full details in our <a href="/legal#privacy">Privacy Policy</a>. For maximum privacy, self-host the tool using Private Server Mode.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How accurate are the audit scores?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          Scores for well-documented companies (Meta, Google, Stripe, etc.) are highly accurate — we have pre-loaded intelligence profiles confirmed from public sources. For less-documented companies, accuracy depends on public footprint. Every finding is marked with a confidence level: <strong>[H] High, [M] Medium, [L] Low</strong>. We always note uncertainty rather than fabricate. Intake form data is treated as ground truth and overrides web research.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How long does an audit take?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          The intake form takes 5–10 minutes depending on your role. The AI analysis takes about 90 seconds to run. You'll have a complete report with scores, ROI estimates, competitor benchmarks, and action plan ready in under 15 minutes total.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Is this really free?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          <strong>Yes — completely free and open source.</strong> The full codebase is available on <a href="https://github.com/dwnjuguna/AI-Stack-Doctor">GitHub</a> under the MIT license. The hosted version at ai-stack-doctor.onrender.com is free to use. You do need your own <a href="https://console.anthropic.com">Anthropic API key</a> to run audits locally — API calls cost a small amount per audit (typically under $0.50). A future paid tier with additional features is planned.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Can I use this for client work?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          Absolutely — the Consultant intake form is specifically designed for this. Send your client the intake link before your first call, have them fill it in (10 minutes), and you arrive with a complete AI stack analysis ready. The PDF export is board-ready and client-presentable. Just ensure your client understands that scores are analytical estimates from public data, not verified assessments. See our <a href="/legal#terms">Terms of Service</a> for consultant usage terms.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What AI domains does it cover?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">
+          Seven domains, each scored out of 14 points (Cloud AI Services out of 16):
+          <strong>GenAI / LLMs</strong> — foundation models and generative AI adoption;
+          <strong>Agentic AI</strong> — autonomous agents and orchestration;
+          <strong>Machine Learning</strong> — training frameworks and model lifecycle;
+          <strong>Data Engineering</strong> — pipelines, warehouses, and feature stores;
+          <strong>AI Platforms</strong> — internal ML platforms and serving infrastructure;
+          <strong>MLOps / LLMOps</strong> — monitoring, observability, and CI/CD for models;
+          <strong>Cloud AI Services</strong> — AWS, GCP, and Azure AI services maturity.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="section-eyebrow" style="margin-bottom:16px">// Ready to start?</div>
+  <h2>YOUR AI STACK<br><span>AUDIT AWAITS.</span></h2>
+  <p>Free. No signup. Results in 90 seconds. Pick your role and let's go.</p>
+  <div class="cta-links">
+    <a href="/intake/consultant" class="btn-primary">📊 Consultant Audit</a>
+    <a href="/intake/executive" class="btn-secondary">🏢 Executive Audit</a>
+    <a href="/intake/marketer" class="btn-secondary">📣 Marketer Audit</a>
+    <a href="/intake/general" class="btn-secondary">🔍 Quick Start</a>
+  </div>
+  <div class="cta-note">Or explore the live dashboard → <a href="/" style="color:var(--cyan);text-decoration:none">ai-stack-doctor.onrender.com</a></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AI STACK DOCTOR</div>
+  <div class="footer-links">
+    <a href="/">Dashboard</a>
+    <a href="/intake">Intake Form</a>
+    <a href="/guide">User Guide</a>
+    <a href="/legal">Legal</a>
+    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-copy">
+    © 2026 AI Stack Doctor · Open Source (MIT) · All company intelligence derived from publicly available sources only ·
+    Scores are analytical estimates, not verified facts · Company names and trademarks belong to their respective owners
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Scroll-triggered fade-up for steps
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-up').forEach(el => {
+  el.style.transition = 'opacity .6s ease, transform .6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

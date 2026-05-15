@@ -855,6 +855,44 @@ main {
   .legal-footer { flex-direction: column; gap: 8px; }
 }
 
+
+/* ── Cohort Filter Bar ── */
+.cohort-bar {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 20px;
+  padding: 14px 18px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.cohort-label {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text3); flex-shrink: 0;
+}
+.cohort-select {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 3px; padding: 6px 12px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text2); outline: none; cursor: pointer;
+  transition: border-color .15s;
+}
+.cohort-select:focus { border-color: var(--cyan); color: var(--text); }
+.cohort-select option { background: var(--bg2); }
+.cohort-count {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); margin-left: auto;
+  letter-spacing: .5px;
+}
+.cohort-count span { color: var(--cyan); font-weight: 600; }
+.cohort-reset {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 3px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text3); cursor: pointer; transition: all .15s;
+}
+.cohort-reset:hover { border-color: var(--cyan); color: var(--cyan); }
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg1); }
@@ -1272,6 +1310,45 @@ window.addEventListener('load', initCookieBanner, { once: false });
         <button class="tbtn" onclick="sortCards('name')">Sort by Name</button>
       </div>
     </div>
+
+    <!-- Cohort Filter Bar -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r)" id="cohortBar">
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);flex-shrink:0">Filter Cohort</span>
+      <select style="background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:6px 10px;font-family:var(--mono);font-size:10px;color:var(--text2);outline:none;cursor:pointer" id="filterIndustry" onchange="applyCohortFilter()">
+        <option value="">All Industries</option>
+        <option>Cloud / AI Platform</option>
+        <option>GenAI / LLMs</option>
+        <option>GenAI / Image AI</option>
+        <option>GenAI / Voice AI</option>
+        <option>GenAI / Video AI</option>
+        <option>GenAI / Sovereign AI</option>
+        <option>AI Translation / NLP</option>
+        <option>Semiconductors / AI HW</option>
+        <option>SaaS / CRM</option>
+        <option>SaaS / Creative AI</option>
+        <option>Cloud / SaaS</option>
+        <option>Social Media / AI</option>
+        <option>Media / Entertainment</option>
+        <option>Consumer Tech / AI</option>
+        <option>Automotive / AI</option>
+      </select>
+      <select style="background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:6px 10px;font-family:var(--mono);font-size:10px;color:var(--text2);outline:none;cursor:pointer" id="filterSize" onchange="applyCohortFilter()">
+        <option value="">All Sizes</option>
+        <option>Growth</option>
+        <option>Mid-market</option>
+        <option>Enterprise</option>
+        <option>Large Enterprise</option>
+      </select>
+      <select style="background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:6px 10px;font-family:var(--mono);font-size:10px;color:var(--text2);outline:none;cursor:pointer" id="filterRegion" onchange="applyCohortFilter()">
+        <option value="">All Regions</option>
+        <option>US</option>
+        <option>Europe</option>
+        <option>Global</option>
+      </select>
+      <button onclick="resetCohortFilter()" style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer">✕ Reset</button>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-left:auto">Showing <span id="cohortCount" style="color:var(--cyan);font-weight:600">22</span> companies</div>
+    </div>
+
     <div class="company-grid" id="companyGrid">
       <div class="empty">
         <div class="empty-icon">◈</div>
@@ -1638,6 +1715,9 @@ function renderSummary(s) {
   document.getElementById('stat-companies').textContent = s.companies || '0';
   document.getElementById('stat-avg').textContent       = s.avg_score || '—';
   document.getElementById('stat-latest').textContent    = s.latest   || '—';
+  // Update cohort count when data loads
+  const cc = document.getElementById('cohortCount');
+  if (cc) cc.textContent = companiesData.length || s.companies || 0;
 }
 
 // ── Overview charts ───────────────────────────────────────────────────────────
@@ -1761,6 +1841,12 @@ function renderCompanyCards(cos) {
         </div>
       </div>
       ${catBars}
+      ${c.industry || c.size || c.region ? `
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 4px">
+        ${c.industry ? `<span style="font-family:var(--mono);font-size:7px;color:var(--text3);padding:1px 5px;border:1px solid var(--border);border-radius:2px">${c.industry}</span>` : ''}
+        ${c.size     ? `<span style="font-family:var(--mono);font-size:7px;color:var(--text3);padding:1px 5px;border:1px solid var(--border);border-radius:2px">${c.size}</span>` : ''}
+        ${c.region   ? `<span style="font-family:var(--mono);font-size:7px;color:var(--cyan);opacity:.7;padding:1px 5px;border:1px solid rgba(0,212,240,.2);border-radius:2px">${c.region}</span>` : ''}
+      </div>` : ''}
       <div class="co-meta">
         <span>${c.last_audit}</span>
         <span class="co-delta ${dCls}">${dSym}</span>
@@ -1770,7 +1856,15 @@ function renderCompanyCards(cos) {
   }).join('');
 }
 
-function sortCards(by) { cardSort = by; renderCompanyCards(companiesData); }
+function sortCards(by) {
+  cardSort = by;
+  const active = cohortFilters && (cohortFilters.industry || cohortFilters.size || cohortFilters.region);
+  if (active) {
+    applyCohortFilter();
+  } else {
+    renderCompanyCards(companiesData);
+  }
+}
 
 function selectCompany(co) {
   document.querySelectorAll('.co-card').forEach(c => c.classList.remove('selected'));
@@ -1960,28 +2054,28 @@ async function refreshAll() {
 
 // ── Built-in demo data (works with no server) ────────────────────────────────
 const DEMO_COMPANIES = [
-  {company:"google",    mode:"competitor", overall:94, delta:0,  audit_count:1, last_audit:"2026-02-03", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
-  {company:"microsoft", mode:"competitor", overall:91, delta:0,  audit_count:1, last_audit:"2026-01-20", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
-  {company:"nvidia",    mode:"competitor", overall:90, delta:0,  audit_count:1, last_audit:"2026-02-18", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:14,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
-  {company:"meta",      mode:"competitor", overall:92, delta:3,  audit_count:2, last_audit:"2026-01-12", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
-  {company:"openai",    mode:"competitor", overall:88, delta:0,  audit_count:1, last_audit:"2026-02-10", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
-  {company:"anthropic", mode:"competitor", overall:85, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
-  {company:"netflix",   mode:"competitor", overall:84, delta:0,  audit_count:1, last_audit:"2026-04-01", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:8,total:14,conf:"L"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:14,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
-  {company:"tesla",     mode:"competitor", overall:81, delta:0,  audit_count:1, last_audit:"2026-03-22", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
-  {company:"apple",     mode:"competitor", overall:79, delta:0,  audit_count:1, last_audit:"2026-03-10", scores:{"GenAI / LLMs":{score:10,total:14,conf:"M"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
-  {company:"amazon",    mode:"competitor", overall:87, delta:0,  audit_count:1, last_audit:"2026-03-01", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:11,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
-  {company:"mistral",   mode:"competitor", overall:77, delta:0,  audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:7,total:14,conf:"M"},"AI Platforms":{score:8,total:14,conf:"M"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:17,total:16,conf:"M"}}},
-  {company:"salesforce",mode:"competitor", overall:76, delta:0,  audit_count:1, last_audit:"2026-03-15", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
-  {company:"adobe",     mode:"competitor", overall:73, delta:0,  audit_count:1, last_audit:"2026-03-28", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
-  {company:"amd",       mode:"competitor", overall:71, delta:0,  audit_count:1, last_audit:"2026-04-10", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:10,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
-  {company:"oracle",    mode:"competitor", overall:68, delta:0,  audit_count:1, last_audit:"2026-04-05", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
-  {company:"broadcom",  mode:"competitor", overall:65, delta:0,  audit_count:1, last_audit:"2026-04-12", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
-  {company:"intel",     mode:"competitor", overall:63, delta:0,  audit_count:1, last_audit:"2026-04-15", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:5,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
-  {company:"stability ai", mode:"competitor", overall:72, delta:0, audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"M"}}},
-  {company:"deepl",       mode:"competitor", overall:69, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:6,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
-  {company:"synthesia",   mode:"competitor", overall:67, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
-  {company:"aleph alpha", mode:"competitor", overall:66, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:9,total:16,conf:"M"}}},
-  {company:"elevenlabs",  mode:"competitor", overall:70, delta:0,  audit_count:1, last_audit:"2026-04-21", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
+  {company:"google",industry:"Cloud / AI Platform",size:"Large Enterprise",region:"US",    mode:"competitor", overall:94, delta:0,  audit_count:1, last_audit:"2026-02-03", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"microsoft",industry:"Cloud / AI Platform",size:"Large Enterprise",region:"US", mode:"competitor", overall:91, delta:0,  audit_count:1, last_audit:"2026-01-20", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"nvidia",industry:"Semiconductors / AI HW",size:"Large Enterprise",region:"US",    mode:"competitor", overall:90, delta:0,  audit_count:1, last_audit:"2026-02-18", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:14,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"meta",industry:"Social Media / AI",size:"Large Enterprise",region:"US",      mode:"competitor", overall:92, delta:3,  audit_count:2, last_audit:"2026-01-12", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
+  {company:"openai",industry:"GenAI / LLMs",size:"Enterprise",region:"US",    mode:"competitor", overall:88, delta:0,  audit_count:1, last_audit:"2026-02-10", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"anthropic",industry:"GenAI / LLMs",size:"Growth",region:"US", mode:"competitor", overall:85, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:14,total:14,conf:"H"},"Agentic AI":{score:12,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"netflix",industry:"Media / Entertainment",size:"Large Enterprise",region:"US",   mode:"competitor", overall:84, delta:0,  audit_count:1, last_audit:"2026-04-01", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:8,total:14,conf:"L"},"Machine Learning":{score:13,total:14,conf:"H"},"Data Engineering":{score:14,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:13,total:14,conf:"H"},"Cloud AI Services":{score:15,total:16,conf:"H"}}},
+  {company:"tesla",industry:"Automotive / AI",size:"Large Enterprise",region:"US",     mode:"competitor", overall:81, delta:0,  audit_count:1, last_audit:"2026-03-22", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:14,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"apple",industry:"Consumer Tech / AI",size:"Large Enterprise",region:"US",     mode:"competitor", overall:79, delta:0,  audit_count:1, last_audit:"2026-03-10", scores:{"GenAI / LLMs":{score:10,total:14,conf:"M"},"Agentic AI":{score:9,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
+  {company:"amazon",industry:"Cloud / AI Platform",size:"Large Enterprise",region:"US",    mode:"competitor", overall:87, delta:0,  audit_count:1, last_audit:"2026-03-01", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:11,total:14,conf:"H"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:13,total:14,conf:"H"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:12,total:14,conf:"H"},"Cloud AI Services":{score:16,total:16,conf:"H"}}},
+  {company:"mistral",industry:"GenAI / LLMs",size:"Growth",region:"Europe",   mode:"competitor", overall:77, delta:0,  audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:10,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:7,total:14,conf:"M"},"AI Platforms":{score:8,total:14,conf:"M"},"MLOps / LLMOps":{score:11,total:14,conf:"H"},"Cloud AI Services":{score:17,total:16,conf:"M"}}},
+  {company:"salesforce",industry:"SaaS / CRM",size:"Large Enterprise",region:"US",mode:"competitor", overall:76, delta:0,  audit_count:1, last_audit:"2026-03-15", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:13,total:14,conf:"H"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:10,total:14,conf:"M"},"AI Platforms":{score:11,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"adobe",industry:"SaaS / Creative AI",size:"Large Enterprise",region:"US",     mode:"competitor", overall:73, delta:0,  audit_count:1, last_audit:"2026-03-28", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:10,total:14,conf:"M"},"Data Engineering":{score:11,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"amd",industry:"Semiconductors / AI HW",size:"Large Enterprise",region:"US",       mode:"competitor", overall:71, delta:0,  audit_count:1, last_audit:"2026-04-10", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:10,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:13,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:17,total:16,conf:"H"}}},
+  {company:"oracle",industry:"Cloud / SaaS",size:"Large Enterprise",region:"US",    mode:"competitor", overall:68, delta:0,  audit_count:1, last_audit:"2026-04-05", scores:{"GenAI / LLMs":{score:9,total:14,conf:"M"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:12,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"broadcom",industry:"Semiconductors / AI HW",size:"Large Enterprise",region:"US",  mode:"competitor", overall:65, delta:0,  audit_count:1, last_audit:"2026-04-12", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:6,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:14,total:16,conf:"H"}}},
+  {company:"intel",industry:"Semiconductors / AI HW",size:"Large Enterprise",region:"US",     mode:"competitor", overall:63, delta:0,  audit_count:1, last_audit:"2026-04-15", scores:{"GenAI / LLMs":{score:7,total:14,conf:"M"},"Agentic AI":{score:5,total:14,conf:"L"},"Machine Learning":{score:9,total:14,conf:"M"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:12,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"H"}}},
+  {company:"stability ai",industry:"GenAI / Image AI",size:"Growth",region:"Europe", mode:"competitor", overall:72, delta:0, audit_count:1, last_audit:"2026-04-18", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:13,total:16,conf:"M"}}},
+  {company:"deepl",industry:"AI Translation / NLP",size:"Mid-market",region:"Europe",       mode:"competitor", overall:69, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:11,total:14,conf:"H"},"Agentic AI":{score:6,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:10,total:14,conf:"H"},"AI Platforms":{score:10,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:12,total:16,conf:"M"}}},
+  {company:"synthesia",industry:"GenAI / Video AI",size:"Growth",region:"Europe",   mode:"competitor", overall:67, delta:0,  audit_count:1, last_audit:"2026-04-19", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:9,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
+  {company:"aleph alpha",industry:"GenAI / Sovereign AI",size:"Growth",region:"Europe", mode:"competitor", overall:66, delta:0,  audit_count:1, last_audit:"2026-04-20", scores:{"GenAI / LLMs":{score:12,total:14,conf:"H"},"Agentic AI":{score:8,total:14,conf:"M"},"Machine Learning":{score:11,total:14,conf:"H"},"Data Engineering":{score:9,total:14,conf:"M"},"AI Platforms":{score:9,total:14,conf:"M"},"MLOps / LLMOps":{score:8,total:14,conf:"M"},"Cloud AI Services":{score:9,total:16,conf:"M"}}},
+  {company:"elevenlabs",industry:"GenAI / Voice AI",size:"Growth",region:"US",  mode:"competitor", overall:70, delta:0,  audit_count:1, last_audit:"2026-04-21", scores:{"GenAI / LLMs":{score:13,total:14,conf:"H"},"Agentic AI":{score:7,total:14,conf:"M"},"Machine Learning":{score:12,total:14,conf:"H"},"Data Engineering":{score:8,total:14,conf:"M"},"AI Platforms":{score:10,total:14,conf:"H"},"MLOps / LLMOps":{score:10,total:14,conf:"M"},"Cloud AI Services":{score:10,total:16,conf:"M"}}},
 ];
 
 const DEMO_TRENDS = {
@@ -2368,6 +2462,95 @@ function syncSEPanel() {
 function getSearchPayload() {
   const cfg = seConfig[seEngine] || {};
   return { engine: seEngine, ...cfg };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COHORT FILTERING
+// ══════════════════════════════════════════════════════════════════════════════
+
+let cohortFilters = { industry: '', size: '', region: '' };
+
+function applyCohortFilter() {
+  cohortFilters.industry = document.getElementById('filterIndustry')?.value || '';
+  cohortFilters.size     = document.getElementById('filterSize')?.value     || '';
+  cohortFilters.region   = document.getElementById('filterRegion')?.value   || '';
+
+  const filtered = companiesData.filter(c => {
+    if (cohortFilters.industry && c.industry !== cohortFilters.industry) return false;
+    if (cohortFilters.size     && c.size     !== cohortFilters.size)     return false;
+    if (cohortFilters.region   && c.region   !== cohortFilters.region)   return false;
+    return true;
+  });
+
+  // Update count badge
+  const countEl = document.getElementById('cohortCount');
+  if (countEl) countEl.textContent = filtered.length;
+
+  // Re-render cards with filtered data
+  renderCompanyCards(filtered);
+
+  // Show cohort benchmark banner if filtering
+  const isFiltered = cohortFilters.industry || cohortFilters.size || cohortFilters.region;
+  showCohortInsights(filtered, isFiltered);
+}
+
+function resetCohortFilter() {
+  cohortFilters = { industry: '', size: '', region: '' };
+  const fi = document.getElementById('filterIndustry');
+  const fs = document.getElementById('filterSize');
+  const fr = document.getElementById('filterRegion');
+  if (fi) fi.value = '';
+  if (fs) fs.value = '';
+  if (fr) fr.value = '';
+  const countEl = document.getElementById('cohortCount');
+  if (countEl) countEl.textContent = companiesData.length;
+  renderCompanyCards(companiesData);
+  // Hide insights banner
+  const banner = document.getElementById('cohortInsights');
+  if (banner) banner.style.display = 'none';
+}
+
+function showCohortInsights(filtered, isFiltered) {
+  let banner = document.getElementById('cohortInsights');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'cohortInsights';
+    banner.style.cssText = `
+      background:rgba(0,212,240,.06);border:1px solid rgba(0,212,240,.2);
+      border-radius:4px;padding:14px 18px;margin-bottom:16px;
+      font-family:var(--mono);font-size:10px;color:var(--text2);
+      line-height:1.8;display:none;
+    `;
+    const grid = document.getElementById('companyGrid');
+    if (grid) grid.parentNode.insertBefore(banner, grid);
+  }
+
+  if (!isFiltered || filtered.length === 0) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  const scores  = filtered.map(c => c.overall).filter(Boolean);
+  const avg     = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  const highest = filtered.reduce((a,b) => (b.overall||0) > (a.overall||0) ? b : a, filtered[0]);
+  const lowest  = filtered.reduce((a,b) => (b.overall||0) < (a.overall||0) ? b : a, filtered[0]);
+
+  const label = [
+    cohortFilters.industry,
+    cohortFilters.size,
+    cohortFilters.region
+  ].filter(Boolean).join(' · ');
+
+  banner.style.display = 'block';
+  banner.innerHTML = `
+    <span style="color:var(--cyan);font-weight:600">◈ COHORT BENCHMARK — ${label}</span><br>
+    ${filtered.length} companies matched &nbsp;·&nbsp;
+    Cohort avg score: <span style="color:var(--cyan)">${avg}/100</span> &nbsp;·&nbsp;
+    Leader: <span style="color:var(--green)">${highest?.company||'—'} (${highest?.overall||0})</span> &nbsp;·&nbsp;
+    Laggard: <span style="color:var(--amber)">${lowest?.company||'—'} (${lowest?.overall||0})</span>
+  `;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

@@ -202,6 +202,48 @@ def guide():
     """Serve the non-technical user guide / landing page."""
     return send_from_directory(".", "guide.html")
 
+@app.route("/api/waitlist", methods=["POST"])
+def waitlist():
+    """Save waitlist email signups to a local JSON file."""
+    from flask import request
+    import pathlib, datetime, json as _json
+    data = request.get_json() or {}
+    email = data.get("email", "").strip()
+    if not email or "@" not in email:
+        return jsonify({"error": "valid email required"}), 400
+    # Save to waitlist.json
+    wl_path = pathlib.Path("waitlist.json")
+    entries = []
+    if wl_path.exists():
+        try:
+            with open(wl_path) as f:
+                entries = _json.load(f)
+        except Exception:
+            entries = []
+    # Avoid duplicates
+    emails = [e.get("email") for e in entries]
+    if email not in emails:
+        entries.append({
+            "email": email,
+            "source": data.get("source", "unknown"),
+            "ts": data.get("ts", datetime.datetime.now().isoformat())
+        })
+        with open(wl_path, "w") as f:
+            _json.dump(entries, f, indent=2)
+    return jsonify({"ok": True, "position": len(entries)})
+
+@app.route("/api/waitlist/count")
+def waitlist_count():
+    """Return the current waitlist count (public)."""
+    import pathlib, json as _json
+    wl_path = pathlib.Path("waitlist.json")
+    try:
+        with open(wl_path) as f:
+            entries = _json.load(f)
+        return jsonify({"count": len(entries)})
+    except Exception:
+        return jsonify({"count": 0})
+
 @app.route("/intake")
 @app.route("/intake/<persona>")
 def intake(persona=None):

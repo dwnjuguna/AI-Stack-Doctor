@@ -28,6 +28,123 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
     linear-gradient(90deg,rgba(0,212,240,.018) 1px,transparent 1px);
   background-size:60px 60px;pointer-events:none}
 
+
+/* ── Waitlist Section ── */
+.waitlist-section {
+  background: linear-gradient(135deg, rgba(0,212,240,.06) 0%, rgba(144,96,240,.04) 100%);
+  border-top: 1px solid rgba(0,212,240,.15);
+  border-bottom: 1px solid rgba(0,212,240,.15);
+  padding: 80px 32px;
+  text-align: center;
+}
+.waitlist-inner { max-width: 600px; margin: 0 auto; }
+.waitlist-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--purple);
+  padding: 5px 14px; border-radius: 20px;
+  background: rgba(144,96,240,.1); border: 1px solid rgba(144,96,240,.25);
+  margin-bottom: 20px;
+}
+.waitlist-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--purple); box-shadow: 0 0 8px var(--purple);
+  animation: pulse 2s infinite;
+}
+.waitlist-h2 {
+  font-family: var(--display); font-size: clamp(32px,5vw,52px);
+  letter-spacing: 2px; line-height: .95; margin-bottom: 14px;
+}
+.waitlist-h2 span { color: var(--cyan); }
+.waitlist-desc {
+  font-size: 14px; color: var(--text2); line-height: 1.8;
+  margin-bottom: 32px;
+}
+.waitlist-offer {
+  display: flex; gap: 16px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 32px;
+}
+.wo-item {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text2); letter-spacing: .5px;
+}
+.wo-item::before { content: '✓'; color: var(--green); font-weight: 700; }
+.waitlist-form {
+  display: flex; gap: 10px; max-width: 480px;
+  margin: 0 auto 16px; flex-wrap: wrap;
+}
+.waitlist-input {
+  flex: 1; min-width: 200px;
+  background: rgba(6,9,14,.8);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 13px 18px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text); outline: none;
+  transition: border-color .15s;
+}
+.waitlist-input:focus { border-color: var(--cyan); }
+.waitlist-input::placeholder { color: var(--text3); }
+.waitlist-btn {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 13px 24px; border-radius: 4px;
+  background: var(--cyan); color: #000;
+  border: none; cursor: pointer; font-weight: 700;
+  transition: all .2s; white-space: nowrap;
+}
+.waitlist-btn:hover { background: #33dff7; box-shadow: 0 0 20px rgba(0,212,240,.35); }
+.waitlist-btn:disabled { opacity: .5; cursor: not-allowed; }
+.waitlist-note {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--text3); letter-spacing: .5px;
+  line-height: 1.7;
+}
+.waitlist-success {
+  display: none;
+  padding: 20px;
+  background: rgba(0,200,128,.08);
+  border: 1px solid rgba(0,200,128,.25);
+  border-radius: 4px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--green); line-height: 1.8;
+  max-width: 480px; margin: 0 auto;
+}
+.pricing-preview {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 12px; margin: 32px 0;
+  text-align: left;
+}
+.pp-card {
+  background: rgba(6,9,14,.6);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 20px 16px;
+  position: relative;
+}
+.pp-card.featured {
+  border-color: var(--cyan);
+  background: rgba(0,212,240,.05);
+}
+.pp-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 7px; letter-spacing: 1.5px;
+  background: var(--cyan); color: #000; padding: 2px 10px;
+  border-radius: 10px; font-weight: 700; white-space: nowrap;
+}
+.pp-tier { font-family: var(--mono); font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.pp-price { font-family: var(--display); font-size: 28px; letter-spacing: 1px;
+  color: var(--text); line-height: 1; margin-bottom: 4px; }
+.pp-price span { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.pp-discount { font-family: var(--mono); font-size: 9px; color: var(--green);
+  margin-bottom: 10px; }
+.pp-features { display: flex; flex-direction: column; gap: 5px; }
+.pp-feat { font-family: var(--mono); font-size: 9px; color: var(--text2);
+  display: flex; align-items: center; gap: 6px; }
+.pp-feat::before { content: '◈'; color: var(--cyan); font-size: 7px; flex-shrink: 0; }
+@media(max-width:580px){ .pricing-preview { grid-template-columns: 1fr; } .waitlist-offer { flex-direction: column; align-items: center; } }
+
 /* ── NAV ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
@@ -653,6 +770,91 @@ footer{
   </div>
 </section>
 
+<!-- WAITLIST -->
+<section class="waitlist-section" id="waitlist">
+  <div class="waitlist-inner">
+    <div class="waitlist-badge">Pro Tier — Coming Soon</div>
+    <h2 class="waitlist-h2">JOIN THE<br><span>PRO WAITLIST.</span></h2>
+    <p class="waitlist-desc">
+      The hosted Pro tier is launching soon — unlimited audits, cloud history,
+      custom branded PDFs, scheduled monitoring, and more.
+      Join the waitlist and get <strong style="color:var(--cyan)">50% off your first 3 months.</strong>
+    </p>
+
+    <!-- Pricing preview -->
+    <div class="pricing-preview">
+      <div class="pp-card">
+        <div class="pp-tier">Starter</div>
+        <div class="pp-price">Free <span>/mo</span></div>
+        <div class="pp-discount">&nbsp;</div>
+        <div class="pp-features">
+          <div class="pp-feat">3 audits/month</div>
+          <div class="pp-feat">Demo dashboard</div>
+          <div class="pp-feat">Basic PDF export</div>
+          <div class="pp-feat">Community support</div>
+        </div>
+      </div>
+      <div class="pp-card featured">
+        <div class="pp-tier">Pro</div>
+        <div class="pp-price">$149 <span>/mo</span></div>
+        <div class="pp-discount">Waitlist: $74.50 first 3 months</div>
+        <div class="pp-features">
+          <div class="pp-feat">Unlimited audits</div>
+          <div class="pp-feat">Cloud audit history</div>
+          <div class="pp-feat">Custom branded PDFs</div>
+          <div class="pp-feat">Scheduled monitoring</div>
+          <div class="pp-feat">Client sharing links</div>
+          <div class="pp-feat">Email support</div>
+        </div>
+      </div>
+      <div class="pp-card">
+        <div class="pp-tier">Team</div>
+        <div class="pp-price">$299 <span>/mo</span></div>
+        <div class="pp-discount">Waitlist: $149.50 first 3 months</div>
+        <div class="pp-features">
+          <div class="pp-feat">10 team members</div>
+          <div class="pp-feat">Shared workspace</div>
+          <div class="pp-feat">Cohort dashboards</div>
+          <div class="pp-feat">API access (hosted)</div>
+          <div class="pp-feat">White-label mode</div>
+          <div class="pp-feat">Priority support</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="waitlist-offer">
+      <div class="wo-item">50% off first 3 months</div>
+      <div class="wo-item">No credit card required</div>
+      <div class="wo-item">Cancel anytime</div>
+      <div class="wo-item">Early access to new features</div>
+    </div>
+
+    <div class="waitlist-form" id="waitlistForm">
+      <input
+        class="waitlist-input"
+        id="waitlistEmail"
+        type="email"
+        placeholder="your@company.com"
+        onkeydown="if(event.key==='Enter') joinWaitlist()"
+      />
+      <button class="waitlist-btn" id="waitlistBtn" onclick="joinWaitlist()">
+        Join Waitlist →
+      </button>
+    </div>
+
+    <div class="waitlist-success" id="waitlistSuccess">
+      🎉 You're on the list! We'll email you when Pro launches with your 50% discount code.<br>
+      In the meantime, explore the free dashboard and run your first audit below.
+    </div>
+
+    <div class="waitlist-note">
+      No spam. No credit card. Just an early access notification when we launch.<br>
+      Your email is stored securely and never shared with third parties.
+      <a href="/legal#privacy" style="color:var(--text3);text-decoration:underline">Privacy Policy</a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA BAND -->
 <section class="cta-band">
   <div class="section-eyebrow" style="margin-bottom:16px">// Ready to start?</div>
@@ -705,6 +907,49 @@ document.querySelectorAll('.fade-up').forEach(el => {
   el.style.transition = 'opacity .6s ease, transform .6s ease';
   observer.observe(el);
 });
+
+// ── Waitlist ──────────────────────────────────────────────────────────────────
+function joinWaitlist() {
+  const email = document.getElementById('waitlistEmail').value.trim();
+  const btn   = document.getElementById('waitlistBtn');
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('waitlistEmail').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('waitlistEmail').style.borderColor = '', 1500);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Joining...';
+
+  // Save to localStorage so we remember this session
+  localStorage.setItem('asd_waitlist_email', email);
+  localStorage.setItem('asd_waitlist_joined', 'true');
+
+  // POST to server (best-effort — works locally and on Render)
+  fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, source: 'guide-page', ts: new Date().toISOString() })
+  }).catch(() => {}); // non-blocking — success shows regardless
+
+  // Show success after short delay
+  setTimeout(() => {
+    document.getElementById('waitlistForm').style.display = 'none';
+    document.getElementById('waitlistSuccess').style.display = 'block';
+  }, 800);
+}
+
+// Restore state if already joined this session
+window.addEventListener('load', () => {
+  if (localStorage.getItem('asd_waitlist_joined') === 'true') {
+    const form = document.getElementById('waitlistForm');
+    const success = document.getElementById('waitlistSuccess');
+    if (form) form.style.display = 'none';
+    if (success) success.style.display = 'block';
+  }
+});
+
 </script>
 </body>
 </html>

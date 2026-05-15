@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Stack Doctor — Client Intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06090e;--bg1:#090d14;--bg2:#0d1520;--card:#0f1824;--border:#1a2840;--b2:#1f3050;--cyan:#00d4f0;--green:#00c880;--amber:#f0a000;--red:#f04040;--purple:#9060f0;--text:#c8ddf0;--text2:#7090b0;--text3:#405070;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,240,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,240,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.shell{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 24px 80px}
+.header{padding:24px 0 28px;border-bottom:1px solid var(--border);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:34px;height:34px;border:2px solid var(--cyan);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cyan)}
+.logo-name{font-family:var(--display);font-size:20px;letter-spacing:2px}
+.logo-ver{font-family:var(--mono);font-size:9px;color:var(--cyan);background:rgba(0,212,240,.1);border:1px solid rgba(0,212,240,.2);border-radius:3px;padding:2px 7px;letter-spacing:1px}
+.back-link{font-family:var(--mono);font-size:9px;color:var(--text3);text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .15s}
+.back-link:hover{color:var(--cyan)}
+/* Persona screen */
+.persona-screen{animation:fadeUp .35s ease both}
+.persona-hero{text-align:center;margin-bottom:40px}
+.persona-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+.persona-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 2s ease-in-out infinite}
+.persona-title{font-family:var(--display);font-size:clamp(32px,6vw,54px);letter-spacing:2px;line-height:.95;margin-bottom:12px}
+.persona-title span{color:var(--cyan)}
+.persona-desc{font-size:13px;line-height:1.8;color:var(--text2);max-width:480px;margin:0 auto}
+.persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:32px 0}
+.persona-card{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:24px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.persona-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.persona-card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.persona-card:hover::before,.persona-card.selected::before{opacity:1}
+.persona-card.consultant::before{background:var(--cyan)}
+.persona-card.executive::before{background:var(--amber)}
+.persona-card.marketer::before{background:var(--green)}
+.persona-card.general::before{background:var(--purple)}
+.persona-card.selected{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.persona-card.selected.consultant{border-color:var(--cyan);background:rgba(0,212,240,.05)}
+.persona-card.selected.executive{border-color:var(--amber);background:rgba(240,160,0,.05)}
+.persona-card.selected.marketer{border-color:var(--green);background:rgba(0,200,128,.05)}
+.persona-card.selected.general{border-color:var(--purple);background:rgba(144,96,240,.05)}
+.pc-icon{font-size:24px;margin-bottom:10px}
+.pc-title{font-family:var(--display);font-size:20px;letter-spacing:1px;margin-bottom:6px}
+.persona-card.consultant .pc-title{color:var(--cyan)}
+.persona-card.executive .pc-title{color:var(--amber)}
+.persona-card.marketer .pc-title{color:var(--green)}
+.persona-card.general .pc-title{color:var(--purple)}
+.pc-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.pc-tags{display:flex;flex-wrap:wrap;gap:5px}
+.pc-tag{font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;border:1px solid var(--border);color:var(--text3)}
+.pc-time{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.persona-start-btn{width:100%;padding:16px;border-radius:6px;border:none;background:var(--cyan);color:#000;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;opacity:.4}
+.persona-start-btn.ready{opacity:1}
+.persona-start-btn.ready:hover{background:#33dff7;box-shadow:0 0 20px rgba(0,212,240,.3)}
+/* Form */
+.form-screen{display:none}
+.progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:36px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-persona{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 10px;border-radius:3px;border:1px solid}
+.progress-persona.consultant{color:var(--cyan);border-color:rgba(0,212,240,.3);background:rgba(0,212,240,.07)}
+.progress-persona.executive{color:var(--amber);border-color:rgba(240,160,0,.3);background:rgba(240,160,0,.07)}
+.progress-persona.marketer{color:var(--green);border-color:rgba(0,200,128,.3);background:rgba(0,200,128,.07)}
+.progress-persona.general{color:var(--purple);border-color:rgba(144,96,240,.3);background:rgba(144,96,240,.07)}
+.progress-pct{font-family:var(--mono);font-size:9px;color:var(--text3)}
+.progress-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--cyan);border-radius:2px;box-shadow:0 0 8px var(--cyan);transition:width .4s ease;width:0%}
+.form-section{display:none;animation:fadeUp .3s ease both}
+.form-section.active{display:block}
+.sec-header{margin-bottom:26px}
+.sec-num{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+.sec-title{font-family:var(--display);font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.field{margin-bottom:20px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.req{color:var(--cyan)}
+.field-hint{font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:4px;line-height:1.5}
+input[type=text],input[type=email],select,textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:11px 14px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .15s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,212,240,.1)}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+select option{background:var(--bg2)}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.chip{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:8px 12px;cursor:pointer;transition:all .15s;font-family:var(--mono);font-size:10px;color:var(--text2)}
+.chip:hover{border-color:var(--b2);color:var(--text)}
+.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,240,.07)}
+.chip-dot{width:6px;height:6px;border-radius:50%;border:1px solid currentColor;flex-shrink:0;transition:background .15s}
+.chip.on .chip-dot{background:var(--cyan)}
+input[type=range]{width:100%;padding:0;-webkit-appearance:none;background:transparent;border:none;box-shadow:none}
+input[type=range]::-webkit-slider-track{height:3px;background:var(--border);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px rgba(0,212,240,.4);margin-top:-6.5px;cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:5px}
+.range-val{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--cyan);text-align:center;margin-top:4px}
+.dyn-entry{display:flex;gap:8px;align-items:center;margin-bottom:7px}
+.dyn-entry input{flex:1}
+.dyn-remove{width:30px;height:30px;flex-shrink:0;background:transparent;border:1px solid var(--border);border-radius:3px;color:var(--text3);cursor:pointer;font-size:14px;display:grid;place-items:center;transition:all .15s}
+.dyn-remove:hover{border-color:var(--red);color:var(--red)}
+.add-btn{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 13px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;margin-top:3px}
+.add-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.divider{height:1px;background:var(--border);margin:22px 0}
+.nav-row{display:flex;gap:12px;justify-content:space-between;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.btn-back{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:11px 22px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.btn-back:hover{border-color:var(--b2);color:var(--text)}
+.btn-next{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:11px 26px;border-radius:4px;background:var(--cyan);color:#000;border:none;cursor:pointer;font-weight:700;transition:all .15s}
+.btn-next:hover{background:#33dff7;box-shadow:0 0 20px rgba(0,212,240,.3)}
+.notice{background:rgba(240,160,0,.06);border:1px solid rgba(240,160,0,.2);border-radius:4px;padding:11px 15px;font-family:var(--mono);font-size:9px;color:var(--text3);line-height:1.7;margin-bottom:22px}
+.notice strong{color:var(--amber)}
+.review-block{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px 18px;margin-bottom:10px}
+.review-block-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.review-row{display:flex;gap:10px;padding:5px 0;border-top:1px solid var(--border)}
+.review-key{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:130px;flex-shrink:0}
+.review-val{font-size:12px;color:var(--text2);line-height:1.5}
+.success-screen{display:none;text-align:center;padding:60px 0;animation:fadeUp .4s ease both}
+.success-icon{font-size:48px;margin-bottom:20px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+.success-title{font-family:var(--display);font-size:36px;letter-spacing:2px;color:var(--green);margin-bottom:10px}
+.success-desc{font-size:13px;color:var(--text2);line-height:1.8;max-width:440px;margin:0 auto 28px}
+.success-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.sa{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:11px 22px;border-radius:4px;cursor:pointer;transition:all .15s}
+.sa-pri{background:var(--cyan);color:#000;border:none;font-weight:700}
+.sa-pri:hover{background:#33dff7;box-shadow:0 0 16px rgba(0,212,240,.3)}
+.sa-sec{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.sa-sec:hover{border-color:var(--b2);color:var(--text)}
+.output-box{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px;font-family:var(--mono);font-size:10px;color:var(--cyan);line-height:1.8;text-align:left;white-space:pre-wrap;max-height:280px;overflow-y:auto;margin-top:16px;display:none}
+footer{text-align:center;font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:56px;padding-top:20px;border-top:1px solid var(--border);line-height:1.8}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+@media(max-width:560px){.persona-grid,.field-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">Dx</div>
+    <div class="logo-name">AI STACK DOCTOR</div>
+    <div class="logo-ver">v4.0</div>
+  </div>
+  <a href="/" class="back-link">← Dashboard</a>
+</div>
+
+<!-- PERSONA SELECTOR -->
+<div class="persona-screen" id="personaScreen">
+  <div class="persona-hero">
+    <div class="persona-badge">Client Intake Form</div>
+    <h1 class="persona-title">WHO ARE<br><span>YOU?</span></h1>
+    <p class="persona-desc">Select your role to get a tailored intake experience. We show you only the questions relevant to your needs.</p>
+  </div>
+  <div class="persona-grid">
+    <div class="persona-card consultant" id="pc-consultant" onclick="selectPersona('consultant')">
+      <div class="pc-icon">📊</div>
+      <div class="pc-title">CONSULTANT</div>
+      <div class="pc-desc">Running this audit on behalf of a client. Need a deliverable you can hand directly to them with gap analysis and prescriptions.</div>
+      <div class="pc-tags"><span class="pc-tag">Client deliverable</span><span class="pc-tag">Gap analysis</span><span class="pc-tag">Benchmarking</span></div>
+      <div class="pc-time">⏱ ~10 minutes</div>
+    </div>
+    <div class="persona-card executive" id="pc-executive" onclick="selectPersona('executive')">
+      <div class="pc-icon">🏢</div>
+      <div class="pc-title">C-SUITE / EXEC</div>
+      <div class="pc-desc">CTO, CDO, COO, or VP. You need strategic visibility into AI maturity, compliance exposure, and competitive positioning.</div>
+      <div class="pc-tags"><span class="pc-tag">Strategic view</span><span class="pc-tag">Compliance risk</span><span class="pc-tag">Board-ready</span></div>
+      <div class="pc-time">⏱ ~8 minutes</div>
+    </div>
+    <div class="persona-card marketer" id="pc-marketer" onclick="selectPersona('marketer')">
+      <div class="pc-icon">📣</div>
+      <div class="pc-title">MARKETER / GROWTH</div>
+      <div class="pc-desc">CMO, Growth Lead, or Marketing Ops. Understand and optimize your AI-powered marketing and analytics stack.</div>
+      <div class="pc-tags"><span class="pc-tag">MarTech AI</span><span class="pc-tag">Content AI</span><span class="pc-tag">Analytics</span></div>
+      <div class="pc-time">⏱ ~7 minutes</div>
+    </div>
+    <div class="persona-card general" id="pc-general" onclick="selectPersona('general')">
+      <div class="pc-icon">🔍</div>
+      <div class="pc-title">GENERAL INQUIRY</div>
+      <div class="pc-desc">Exploring for the first time or doing a quick self-assessment. Lightweight 5-question version to get started.</div>
+      <div class="pc-tags"><span class="pc-tag">Self-assessment</span><span class="pc-tag">Quick start</span><span class="pc-tag">5 questions</span></div>
+      <div class="pc-time">⏱ ~5 minutes</div>
+    </div>
+  </div>
+  <button class="persona-start-btn" id="startBtn" onclick="startForm()" disabled>Select a role to continue →</button>
+</div>
+
+<!-- FORM SCREEN -->
+<div class="form-screen" id="formScreen">
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-persona consultant" id="personaBadge">Consultant</span>
+      <span class="progress-pct" id="progPct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+  </div>
+
+  <!-- Section: Company (all personas) -->
+  <div class="form-section active" id="f-company">
+    <div class="sec-header">
+      <div class="sec-num">// Section 01 — Company Profile</div>
+      <div class="sec-title">YOUR COMPANY</div>
+      <div class="sec-desc">Basic information to contextualize the audit.</div>
+    </div>
+    <div class="notice"><strong>⚠ Confidentiality:</strong> Data used solely to generate your report. No third-party sharing. Never include passwords or API keys.</div>
+    <div class="field"><div class="field-label"><span class="req">*</span> Company Name</div><input type="text" id="companyName" placeholder="Acme Corp"/></div>
+    <div class="field-row">
+      <div class="field"><div class="field-label"><span class="req">*</span> Industry</div>
+        <select id="industry"><option value="">Select...</option><option>Fintech / Payments</option><option>Healthcare / MedTech</option><option>E-commerce / Retail</option><option>SaaS / Enterprise Software</option><option>Media / Entertainment</option><option>Manufacturing / Industrial</option><option>Financial Services</option><option>Consulting / Professional Services</option><option>Education / EdTech</option><option>Government / Public Sector</option><option>Logistics / Supply Chain</option><option>Energy / CleanTech</option><option>Telecommunications</option><option>Other</option></select>
+      </div>
+      <div class="field"><div class="field-label"><span class="req">*</span> Company Size</div>
+        <select id="companySize"><option value="">Select...</option><option>1–10 (Startup)</option><option>11–50 (Early stage)</option><option>51–200 (Growth)</option><option>201–500 (Scale-up)</option><option>501–1,000 (Mid-market)</option><option>1,001–5,000 (Enterprise)</option><option>5,000+ (Large Enterprise)</option></select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><div class="field-label">HQ Location</div><input type="text" id="hqLocation" placeholder="San Francisco, CA"/></div>
+      <div class="field"><div class="field-label">Annual Revenue</div>
+        <select id="revenue"><option value="">Prefer not to say</option><option>Under $1M</option><option>$1M–$10M</option><option>$10M–$50M</option><option>$50M–$200M</option><option>$200M–$1B</option><option>Over $1B</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Geographic Markets</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'geo','North America')"><span class="chip-dot"></span>North America</div>
+        <div class="chip" onclick="toggleChip(this,'geo','Europe (EU/UK)')"><span class="chip-dot"></span>Europe (EU/UK)</div>
+        <div class="chip" onclick="toggleChip(this,'geo','Asia Pacific')"><span class="chip-dot"></span>Asia Pacific</div>
+        <div class="chip" onclick="toggleChip(this,'geo','Latin America')"><span class="chip-dot"></span>Latin America</div>
+        <div class="chip" onclick="toggleChip(this,'geo','Middle East / Africa')"><span class="chip-dot"></span>Middle East / Africa</div>
+        <div class="chip" onclick="toggleChip(this,'geo','Global')"><span class="chip-dot"></span>Global</div>
+      </div>
+      <div class="field-hint">Determines which compliance frameworks are flagged in your report</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="backToPersona()">← Change Role</button>
+      <button class="btn-next" onclick="nextSection('company')">Next →</button>
+    </div>
+  </div>
+
+  <!-- Section: Consultant Stack -->
+  <div class="form-section" id="f-consultant-stack">
+    <div class="sec-header"><div class="sec-num">// Section 02 — Consultant</div><div class="sec-title">CLIENT AI STACK</div><div class="sec-desc">Declare every AI tool the client uses. This is the ground truth for the audit.</div></div>
+    <div class="field"><div class="field-label">LLMs / GenAI</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'llm','OpenAI GPT-4')"><span class="chip-dot"></span>OpenAI GPT-4</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Anthropic Claude')"><span class="chip-dot"></span>Claude</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Google Gemini')"><span class="chip-dot"></span>Gemini</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Meta Llama')"><span class="chip-dot"></span>Llama</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Azure OpenAI')"><span class="chip-dot"></span>Azure OpenAI</div>
+        <div class="chip" onclick="toggleChip(this,'llm','AWS Bedrock')"><span class="chip-dot"></span>Bedrock</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Mistral')"><span class="chip-dot"></span>Mistral</div>
+        <div class="chip" onclick="toggleChip(this,'llm','Custom')"><span class="chip-dot"></span>Custom</div>
+        <div class="chip" onclick="toggleChip(this,'llm','None yet')"><span class="chip-dot"></span>None yet</div>
+      </div>
+      <input type="text" id="llmOther" placeholder="Other LLMs..." style="margin-top:8px"/>
+    </div>
+    <div class="divider"></div>
+    <div class="field"><div class="field-label">ML / Data Stack</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'ml','PyTorch')"><span class="chip-dot"></span>PyTorch</div>
+        <div class="chip" onclick="toggleChip(this,'ml','TensorFlow')"><span class="chip-dot"></span>TensorFlow</div>
+        <div class="chip" onclick="toggleChip(this,'ml','scikit-learn')"><span class="chip-dot"></span>scikit-learn</div>
+        <div class="chip" onclick="toggleChip(this,'ml','Snowflake')"><span class="chip-dot"></span>Snowflake</div>
+        <div class="chip" onclick="toggleChip(this,'ml','Databricks')"><span class="chip-dot"></span>Databricks</div>
+        <div class="chip" onclick="toggleChip(this,'ml','dbt')"><span class="chip-dot"></span>dbt</div>
+        <div class="chip" onclick="toggleChip(this,'ml','Spark')"><span class="chip-dot"></span>Spark</div>
+        <div class="chip" onclick="toggleChip(this,'ml','Airflow')"><span class="chip-dot"></span>Airflow</div>
+        <div class="chip" onclick="toggleChip(this,'ml','BigQuery')"><span class="chip-dot"></span>BigQuery</div>
+      </div>
+      <input type="text" id="mlOther" placeholder="Other tools..." style="margin-top:8px"/>
+    </div>
+    <div class="field"><div class="field-label">Cloud & MLOps</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'cloud','AWS')"><span class="chip-dot"></span>AWS</div>
+        <div class="chip" onclick="toggleChip(this,'cloud','GCP')"><span class="chip-dot"></span>GCP</div>
+        <div class="chip" onclick="toggleChip(this,'cloud','Azure')"><span class="chip-dot"></span>Azure</div>
+        <div class="chip" onclick="toggleChip(this,'cloud','On-premises')"><span class="chip-dot"></span>On-prem</div>
+        <div class="chip" onclick="toggleChip(this,'mlops','MLflow')"><span class="chip-dot"></span>MLflow</div>
+        <div class="chip" onclick="toggleChip(this,'mlops','W&B')"><span class="chip-dot"></span>W&B</div>
+        <div class="chip" onclick="toggleChip(this,'mlops','SageMaker')"><span class="chip-dot"></span>SageMaker</div>
+        <div class="chip" onclick="toggleChip(this,'mlops','None')"><span class="chip-dot"></span>No MLOps</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Client Pain Points</div><textarea id="clientPainPoints" placeholder="e.g. No observability on LLM outputs, compliance deadline approaching, models too slow..."></textarea></div>
+    <div class="field"><div class="field-label">Competitors to Benchmark</div>
+      <div id="consultantCompetitors">
+        <div class="dyn-entry"><input type="text" placeholder="Competitor 1"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button></div>
+        <div class="dyn-entry"><input type="text" placeholder="Competitor 2"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button></div>
+      </div>
+      <button class="add-btn" onclick="addDyn('consultantCompetitors','Competitor')">+ Add competitor</button>
+    </div>
+    <div class="field"><div class="field-label">Engagement Objective</div>
+      <select id="engagementObj"><option value="">Select...</option><option>AI readiness assessment</option><option>Build the business case for AI investment</option><option>Identify and fix AI stack gaps</option><option>Pre-acquisition AI due diligence</option><option>Compliance and governance audit</option><option>AI vendor selection support</option><option>Ongoing AI monitoring (quarterly)</option></select>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="nextSection('consultant-stack')">Maturity & Goals →</button>
+    </div>
+  </div>
+
+  <!-- Section: Executive Stack -->
+  <div class="form-section" id="f-executive-stack">
+    <div class="sec-header"><div class="sec-num">// Section 02 — Executive</div><div class="sec-title">AI INVESTMENT</div><div class="sec-desc">High-level view of your AI investment and key platforms.</div></div>
+    <div class="field"><div class="field-label">Annual AI Budget</div>
+      <select id="execBudget"><option value="">Prefer not to say</option><option>Under $250K</option><option>$250K–$1M</option><option>$1M–$5M</option><option>$5M–$20M</option><option>Over $20M</option></select>
+    </div>
+    <div class="field"><div class="field-label">Primary AI Platforms</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'execai','OpenAI / Azure OpenAI')"><span class="chip-dot"></span>OpenAI / Azure</div>
+        <div class="chip" onclick="toggleChip(this,'execai','Google AI / Gemini')"><span class="chip-dot"></span>Google AI</div>
+        <div class="chip" onclick="toggleChip(this,'execai','AWS Bedrock')"><span class="chip-dot"></span>AWS Bedrock</div>
+        <div class="chip" onclick="toggleChip(this,'execai','Microsoft Copilot')"><span class="chip-dot"></span>MS Copilot</div>
+        <div class="chip" onclick="toggleChip(this,'execai','Salesforce Einstein')"><span class="chip-dot"></span>SF Einstein</div>
+        <div class="chip" onclick="toggleChip(this,'execai','Custom / In-house')"><span class="chip-dot"></span>Custom</div>
+        <div class="chip" onclick="toggleChip(this,'execai','None yet')"><span class="chip-dot"></span>None yet</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Compliance Obligations</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'execcomp','GDPR')"><span class="chip-dot"></span>GDPR</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','CCPA/CPRA')"><span class="chip-dot"></span>CCPA</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','HIPAA')"><span class="chip-dot"></span>HIPAA</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','PCI-DSS')"><span class="chip-dot"></span>PCI-DSS</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','SOC 2')"><span class="chip-dot"></span>SOC 2</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','EU AI Act')"><span class="chip-dot"></span>EU AI Act</div>
+        <div class="chip" onclick="toggleChip(this,'execcomp','ISO 27001')"><span class="chip-dot"></span>ISO 27001</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Biggest Strategic Concern</div>
+      <select id="execConcern"><option value="">Select...</option><option>Falling behind competitors on AI</option><option>Regulatory / compliance exposure</option><option>ROI justification for the board</option><option>Data quality blocking AI value</option><option>AI talent and skills gap</option><option>Security and IP risks</option><option>Vendor lock-in</option><option>Moving too fast without governance</option></select>
+    </div>
+    <div class="field"><div class="field-label">Top 3 Competitors</div>
+      <div id="execCompetitors">
+        <div class="dyn-entry"><input type="text" placeholder="Competitor 1"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button></div>
+        <div class="dyn-entry"><input type="text" placeholder="Competitor 2"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button></div>
+      </div>
+      <button class="add-btn" onclick="addDyn('execCompetitors','Competitor')">+ Add</button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="nextSection('executive-stack')">Maturity & Goals →</button>
+    </div>
+  </div>
+
+  <!-- Section: Marketer Stack -->
+  <div class="form-section" id="f-marketer-stack">
+    <div class="sec-header"><div class="sec-num">// Section 02 — Marketer</div><div class="sec-title">MARTECH AI STACK</div><div class="sec-desc">AI tools powering your marketing and growth operations.</div></div>
+    <div class="field"><div class="field-label">AI Content & Creative Tools</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'mktai','ChatGPT / OpenAI')"><span class="chip-dot"></span>ChatGPT</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Claude')"><span class="chip-dot"></span>Claude</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Jasper')"><span class="chip-dot"></span>Jasper</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Copy.ai')"><span class="chip-dot"></span>Copy.ai</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Midjourney / DALL-E')"><span class="chip-dot"></span>Midjourney</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Adobe Firefly')"><span class="chip-dot"></span>Firefly</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','ElevenLabs')"><span class="chip-dot"></span>ElevenLabs</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','Synthesia')"><span class="chip-dot"></span>Synthesia</div>
+        <div class="chip" onclick="toggleChip(this,'mktai','None yet')"><span class="chip-dot"></span>None yet</div>
+      </div>
+      <input type="text" id="mktaiOther" placeholder="Other..." style="margin-top:8px"/>
+    </div>
+    <div class="field"><div class="field-label">Marketing Platforms with AI</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'mktplat','HubSpot AI')"><span class="chip-dot"></span>HubSpot</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','Salesforce Marketing Cloud')"><span class="chip-dot"></span>SF Marketing Cloud</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','Marketo')"><span class="chip-dot"></span>Marketo</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','6sense')"><span class="chip-dot"></span>6sense</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','Drift / Intercom')"><span class="chip-dot"></span>Drift / Intercom</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','Mutiny')"><span class="chip-dot"></span>Mutiny</div>
+        <div class="chip" onclick="toggleChip(this,'mktplat','None')"><span class="chip-dot"></span>None</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Biggest Marketing AI Challenge</div><textarea id="mktChallenge" placeholder="e.g. Content can't keep up with demand, personalization at scale, attribution broken..."></textarea></div>
+    <div class="field"><div class="field-label">Marketing AI Goals</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'mktgoal','Scale content production')"><span class="chip-dot"></span>Scale content</div>
+        <div class="chip" onclick="toggleChip(this,'mktgoal','Personalize at scale')"><span class="chip-dot"></span>Personalization</div>
+        <div class="chip" onclick="toggleChip(this,'mktgoal','Improve campaign ROI')"><span class="chip-dot"></span>Campaign ROI</div>
+        <div class="chip" onclick="toggleChip(this,'mktgoal','Better analytics')"><span class="chip-dot"></span>Better analytics</div>
+        <div class="chip" onclick="toggleChip(this,'mktgoal','AI-powered SEO')"><span class="chip-dot"></span>AI SEO</div>
+        <div class="chip" onclick="toggleChip(this,'mktgoal','Reduce agency costs')"><span class="chip-dot"></span>Reduce costs</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Competitors to Watch</div>
+      <div id="mktCompetitors"><div class="dyn-entry"><input type="text" placeholder="Competitor 1"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button></div></div>
+      <button class="add-btn" onclick="addDyn('mktCompetitors','Competitor')">+ Add</button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="nextSection('marketer-stack')">Review & Submit →</button>
+    </div>
+  </div>
+
+  <!-- Section: General -->
+  <div class="form-section" id="f-general-stack">
+    <div class="sec-header"><div class="sec-num">// Section 02 — Quick Assessment</div><div class="sec-title">YOUR AI USAGE</div><div class="sec-desc">A few quick questions to calibrate your audit.</div></div>
+    <div class="field"><div class="field-label">Which AI tools do you use?</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'genai','ChatGPT')"><span class="chip-dot"></span>ChatGPT</div>
+        <div class="chip" onclick="toggleChip(this,'genai','Claude')"><span class="chip-dot"></span>Claude</div>
+        <div class="chip" onclick="toggleChip(this,'genai','Copilot')"><span class="chip-dot"></span>Copilot</div>
+        <div class="chip" onclick="toggleChip(this,'genai','Gemini')"><span class="chip-dot"></span>Gemini</div>
+        <div class="chip" onclick="toggleChip(this,'genai','Internal tools')"><span class="chip-dot"></span>Internal tools</div>
+        <div class="chip" onclick="toggleChip(this,'genai','None yet')"><span class="chip-dot"></span>None yet</div>
+      </div>
+      <input type="text" id="genaiOther" placeholder="Other..." style="margin-top:8px"/>
+    </div>
+    <div class="field"><div class="field-label">How would you describe your AI maturity?</div>
+      <input type="range" id="genMaturity" min="1" max="5" value="2" oninput="updateGenSlider()"/>
+      <div class="range-val" id="genMaturityVal">Building — Early production models</div>
+      <div class="range-labels"><span>Experimenting</span><span>Building</span><span>Scaling</span><span>Optimizing</span><span>Leading</span></div>
+    </div>
+    <div class="field"><div class="field-label">What do you want from this audit?</div><textarea id="genGoal" placeholder="e.g. Understand where we stand vs competitors, find gaps, get a compliance health check..."></textarea></div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="nextSection('general-stack')">Review & Submit →</button>
+    </div>
+  </div>
+
+  <!-- Section: Maturity (Consultant + Executive) -->
+  <div class="form-section" id="f-maturity">
+    <div class="sec-header"><div class="sec-num">// Section 03</div><div class="sec-title">MATURITY & GOALS</div><div class="sec-desc">Calibrate the recommendations to where you are and where you want to be.</div></div>
+    <div class="field"><div class="field-label">Current AI Maturity</div>
+      <input type="range" id="maturitySlider" min="1" max="5" value="2" oninput="updateSlider()"/>
+      <div class="range-val" id="maturityVal">Building — Early production models, growing team</div>
+      <div class="range-labels"><span>Experimenting</span><span>Building</span><span>Scaling</span><span>Optimizing</span><span>Leading</span></div>
+    </div>
+    <div class="field"><div class="field-label">Target Maturity (12 months)</div>
+      <select id="targetMaturity"><option value="">Select...</option><option>Experimenting</option><option>Building</option><option>Scaling</option><option>Optimizing</option><option>Leading</option></select>
+    </div>
+    <div class="field"><div class="field-label">Primary Audit Goals</div>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,'goal','Understand AI maturity')"><span class="chip-dot"></span>Understand maturity</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Identify capability gaps')"><span class="chip-dot"></span>Identify gaps</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Benchmark vs competitors')"><span class="chip-dot"></span>Benchmark</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Build investment case')"><span class="chip-dot"></span>Investment case</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Reduce AI costs')"><span class="chip-dot"></span>Reduce costs</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Improve governance')"><span class="chip-dot"></span>Governance</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Compliance readiness')"><span class="chip-dot"></span>Compliance</div>
+        <div class="chip" onclick="toggleChip(this,'goal','Build AI roadmap')"><span class="chip-dot"></span>AI roadmap</div>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Additional Context</div><textarea id="additionalContext" placeholder="Specific constraints, upcoming deadlines, board presentations, or questions you want addressed..."></textarea></div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="nextSection('maturity')">Review & Submit →</button>
+    </div>
+  </div>
+
+  <!-- Section: Review -->
+  <div class="form-section" id="f-review">
+    <div class="sec-header"><div class="sec-num">// Final Section</div><div class="sec-title">REVIEW & SUBMIT</div><div class="sec-desc">Check your answers then generate the intake file.</div></div>
+    <div id="reviewContent" style="margin-bottom:22px"></div>
+    <div class="field-row">
+      <div class="field"><div class="field-label">Your Name</div><input type="text" id="contactName" placeholder="Jane Smith"/></div>
+      <div class="field"><div class="field-label">Email</div><input type="email" id="contactEmail" placeholder="jane@company.com"/></div>
+    </div>
+    <div class="notice"><strong>⚠ Final check:</strong> By submitting you confirm all information is accurate and you are authorized to share it.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn-next" onclick="submitForm()">Generate Intake File ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">🤖</div>
+  <div class="success-title">INTAKE COMPLETE</div>
+  <div class="success-desc">Your intake file is ready. Download it and run:<br><code style="font-family:var(--mono);font-size:11px;color:var(--cyan)">python3 intake_reader.py --file intake_[company].json</code></div>
+  <div class="success-actions">
+    <button class="sa sa-pri" onclick="downloadJSON()">Download intake.json</button>
+    <button class="sa sa-sec" onclick="downloadTXT()">Download intake.txt</button>
+    <button class="sa sa-sec" onclick="copyOut()">Copy to clipboard</button>
+  </div>
+  <div class="output-box" id="outputBox"></div>
+</div>
+
+<footer>AI Stack Doctor v4.0 &nbsp;·&nbsp; Open Source (MIT) &nbsp;·&nbsp; <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" style="color:var(--text3)">github.com/dwnjuguna/AI-Stack-Doctor</a><br>All data used solely for report generation &nbsp;·&nbsp; No third-party sharing</footer>
+</div>
+
+<script>
+let persona=null,formData={},chips={};
+const FLOWS={consultant:['company','consultant-stack','maturity','review'],executive:['company','executive-stack','maturity','review'],marketer:['company','marketer-stack','review'],general:['company','general-stack','review']};
+let flow=[],flowIdx=0;
+const MATURITY={1:'Experimenting — Evaluating AI, no production systems yet',2:'Building — Early production models, growing team',3:'Scaling — Multiple AI systems in production',4:'Optimizing — Mature AI stack, focused on efficiency',5:'Leading — AI-first organization, industry benchmark'};
+const PLABELS={consultant:'Consultant',executive:'C-Suite / Exec',marketer:'Marketer / Growth',general:'General Inquiry'};
+
+function selectPersona(p){
+  persona=p;
+  document.querySelectorAll('.persona-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pc-'+p).classList.add('selected');
+  const btn=document.getElementById('startBtn');
+  btn.classList.add('ready');btn.disabled=false;
+  btn.textContent='Start as '+PLABELS[p]+' →';
+}
+
+function startForm(){
+  if(!persona)return;
+  flow=FLOWS[persona];flowIdx=0;formData.persona=persona;formData.personaLabel=PLABELS[persona];
+  document.getElementById('personaScreen').style.display='none';
+  document.getElementById('formScreen').style.display='block';
+  const badge=document.getElementById('personaBadge');
+  badge.textContent=PLABELS[persona];badge.className='progress-persona '+persona;
+  showSection(0);window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToPersona(){
+  document.getElementById('formScreen').style.display='none';
+  document.getElementById('personaScreen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showSection(idx){
+  document.querySelectorAll('.form-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('f-'+flow[idx]).classList.add('active');
+  const pct=Math.round((idx/flow.length)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(from){
+  collectSection(from);
+  if(flow[flowIdx+1]==='review')buildReview();
+  flowIdx++;showSection(flowIdx);
+}
+
+function prevSection(){flowIdx--;showSection(flowIdx);}
+
+function toggleChip(el,group,value){
+  el.classList.toggle('on');
+  if(!chips[group])chips[group]=new Set();
+  el.classList.contains('on')?chips[group].add(value):chips[group].delete(value);
+}
+function gc(group){return chips[group]?[...chips[group]]:[]}
+
+function updateSlider(){const v=document.getElementById('maturitySlider').value;document.getElementById('maturityVal').textContent=MATURITY[v]}
+function updateGenSlider(){const v=document.getElementById('genMaturity').value;document.getElementById('genMaturityVal').textContent=MATURITY[v]}
+
+function addDyn(id,label){
+  const w=document.getElementById(id);if(w.children.length>=3)return;
+  const d=document.createElement('div');d.className='dyn-entry';
+  d.innerHTML='<input type="text" placeholder="'+label+' '+(w.children.length+1)+'"/><button class="dyn-remove" onclick="this.parentElement.remove()">×</button>';
+  w.appendChild(d);
+}
+
+function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
+
+function collectSection(sec){
+  if(sec==='company'){formData.companyName=v('companyName');formData.industry=v('industry');formData.companySize=v('companySize');formData.hqLocation=v('hqLocation');formData.revenue=v('revenue');formData.geoMarkets=gc('geo')}
+  if(sec==='consultant-stack'){formData.llms=[...gc('llm'),v('llmOther')].filter(Boolean);formData.mlStack=[...gc('ml'),v('mlOther')].filter(Boolean);formData.cloudMlops=[...gc('cloud'),...gc('mlops')];formData.painPoints=v('clientPainPoints');formData.competitors=[...document.querySelectorAll('#consultantCompetitors input')].map(i=>i.value.trim()).filter(Boolean);formData.engagementObj=v('engagementObj')}
+  if(sec==='executive-stack'){formData.aiBudget=v('execBudget');formData.aiPlatforms=gc('execai');formData.compliance=gc('execcomp');formData.execConcern=v('execConcern');formData.competitors=[...document.querySelectorAll('#execCompetitors input')].map(i=>i.value.trim()).filter(Boolean)}
+  if(sec==='marketer-stack'){formData.mktAiTools=[...gc('mktai'),v('mktaiOther')].filter(Boolean);formData.mktPlatforms=gc('mktplat');formData.mktChallenge=v('mktChallenge');formData.mktGoals=gc('mktgoal');formData.competitors=[...document.querySelectorAll('#mktCompetitors input')].map(i=>i.value.trim()).filter(Boolean)}
+  if(sec==='general-stack'){formData.aiTools=[...gc('genai'),v('genaiOther')].filter(Boolean);formData.maturityLevel=document.getElementById('genMaturity').value;formData.maturityLabel=MATURITY[formData.maturityLevel];formData.genGoal=v('genGoal')}
+  if(sec==='maturity'){formData.maturityLevel=document.getElementById('maturitySlider').value;formData.maturityLabel=MATURITY[formData.maturityLevel];formData.targetMaturity=v('targetMaturity');formData.goals=gc('goal');formData.additionalContext=v('additionalContext')}
+}
+
+function arr(a){return Array.isArray(a)&&a.length?a.join(', '):'—'}
+function str(s){return s||'—'}
+
+function buildReview(){
+  const d=formData;
+  const blocks=[
+    {title:'Company',items:[['Company',str(d.companyName)],['Industry',str(d.industry)],['Size',str(d.companySize)],['HQ',str(d.hqLocation)],['Markets',arr(d.geoMarkets)],['Role',str(d.personaLabel)]]},
+    {title:'AI Stack',items:[['LLMs',arr(d.llms||d.mktAiTools||d.aiTools)],['Platforms',arr(d.mlStack||d.aiPlatforms||d.mktPlatforms)],['Cloud/MLOps',arr(d.cloudMlops)],['Compliance',arr(d.compliance)],['Budget',str(d.aiBudget)]].filter(i=>i[1]!=='—')},
+    {title:'Goals',items:[['Goals',arr(d.goals||d.mktGoals)],['Maturity',str(d.maturityLabel)],['Target',str(d.targetMaturity)],['Competitors',arr(d.competitors)],['Pain Points',str(d.painPoints||d.mktChallenge||d.genGoal)]].filter(i=>i[1]!=='—')},
+  ];
+  document.getElementById('reviewContent').innerHTML=blocks.map(b=>`<div class="review-block"><div class="review-block-title">${b.title}</div>${b.items.filter(i=>i[1]&&i[1]!=='—').map(([k,val])=>`<div class="review-row"><div class="review-key">${k}</div><div class="review-val">${val}</div></div>`).join('')}</div>`).join('');
+}
+
+function generateTXT(){
+  const d=formData;
+  return `AI STACK DOCTOR v4 — CLIENT INTAKE\nPersona: ${d.personaLabel||'—'} | ${new Date().toLocaleString()}\n${'='.repeat(60)}\n\nCOMPANY: ${d.companyName||'—'}\nCONTACT: ${d.contactName||'—'} <${d.contactEmail||'—'}>\nINDUSTRY: ${d.industry||'—'}\nSIZE: ${d.companySize||'—'}\nHQ: ${d.hqLocation||'—'}\nMARKETS: ${arr(d.geoMarkets)}\n\n${'─'.repeat(60)}\nAI STACK (CLIENT-DECLARED — HIGH CONFIDENCE)\n${'─'.repeat(60)}\nLLMs / GenAI:   ${arr(d.llms||d.mktAiTools||d.aiTools)}\nML / Data:      ${arr(d.mlStack)}\nCloud / MLOps:  ${arr(d.cloudMlops)}\nAI Platforms:   ${arr(d.aiPlatforms||d.mktPlatforms)}\nCompliance:     ${arr(d.compliance)}\nBudget:         ${d.aiBudget||'—'}\n\n${'─'.repeat(60)}\nGOALS & CONTEXT\n${'─'.repeat(60)}\nCurrent Maturity: ${d.maturityLabel||'—'}\nTarget Maturity:  ${d.targetMaturity||'—'}\nGoals:            ${arr(d.goals||d.mktGoals)}\nCompetitors:      ${arr(d.competitors)}\nPain Points: ${d.painPoints||d.mktChallenge||d.genGoal||'None specified'}\n\n${'='.repeat(60)}\nAGENT INSTRUCTIONS:\n- Use intake data as PRIMARY source of truth (Confidence: HIGH)\n- Do NOT override declared stack with web search speculation\n- Focus recommendations on stated pain points and goals\n- Benchmark against: ${arr(d.competitors)}\n${'='.repeat(60)}`;
+}
+
+function submitForm(){
+  collectSection('review');
+  formData.contactName=v('contactName');formData.contactEmail=v('contactEmail');
+  formData.submittedAt=new Date().toISOString();formData.formVersion='v4.0';
+  fetch('/api/intake/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(formData)}).catch(()=>{});
+  document.getElementById('formScreen').style.display='none';
+  document.getElementById('successScreen').style.display='block';
+  const box=document.getElementById('outputBox');box.style.display='block';box.textContent=generateTXT();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function downloadJSON(){const name=(formData.companyName||'client').toLowerCase().replace(/\s+/g,'_');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(formData,null,2)],{type:'application/json'}));a.download='intake_'+name+'.json';a.click()}
+function downloadTXT(){const name=(formData.companyName||'client').toLowerCase().replace(/\s+/g,'_');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([generateTXT()],{type:'text/plain'}));a.download='intake_'+name+'.txt';a.click()}
+function copyOut(){navigator.clipboard.writeText(generateTXT()).then(()=>{const btn=event.target;btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy to clipboard',2000)})}
+
+// Auto-select persona from URL
+const urlP=window.location.pathname.split('/').pop();
+if(['consultant','executive','marketer','general'].includes(urlP))selectPersona(urlP);
+updateSlider();updateGenSlider();
+</script>
+</body>
+</html>

@@ -191,6 +191,34 @@ def seed():
 def index():
     return send_from_directory(".", "dashboard.html")
 
+@app.route("/intake")
+@app.route("/intake/<persona>")
+def intake(persona=None):
+    """Serve the client intake form, optionally with a persona pre-selected."""
+    from flask import redirect
+    if persona and persona not in ("consultant","executive","marketer","general"):
+        return redirect("/intake")
+    return send_from_directory(".", "intake_form.html")
+
+@app.route("/api/intake/submit", methods=["POST"])
+def intake_submit():
+    """
+    Receive a submitted intake form via POST.
+    Saves to intake_submissions/ folder for pickup by the agent.
+    """
+    from flask import request
+    import pathlib, datetime
+    data = request.get_json() or {}
+    company = re.sub(r'[^\w]', '_', data.get('companyName','unknown').lower())
+    ts      = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    folder  = pathlib.Path("intake_submissions")
+    folder.mkdir(exist_ok=True)
+    fpath   = folder / f"intake_{company}_{ts}.json"
+    with open(fpath, "w") as f:
+        import json as _json
+        _json.dump(data, f, indent=2)
+    return jsonify({"ok": True, "file": str(fpath), "company": data.get("companyName")})
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=None)

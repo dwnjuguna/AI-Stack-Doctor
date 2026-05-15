@@ -1,135 +1,397 @@
-# 🤖 AI Stack Doctor v3
+# 🤖 AI Stack Doctor v4
 
-> Deep health checks for modern AI infrastructure with governance auditing, redundancy detection, peer benchmarking, and compliance assessment.
+> **Know exactly where your AI infrastructure stands — in 90 seconds.**
 
-[![MIT License](https://img.shields.io/badge/License-MIT-cyan.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Powered by Claude](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-orange.svg)](https://anthropic.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-cyan.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Powered by Claude](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-orange.svg)](https://www.anthropic.com)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ai--stack--doctor.onrender.com-green.svg)](https://ai-stack-doctor.onrender.com)
 
----
-
-## What It Does
-
-AI Stack Doctor analyzes any company's AI infrastructure across **7 domains**, producing a structured health report with scores, peer benchmarking, governance assessment, and strategic recommendations.
-
-| Domain | What's Assessed |
-|--------|----------------|
-| GenAI / LLMs | Foundation models, fine-tuning, prompt pipelines |
-| Agentic AI | Orchestration frameworks, tool use, autonomous agents |
-| Machine Learning | Training frameworks, model lifecycle, experimentation |
-| Data Engineering | Pipelines, feature stores, streaming, warehouses |
-| AI Platforms | Internal ML platforms, serving infrastructure |
-| MLOps / LLMOps | CI/CD for models, monitoring, observability |
-| Cloud AI Services | AWS, GCP, Azure AI services adoption |
+AI Stack Doctor is a free, open-source AI infrastructure audit tool that gives any company a complete health check of their AI stack — with scores, peer benchmarks, ROI estimates, compliance flags, and a prioritized action plan. Built for consultants, executives, and technical teams. No technical background required.
 
 ---
 
-## Key Features
+## 🌐 Live Demo
 
-- **22 top-tier company intelligence profiles** — Meta, Google, NVIDIA, OpenAI, Anthropic, Microsoft, Amazon, Apple, Netflix, Tesla, Adobe, Salesforce, Mistral, AMD, Oracle, Broadcom, Intel, Stability AI, DeepL, Synthesia, Aleph Alpha, ElevenLabs
-- **3 audit modes** — Analyze your own company, a competitor, or run a generic best-practice audit
-- **Historical tracking** — SQLite-backed audit history with score delta comparison between runs
-- **14 global compliance frameworks** — EU AI Act, GDPR, CCPA, US EO on AI, HIPAA, ISO 42001, and more
-- **5 configurable search engines** — DuckDuckGo (default), Google Custom Search, Bing, SerpAPI, or custom BYO
-- **Dark-themed PDF export** — Executive-ready branded reports
-- **REST API mode** — Expose the agent as a local endpoint for integration
-- **Intelligence Dashboard** — Full trend visualization, radar comparison, compliance reference
-
----
-
-## ⚠️ Public Information Notice
-
-All company intelligence profiles, stack assessments, and scores are derived **exclusively from publicly available sources** — engineering blogs, job postings, press releases, research papers, and official product documentation.
-
-- No proprietary, confidential, or insider information is used
-- Scores are analytical estimates, not verified facts
-- This tool is for informational purposes only and does not constitute legal, financial, or professional advice
-- Company names and trademarks are the property of their respective owners
+| URL | Description |
+|-----|-------------|
+| [ai-stack-doctor.onrender.com](https://ai-stack-doctor.onrender.com) | Intelligence Dashboard |
+| [/guide](https://ai-stack-doctor.onrender.com/guide) | Non-Technical User Guide |
+| [/intake](https://ai-stack-doctor.onrender.com/intake) | Smart Client Intake Form |
+| [/legal](https://ai-stack-doctor.onrender.com/legal) | Legal & Privacy |
+| [/security](https://ai-stack-doctor.onrender.com/security) | Security Posture |
 
 ---
 
-## File Structure
+## ✨ What's New in v4
+
+| Feature | Description |
+|---------|-------------|
+| 🎯 **Smart Intake Forms** | 4 persona-tailored forms — Consultant, Executive, Marketer, General |
+| 💰 **ROI Layer** | Every recommendation includes gap cost, fix cost, projected ROI, payback period |
+| 📖 **User Guide** | Beautiful non-technical landing page at `/guide` |
+| 🌍 **44 Company Profiles** | US, Europe, Asia, Latin America, Africa — including first-ever African AI benchmarks |
+| 🔍 **Cohort Filtering** | Filter by industry (28 categories), size, and region |
+| ⏱️ **Agentic Scheduler** | Autonomous audit scheduling, change detection, and alerts |
+| 🔒 **Security Foundation** | Auth scaffolding, audit logging, Gov Edition roadmap |
+| ⚖️ **Full Legal Layer** | GDPR, CCPA, EU AI Act, Data Processing Agreement |
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                       AI STACK DOCTOR v4                             │
+│                  ai-stack-doctor.onrender.com                        │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │
+           ┌────────────────┼──────────────────────┐
+           │                │                      │
+           ▼                ▼                      ▼
+    ┌─────────────┐  ┌─────────────────┐  ┌───────────────────┐
+    │  /          │  │  /guide         │  │  /intake          │
+    │  dashboard  │  │  landing page   │  │  4-persona form   │
+    │  .html      │  │  guide.html     │  │  intake_form.html │
+    └──────┬──────┘  └─────────────────┘  └────────┬──────────┘
+           │                                        │
+           ▼                                        ▼
+    ┌───────────────────────────────────────────────────────────┐
+    │               dashboard_server.py  (Flask)                 │
+    │                                                            │
+    │  31 Routes across 8 categories:                            │
+    │  ├── Pages   /  /guide  /intake  /legal  /security        │
+    │  ├── Data    /api/summary  /companies  /trend  /compare   │
+    │  ├── Intake  /api/intake/submit                            │
+    │  ├── Auth    /api/auth/generate-key  /keys  /revoke        │
+    │  ├── Logs    /api/audit-log                                │
+    │  ├── Lists   /api/waitlist  /api/gov-interest              │
+    │  └── Sched   /api/scheduler/* (10 routes)                 │
+    └──────────────────────┬────────────────────────────────────┘
+                            │
+           ┌────────────────┼────────────────────┐
+           │                │                    │
+           ▼                ▼                    ▼
+    ┌─────────────┐  ┌──────────────────┐  ┌───────────────┐
+    │ scheduler   │  │ ai_stack_health  │  │  SQLite DB    │
+    │ .py         │  │ _agent_v3.py     │  │  history.db   │
+    │             │  │                  │  │               │
+    │ Classes:    │  │  6 Audit Tools:  │  │  Tables:      │
+    │ Agentic     │  │  ├─detect_stack  │  │  ├─ audits    │
+    │ Scheduler   │  │  ├─research      │  │  ├─ alerts    │
+    │ AlertEngine │  │  ├─integrations  │  │  └─ history   │
+    │ DigestEngine│  │  ├─governance    │  │               │
+    │ ScheduleStore│ │  ├─redundancy    │  │  Files:       │
+    └──────┬──────┘  │  └─benchmark     │  │  schedules    │
+           │         └────────┬─────────┘  │  .json        │
+           │                  │            └───────────────┘
+           └──────────────────┤
+                              │
+                              ▼
+    ┌─────────────────────────────────────────────────────────┐
+    │                  EXTERNAL SERVICES                       │
+    │                                                          │
+    │  ┌──────────────────┐   ┌────────────────────────────┐  │
+    │  │  Anthropic API   │   │  Search (configurable)     │  │
+    │  │  Claude Opus     │   │  ├─ DuckDuckGo (default)   │  │
+    │  │  AI analysis     │   │  ├─ Google Custom Search   │  │
+    │  └──────────────────┘   │  ├─ Bing / SerpAPI         │  │
+    │                         │  └─ Private / Custom        │  │
+    │                         └────────────────────────────┘  │
+    └─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🤖 Agent Architecture
+
+The audit agent uses a **6-tool agentic loop** powered by Anthropic Claude:
+
+```
+User Input (company + mode)
+        │
+        ▼
+┌────────────────────────────────────────────────────────┐
+│                  AGENTIC AUDIT LOOP                     │
+│                                                         │
+│  Tool 1: detect_ai_stack                                │
+│  └─ 8 targeted searches across 7 domains                │
+│     GenAI/LLMs · Agentic · ML · Data Eng               │
+│     AI Platforms · MLOps · Cloud AI                     │
+│                                                         │
+│  Tool 2: research_stack_health                          │
+│  └─ Deprecations · vendor stability · G2 data           │
+│                                                         │
+│  Tool 3: check_ai_integrations                          │
+│  └─ Pipeline health · data flows · observability        │
+│                                                         │
+│  Tool 4: audit_governance_and_ownership                 │
+│  └─ 14 compliance frameworks + ROI context              │
+│                                                         │
+│  Tool 5: detect_redundancies_and_gaps                   │
+│  └─ Capability overlaps · wasted spend                  │
+│                                                         │
+│  Tool 6: benchmark_against_peers                        │
+│  └─ 3-company comparison from 44 intel profiles         │
+│                                                         │
+└────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌────────────────────────────────────────────────────────┐
+│                    REPORT OUTPUT                        │
+│                                                         │
+│  Executive Summary + ROI Table                          │
+│  Stack Inventory (confirmed tools)                      │
+│  Category Scores (7 domains / 100 pts)                  │
+│  Category Deep Dives                                    │
+│  Governance & Compliance Health                         │
+│  Peer Benchmarking                                      │
+│  Strategic Recommendations + Full ROI Analysis          │
+│  Audit Confidence Summary                               │
+│                                                         │
+│  Export: TXT  ·  PDF (dark-themed)  ·  Dashboard        │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📊 Scoring System
+
+```
+DOMAIN                   WEIGHT    WHAT IT MEASURES
+────────────────────────────────────────────────────────
+GenAI / LLMs              14 pts   Foundation models, RAG, fine-tuning
+Agentic AI                14 pts   Autonomous agents, orchestration
+Machine Learning          14 pts   Training frameworks, model lifecycle
+Data Engineering          14 pts   Pipelines, warehouses, feature stores
+AI Platforms              14 pts   Internal ML platforms, model serving
+MLOps / LLMOps            14 pts   Monitoring, observability, CI/CD
+Cloud AI Services         16 pts   AWS/GCP/Azure AI services maturity
+────────────────────────────────────────────────────────
+TOTAL                    100 pts
+
+🟢 Healthy          80–100
+🟡 Needs Attention  60–79
+🔴 At Risk           < 60
+```
+
+---
+
+## 🌍 Company Intelligence Coverage
+
+**44 pre-loaded profiles across 5 regions and 28 industries:**
+
+### 🇺🇸 United States (17)
+Google · Microsoft · NVIDIA · Meta · OpenAI · Anthropic · Netflix · Tesla · Apple · Amazon · Mistral · Salesforce · Adobe · AMD · Oracle · Broadcom · Intel
+
+### 🇪🇺 Europe (9)
+Stability AI · DeepL · Synthesia · Aleph Alpha · ElevenLabs · DeepMind · Revolut · Adyen · Klarna · Wise
+
+### 🌏 Asia (9)
+Baidu · ByteDance · Alibaba · Samsung · DeepSeek · Infosys · Ant Group · Paytm · Kakao
+
+### 🌎 Latin America (5)
+Nubank · Mercado Libre · Rappi · Clip · Ualá
+
+### 🌍 Africa (3)
+Flutterwave · Safaricom (M-Pesa) · Moniepoint
+
+> 🏆 **First AI benchmarking tool in the world with African company profiles.**
+
+---
+
+## 🔒 Compliance Frameworks (14)
+
+**Critical:** EU AI Act (2024) · GDPR+AI · US EO on AI · CCPA/CPRA · HIPAA+AI · China GenAI Regs
+
+**High:** EU Data Act · Digital Services Act · NIST AI RMF · US State AI Laws · UK AI Regulation · ISO 42001 · PCI-DSS v4.0 · SOC 2
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+```bash
+python3 --version    # 3.11+
+pip3 install anthropic ddgs rich flask reportlab gunicorn
+```
+
+### 1. Clone & Configure
+```bash
+git clone https://github.com/dwnjuguna/AI-Stack-Doctor
+cd AI-Stack-Doctor
+
+# Get your API key at console.anthropic.com
+export ANTHROPIC_API_KEY="sk-ant-..."
+
+# Make it permanent (Mac/Linux)
+echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.zshrc && source ~/.zshrc
+```
+
+### 2. Run the CLI Agent
+```bash
+python3 ai_stack_health_agent_v3.py
+```
+
+### 3. Run the Full Dashboard
+```bash
+python3 dashboard_server.py
+# Opens at http://localhost:5050
+```
+
+### 4. Run a Client Intake Audit
+```bash
+# First send client to: http://localhost:5050/intake/consultant
+# They fill the form and download intake_company.json
+# Then run:
+python3 intake_reader.py --file intake_acme.json --export both
+```
+
+---
+
+## 📁 File Structure
 
 ```
 ai-stack-doctor/
-├── ai_stack_health_agent_v3.py   # Main agent (CLI + REST API)
-├── pdf_export.py                 # Dark-themed PDF report generator
-├── dashboard_server.py           # History dashboard Flask backend
-├── dashboard.html                # Intelligence dashboard (standalone)
-├── search_config.json.example    # Search engine config template
-├── .gitignore
-├── LICENSE
-└── README.md
+│
+├── 🤖  ai_stack_health_agent_v3.py  # Main audit agent (CLI + API + 44 companies)
+├── 📄  pdf_export.py                # Dark-themed PDF report generator
+├── 📋  intake_reader.py             # Client intake → personalized audit runner
+│
+├── 🌐  dashboard_server.py          # Flask backend (31 routes)
+├── ⏱️  scheduler.py                 # Agentic scheduler (zero external deps)
+│
+├── 🎨  dashboard.html               # Intelligence dashboard (44 companies)
+├── 📝  intake_form.html             # Smart 4-persona intake form
+├── 📖  guide.html                   # Non-technical user guide
+├── ⚖️  legal.html                   # Legal & privacy (GDPR/CCPA/EU AI Act)
+├── 🔒  security.html                # Security posture & Gov Edition
+│
+├── ⚙️  requirements.txt             # Python dependencies
+├── ☁️  render.yaml                  # Render.com deployment config
+├── 🔐  .env.example                 # Environment variable template
+└── 📚  README.md                    # This file
+
+# Auto-created at runtime:
+# ai_stack_history.db     SQLite audit history & alerts
+# schedules.json          Agentic scheduler configuration
+# audit_log.jsonl         Append-only tamper-evident audit trail
+# api_keys.json           Pro tier API key store
+# waitlist.json           Email waitlist
+# gov_interest.json       Government Edition interest registrations
+# intake_submissions/     Client intake JSON files
 ```
 
 ---
 
-## Quick Start
+## 🎯 Intake Form — 4 Personas
 
-### 1. Prerequisites
+Send clients a tailored link before your first call:
 
-```bash
-# Python 3.9 or higher required
-python3 --version
+| Persona | URL | Time | Best For |
+|---------|-----|------|----------|
+| **Consultant** | `/intake/consultant` | ~10 min | Client engagements, gap analysis |
+| **C-Suite / Exec** | `/intake/executive` | ~8 min | Board-ready reports, compliance risk |
+| **Marketer / Growth** | `/intake/marketer` | ~7 min | MarTech AI stack, content tools |
+| **General** | `/intake/general` | ~5 min | Quick self-assessment |
 
-# Install dependencies
-pip3 install anthropic ddgs rich flask reportlab
-```
-
-### 2. Set your Anthropic API key
-
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
-```
-
-> Get your key at [console.anthropic.com](https://console.anthropic.com)
-
-### 3. (Optional) Configure your search engine
-
-```bash
-# Copy the example config
-cp search_config.json.example search_config.json
-
-# Default is DuckDuckGo — no API key needed
-# Edit search_config.json to switch to Google, Bing, SerpAPI, or custom
-
-# Or set via CLI flag:
-python3 ai_stack_health_agent_v3.py --set-search google \
-  --search-key YOUR_KEY --search-cx YOUR_ENGINE_ID
-```
-
-### 4. Run your first audit
-
-```bash
-python3 ai_stack_health_agent_v3.py
-```
-
-You'll be prompted to choose an audit mode, then enter a company name.
+Intake data = **high-confidence ground truth**. The agent uses it as primary source over web research.
 
 ---
 
-## Usage
+## ⏱️ Agentic Scheduler
 
-### Interactive CLI
+Zero external dependencies — pure Python stdlib:
 
-```bash
-# Standard interactive mode
-python3 ai_stack_health_agent_v3.py
+```python
+from scheduler import get_scheduler
 
-# Browse past audit history
-python3 ai_stack_health_agent_v3.py --history
+sched = get_scheduler()
+sched.start()  # Starts background daemon thread
 
-# View history for a specific company
-python3 ai_stack_health_agent_v3.py --history --company stripe
+# Schedule weekly Stripe audit with Slack webhook
+sched.schedule(
+    company     = "Stripe",
+    mode        = "competitor",
+    cadence     = "weekly",       # hourly/daily/weekly/monthly/quarterly
+    webhook_url = "https://hooks.slack.com/..."
+)
+
+# Trigger immediate on-demand audit
+sched.run_now(schedule_id)
+
+# Get change-detection alerts (fires when score moves 3+ pts)
+alerts = sched.get_alerts()
+
+# Get digest of all tracked companies
+print(sched.get_digest())
 ```
 
-### REST API Mode
+---
+
+## 💰 ROI Layer
+
+Every recommendation includes:
+
+```
+Gap Cost:      $150K–$500K/year  ← what inaction is costing
+Fix Cost:      ~$40K             ← investment to resolve
+Projected ROI: 350% / 12 months
+Payback:       3 months
+Quick Win:     Enable LangSmith free tier this week — zero cost
+```
+
+9 ROI domains with evidence-based benchmarks:
+GenAI/LLMs · Agentic AI · Machine Learning · Data Engineering ·
+AI Platforms · MLOps/LLMOps · Cloud AI Services · Governance · Redundancy
+
+---
+
+## 🔒 Security
+
+| Control | Status |
+|---------|--------|
+| HTTPS / TLS | ✅ Live |
+| Public information only | ✅ Live |
+| GDPR cookie consent | ✅ Live |
+| Privacy policy + legal | ✅ Live |
+| EU AI Act disclosure | ✅ Live |
+| Private Server / Air-gap mode | ✅ Live |
+| API key authentication | ⚙️ In Progress |
+| Audit logging | ⚙️ In Progress |
+| SSO / SAML | 📅 Planned |
+| FedRAMP 20x | 🔮 Roadmap |
+| CMMC 2.0 | 🔮 Roadmap |
+
+Full posture → [/security](https://ai-stack-doctor.onrender.com/security)
+
+### 🏛️ Government Edition
+
+Purpose-built for defense contractors and federal agencies. Separate infrastructure. Air-gap capable. AWS GovCloud. FIPS 140-2. NIST 800-171. FedRAMP 20x pathway.
+
+[Register Interest →](https://ai-stack-doctor.onrender.com/security#government)
+
+---
+
+## 🌐 Deploy to Render.com
+
+1. Fork this repo on GitHub
+2. Create a new **Web Service** on [render.com](https://render.com)
+3. Connect your GitHub fork
+4. Add environment variable: `ANTHROPIC_API_KEY` = `sk-ant-...`
+5. Build command: `pip install -r requirements.txt`
+6. Start command: `gunicorn dashboard_server:app`
+7. Deploy → live in ~3 minutes
+
+---
+
+## 📡 REST API
 
 ```bash
-# Start the API server (default port 8080)
+# Start local API server
 python3 ai_stack_health_agent_v3.py --api
 
-# Run an audit
+# Run an audit via POST
 curl -X POST http://localhost:8080/audit \
   -H "Content-Type: application/json" \
   -d '{"company": "Stripe", "mode": "competitor"}'
@@ -137,115 +399,72 @@ curl -X POST http://localhost:8080/audit \
 # Get audit history
 curl http://localhost:8080/history
 
-# List companies with pre-loaded intelligence
+# List all tracked companies
 curl http://localhost:8080/companies
-
-# Update search engine config
-curl -X POST http://localhost:8080/api/set-search-engine \
-  -H "Content-Type: application/json" \
-  -d '{"engine": "serpapi", "key": "your-key"}'
 ```
 
-### Intelligence Dashboard
+---
+
+## 🤝 Contributing
+
+Contributions are very welcome! Priority areas:
+
+- **New company profiles** — add to `COMPANY_INTEL` in the agent
+- **New compliance frameworks** — extend `GLOBAL_COMPLIANCE`
+- **New regions** — Middle East, Southeast Asia, South Asia
+- **Local LLM support** — Ollama / LM Studio integration
+- **Translations** — guide.html in other languages
+- **UI improvements** — dashboard, intake form, guide
 
 ```bash
-# Start the dashboard server
+git clone https://github.com/dwnjuguna/AI-Stack-Doctor
+cd AI-Stack-Doctor
+pip3 install -r requirements.txt
+export ANTHROPIC_API_KEY="sk-ant-..."
 python3 dashboard_server.py
-
-# Opens automatically at http://localhost:5050
-# Or open dashboard.html directly in your browser for offline/demo mode
-```
-
-### Python Module
-
-```python
-from ai_stack_health_agent_v3 import run_agent, save_to_history, get_last_report
-from pdf_export import export_report_to_pdf
-
-# Run an audit programmatically
-report = run_agent("Stripe", "competitor")
-
-# Export to dark-themed PDF
-pdf_path = export_report_to_pdf(report, "Stripe")
-print(f"Report saved to: {pdf_path}")
-
-# Check history
-prev = get_last_report("stripe")
-if prev:
-    print(f"Previous score: {prev['overall']}/100 on {prev['date']}")
 ```
 
 ---
 
-## Audit Modes
+## 📄 License
 
-| Mode | Use Case | Data Leaves Machine? |
-|------|----------|---------------------|
-| `own` | Analyze your own company's AI stack | Only if live search enabled |
-| `competitor` | Research any external company | Only if live search enabled |
-| `generic` | Score against industry best practices | No |
+MIT License — free to use, modify, and distribute.
 
----
-
-## Search Engine Options
-
-| Engine | API Key Required | Notes |
-|--------|-----------------|-------|
-| DuckDuckGo | No | Default, free, privacy-respecting |
-| Google Custom Search | Yes | Requires Cloud project + Search Engine ID |
-| Bing Search API | Yes | Requires Azure subscription |
-| SerpAPI | Yes | Free tier: 100 searches/month |
-| Custom / BYO | Optional | Any endpoint accepting `?q=` query param |
+> Company names and trademarks referenced in audit reports belong to their respective owners.
+> All scores are analytical estimates derived from publicly available information only.
+> Not legal, financial, or professional advice.
 
 ---
 
-## Scoring Rubric
+## 🙏 Acknowledgements
 
-Each of the 7 categories is scored out of 14 points (Cloud AI Services: 16) across 5 dimensions:
-
-| Dimension | Points | What's Measured |
-|-----------|--------|----------------|
-| Currency | 0–3 | Tools are recent, not deprecated |
-| Coverage | 0–3 | No major capability gaps |
-| Integration | 0–3 | Tools connect well, data flows cleanly |
-| Governance | 0–3 | Monitoring, security, compliance, ownership |
-| Maturity | 0–2 | Advanced usage, not just adoption |
-
-**Overall health:**
-- 🟢 80–100 — Healthy
-- 🟡 60–79 — Needs Attention
-- 🔴 Below 60 — At Risk
+- [Anthropic](https://www.anthropic.com) — Claude AI powering the entire audit engine
+- [DuckDuckGo](https://duckduckgo.com) — Privacy-respecting default search
+- [Render.com](https://render.com) — Hosting infrastructure
+- [Chart.js](https://chartjs.org) — Dashboard data visualizations
+- [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Terminal typography
+- [Bebas Neue](https://fonts.google.com/specimen/Bebas+Neue) — Display typography
+- The open source community — for making tools like this possible
 
 ---
 
-## Compliance Frameworks Covered
-
-The tool assesses governance posture against 14 key global frameworks:
-
-**Critical:** EU AI Act (2024), GDPR + AI, US Executive Order on AI, CCPA/CPRA, HIPAA + AI, China Generative AI Regulations
-
-**High:** EU Data Act, Digital Services Act, NIST AI RMF, US State AI Laws, UK AI Regulation, ISO/IEC 42001, PCI-DSS v4.0, SOC 2 Type II
+<div align="center">
 
 ---
 
-## Contributing
+### Built with ❤️ using the [Anthropic Claude SDK](https://docs.anthropic.com/en/api/getting-started)
 
-Contributions welcome! To add a new company to the intelligence layer, add an entry to the `COMPANY_INTEL` dictionary in `ai_stack_health_agent_v3.py` following the existing format:
+*"I am because we are." — Ubuntu*
 
-```python
-"company name": {
-    "industry": "sector / sub-sector",
-    "blogs": ["engineering.company.com/blog"],
-    "known_stack": ["Tool 1", "Tool 2", ...],
-    "known_strengths": ["Category 1", "Category 2"],
-    "search_hints": ["targeted search query 1", ...],
-},
-```
+Built with responsibility, ethics, dignity, integrity, and respect.
+Open source. Free forever. Global by design.
 
 ---
 
-## License
+[🌐 Live Demo](https://ai-stack-doctor.onrender.com) &nbsp;·&nbsp;
+[📖 User Guide](https://ai-stack-doctor.onrender.com/guide) &nbsp;·&nbsp;
+[🔒 Security](https://ai-stack-doctor.onrender.com/security) &nbsp;·&nbsp;
+[⚖️ Legal](https://ai-stack-doctor.onrender.com/legal) &nbsp;·&nbsp;
+[🐙 GitHub](https://github.com/dwnjuguna/AI-Stack-Doctor)
 
-MIT — see [LICENSE](LICENSE) for details.
-
-Built with [Anthropic Claude](https://anthropic.com) · Open Source
+</div>

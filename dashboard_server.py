@@ -11,10 +11,23 @@ Requirements:
     pip3 install flask
 """
 
-import sqlite3, json, re, argparse, webbrowser, os
+import sqlite3, json, re, argparse, webbrowser, os, logging
 from datetime import datetime
 from pathlib import Path
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
+
+logging.basicConfig(level=logging.INFO,
+    format='%(asctime)s [%(name)s] %(levelname)s: %(message)s')
+
+# ── Agentic Scheduler ─────────────────────────────────────────────────────────
+try:
+    from scheduler import get_scheduler
+    _scheduler = get_scheduler()
+    _scheduler.start()
+    print("  🤖 Agentic scheduler started")
+except Exception as _se:
+    _scheduler = None
+    print(f"  ⚠ Scheduler not available: {_se}")
 
 DB_PATH = Path("ai_stack_history.db")
 app     = Flask(__name__)
@@ -201,6 +214,311 @@ def legal(section=None):
 def guide():
     """Serve the non-technical user guide / landing page."""
     return send_from_directory(".", "guide.html")
+
+@app.route("/security")
+def security():
+    """Serve the security posture page."""
+    return send_from_directory(".", "security.html")
+
+# ── AUTHENTICATION SCAFFOLDING ────────────────────────────────────────────────
+# Phase 1 auth: API key gate for Pro tier endpoints
+# Full SSO/SAML planned for Gov Edition (Phase 2)
+
+import secrets, hashlib
+
+def _load_api_keys() -> dict:
+    """Load API keys from api_keys.json (created on first Pro activation)."""
+    import json as _j
+    kp = pathlib.Path("api_keys.json")
+    if not kp.exists():
+        return {}
+    try:
+        with open(kp) as f:
+            return _j.load(f)
+    except Exception:
+        return {}
+
+def _save_api_key(name: str, key: str, tier: str = "pro"):
+    """Save a new API key."""
+    import json as _j
+    keys = _load_api_keys()
+    key_hash = hashlib.sha256(key.encode()).hexdigest()
+    keys[key_hash] = {
+        "name": name,
+        "tier": tier,
+        "created_at": datetime.now().isoformat(),
+        "last_used": None,
+        "active": True,
+    }
+    with open("api_keys.json", "w") as f:
+        _j.dump(keys, f, indent=2)
+    return key_hash
+
+def require_api_key(f):
+    """
+    Decorator for Pro/Enterprise endpoints.
+    Checks for valid API key in header or query param.
+    Falls back to open access if no keys configured (free tier).
+    """
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        keys = _load_api_keys()
+        if not keys:
+            # No keys configured = open access (free tier / demo mode)
+            return f(*args, **kwargs)
+        # Check Authorization header or ?api_key= param
+        from flask import request as _req
+        auth_header = _req.headers.get("Authorization", "")
+        api_key     = _req.args.get("api_key", "")
+        if auth_header.startswith("Bearer "):
+            api_key = auth_header[7:]
+        if not api_key:
+            return jsonify({"error": "API key required for Pro endpoints"}), 401
+        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        if key_hash not in keys or not keys[key_hash].get("active"):
+            return jsonify({"error": "Invalid or inactive API key"}), 403
+        # Update last_used
+        keys[key_hash]["last_used"] = datetime.now().isoformat()
+        import json as _j
+        with open("api_keys.json", "w") as fp:
+            _j.dump(keys, fp, indent=2)
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route("/api/auth/generate-key", methods=["POST"])
+def generate_api_key():
+    """
+    Generate a new API key (admin only in prod — open in demo).
+    Body: { name, tier }
+    Returns: { api_key, key_hash }
+    """
+    from flask import request as _req
+    data = _req.get_json() or {}
+    name = data.get("name", "default").strip()
+    tier = data.get("tier", "pro")
+    if not name:
+        return jsonify({"error": "name is required"}), 400
+    key = f"asd_{tier}_{secrets.token_urlsafe(32)}"
+    key_hash = _save_api_key(name, key, tier)
+    return jsonify({
+        "ok": True,
+        "api_key": key,
+        "key_hash": key_hash,
+        "name": name,
+        "tier": tier,
+        "note": "Store this key securely — it cannot be retrieved again.",
+    })
+
+@app.route("/api/auth/keys")
+def list_api_keys():
+    """List all API keys (hashed — keys not shown)."""
+    keys = _load_api_keys()
+    safe = [{
+        "hash_prefix": h[:8] + "...",
+        "name": v["name"],
+        "tier": v["tier"],
+        "created_at": v["created_at"],
+        "last_used": v["last_used"],
+        "active": v["active"],
+    } for h, v in keys.items()]
+    return jsonify({"keys": safe, "count": len(safe)})
+
+@app.route("/api/auth/revoke", methods=["POST"])
+def revoke_api_key():
+    """Revoke an API key by hash prefix."""
+    from flask import request as _req
+    import json as _j
+    data   = _req.get_json() or {}
+    prefix = data.get("hash_prefix", "").strip()
+    keys   = _load_api_keys()
+    for h in list(keys.keys()):
+        if h.startswith(prefix):
+            keys[h]["active"] = False
+            with open("api_keys.json", "w") as f:
+                _j.dump(keys, f, indent=2)
+            return jsonify({"ok": True, "revoked": h[:8] + "..."})
+    return jsonify({"error": "Key not found"}), 404
+
+# ── AUDIT LOGGING ─────────────────────────────────────────────────────────────
+def log_audit_event(event_type: str, details: dict):
+    """
+    Write a tamper-evident audit log entry.
+    Phase 1: append-only JSON log.
+    Phase 2: cryptographic hash chain (Gov Edition).
+    """
+    import json as _j
+    log_path = pathlib.Path("audit_log.jsonl")
+    entry = {
+        "ts":    datetime.now().isoformat(),
+        "type":  event_type,
+        **details,
+    }
+    # Append-only — never overwrite
+    with open(log_path, "a") as f:
+        f.write(_j.dumps(entry) + "\n")
+
+@app.route("/api/audit-log")
+def get_audit_log():
+    """
+    Return recent audit log entries.
+    Phase 1: last 100 entries.
+    Phase 2 (Gov): cryptographically verified chain.
+    """
+    import json as _j
+    log_path = pathlib.Path("audit_log.jsonl")
+    if not log_path.exists():
+        return jsonify({"entries": [], "count": 0})
+    entries = []
+    try:
+        with open(log_path) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    entries.append(_j.loads(line))
+    except Exception:
+        pass
+    return jsonify({"entries": list(reversed(entries[-100:])), "count": len(entries)})
+
+# ── GOVERNMENT INTEREST CAPTURE ───────────────────────────────────────────────
+@app.route("/api/gov-interest", methods=["POST"])
+def gov_interest():
+    """Save government/defense interest registrations."""
+    from flask import request as _req
+    import json as _j
+    data = _req.get_json() or {}
+    email = data.get("email", "").strip()
+    if not email or "@" not in email:
+        return jsonify({"error": "valid email required"}), 400
+    # Save to gov_interest.json
+    gi_path = pathlib.Path("gov_interest.json")
+    entries = []
+    if gi_path.exists():
+        try:
+            with open(gi_path) as f:
+                entries = _j.load(f)
+        except Exception:
+            entries = []
+    # Avoid duplicates
+    if email not in [e.get("email") for e in entries]:
+        entries.append({
+            "email":    email,
+            "name":     data.get("name", ""),
+            "org":      data.get("org", ""),
+            "org_type": data.get("org_type", ""),
+            "urgency":  data.get("urgency", ""),
+            "source":   data.get("source", ""),
+            "ts":       data.get("ts", datetime.now().isoformat()),
+        })
+        with open(gi_path, "w") as f:
+            _j.dump(entries, f, indent=2)
+        # Log the event
+        log_audit_event("gov_interest_registered", {
+            "org": data.get("org", ""),
+            "org_type": data.get("org_type", ""),
+            "urgency": data.get("urgency", ""),
+        })
+    return jsonify({"ok": True, "position": len(entries)})
+
+@app.route("/api/gov-interest/count")
+def gov_interest_count():
+    """Return government interest count (public)."""
+    import json as _j
+    gi_path = pathlib.Path("gov_interest.json")
+    try:
+        with open(gi_path) as f:
+            entries = _j.load(f)
+        return jsonify({"count": len(entries)})
+    except Exception:
+        return jsonify({"count": 0})
+
+# ── AGENTIC SCHEDULER ROUTES ──────────────────────────────────────────────────
+
+@app.route("/api/scheduler/status")
+def scheduler_status():
+    """Get scheduler status and stats."""
+    if not _scheduler:
+        return jsonify({"running": False, "error": "Scheduler not available"})
+    return jsonify(_scheduler.get_status())
+
+@app.route("/api/scheduler/schedules")
+def get_schedules():
+    """List all scheduled audits."""
+    if not _scheduler:
+        return jsonify([])
+    return jsonify(_scheduler.get_schedules())
+
+@app.route("/api/scheduler/schedule", methods=["POST"])
+def add_schedule():
+    """Add or update a scheduled audit.
+    Body: { company, mode, cadence, alert_email, webhook_url }
+    """
+    if not _scheduler:
+        return jsonify({"error": "Scheduler not available"}), 503
+    data        = request.get_json() or {}
+    company     = data.get("company", "").strip()
+    mode        = data.get("mode", "competitor")
+    cadence     = data.get("cadence", "weekly")
+    email       = data.get("alert_email", "")
+    webhook     = data.get("webhook_url", "")
+    if not company:
+        return jsonify({"error": "company is required"}), 400
+    schedule = _scheduler.schedule(company, mode, cadence, email, webhook)
+    return jsonify({"ok": True, "schedule": schedule})
+
+@app.route("/api/scheduler/schedule/<schedule_id>", methods=["DELETE"])
+def remove_schedule(schedule_id):
+    """Remove a scheduled audit."""
+    if not _scheduler:
+        return jsonify({"error": "Scheduler not available"}), 503
+    ok = _scheduler.unschedule(schedule_id)
+    return jsonify({"ok": ok})
+
+@app.route("/api/scheduler/schedule/<schedule_id>/pause", methods=["POST"])
+def pause_schedule(schedule_id):
+    """Pause a scheduled audit."""
+    if not _scheduler:
+        return jsonify({"error": "Scheduler not available"}), 503
+    ok = _scheduler.pause(schedule_id)
+    return jsonify({"ok": ok})
+
+@app.route("/api/scheduler/schedule/<schedule_id>/resume", methods=["POST"])
+def resume_schedule(schedule_id):
+    """Resume a paused schedule."""
+    if not _scheduler:
+        return jsonify({"error": "Scheduler not available"}), 503
+    ok = _scheduler.resume(schedule_id)
+    return jsonify({"ok": ok})
+
+@app.route("/api/scheduler/schedule/<schedule_id>/run", methods=["POST"])
+def run_now(schedule_id):
+    """Trigger an immediate audit for a schedule."""
+    if not _scheduler:
+        return jsonify({"error": "Scheduler not available"}), 503
+    ok = _scheduler.run_now(schedule_id)
+    return jsonify({"ok": ok, "message": "Audit started in background"})
+
+@app.route("/api/scheduler/alerts")
+def get_alerts():
+    """Get recent change-detection alerts."""
+    if not _scheduler:
+        return jsonify([])
+    limit = request.args.get("limit", 50, type=int)
+    return jsonify(_scheduler.get_alerts(limit))
+
+@app.route("/api/scheduler/log")
+def get_run_log():
+    """Get the recent run log."""
+    if not _scheduler:
+        return jsonify([])
+    return jsonify(_scheduler.get_run_log())
+
+@app.route("/api/scheduler/digest")
+def get_digest():
+    """Get a text digest of all tracked companies."""
+    if not _scheduler:
+        return jsonify({"digest": "Scheduler not available"})
+    return jsonify({"digest": _scheduler.get_digest()})
 
 @app.route("/api/waitlist", methods=["POST"])
 def waitlist():

@@ -893,6 +893,53 @@ main {
 }
 .cohort-reset:hover { border-color: var(--cyan); color: var(--cyan); }
 
+
+/* ── Schedules Page ── */
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:28px}
+.sched-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+.sched-card:hover{border-color:var(--b2)}
+.sched-card-head{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sched-company{font-family:var(--display);font-size:16px;letter-spacing:1px;color:var(--text)}
+.sched-status{font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:2px}
+.sched-status.active{background:rgba(0,200,128,.1);color:var(--green);border:1px solid rgba(0,200,128,.25)}
+.sched-status.paused{background:rgba(240,160,0,.1);color:var(--amber);border:1px solid rgba(240,160,0,.25)}
+.sched-body{padding:14px 18px}
+.sched-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sched-row:last-child{border-bottom:none}
+.sched-key{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.5px}
+.sched-val{font-family:var(--mono);font-size:10px;color:var(--text2)}
+.sched-val.score-green{color:var(--green);font-weight:600}
+.sched-val.score-amber{color:var(--amber);font-weight:600}
+.sched-val.score-red{color:var(--red);font-weight:600}
+.sched-actions{display:flex;gap:6px;padding:12px 18px;border-top:1px solid var(--border)}
+.sched-btn{font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;flex:1;text-align:center}
+.sched-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.sched-btn.danger:hover{border-color:var(--red);color:var(--red)}
+.sched-btn.primary{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700}
+.sched-btn.primary:hover{background:#33dff7}
+/* Add schedule form */
+.sched-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:28px}
+.sched-form-title{font-family:var(--display);font-size:18px;letter-spacing:1px;color:var(--cyan);margin-bottom:16px}
+.sched-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.sched-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;transition:border-color .15s}
+.sched-input:focus{border-color:var(--cyan)}
+.sched-input::placeholder{color:var(--text3)}
+.sched-select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;cursor:pointer;-webkit-appearance:none}
+.sched-select option{background:var(--bg2)}
+/* Alert feed */
+.alert-feed{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.alert-item{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:3px;font-size:12px}
+.alert-sev{font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;flex-shrink:0;margin-top:1px}
+.alert-sev.high{background:rgba(240,64,64,.1);color:var(--red);border:1px solid rgba(240,64,64,.25)}
+.alert-sev.medium{background:rgba(240,160,0,.1);color:var(--amber);border:1px solid rgba(240,160,0,.25)}
+.alert-sev.info{background:rgba(0,212,240,.08);color:var(--cyan);border:1px solid rgba(0,212,240,.2)}
+.alert-msg{color:var(--text2);line-height:1.5;flex:1}
+.alert-time{font-family:var(--mono);font-size:8px;color:var(--text3);flex-shrink:0;margin-top:2px}
+/* Scheduler status bar */
+.sched-status-bar{display:flex;gap:16px;align-items:center;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:20px;font-family:var(--mono);font-size:10px;color:var(--text2)}
+.ssb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0;animation:pulse 2s infinite}
+.ssb-dot.offline{background:var(--red);box-shadow:0 0 6px var(--red)}
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg1); }
@@ -1174,6 +1221,9 @@ window.addEventListener('load', initCookieBanner, { once: false });
       <span class="nav-icon">▣</span> Audit History
     </div>
     <div class="nav-group-label" style="margin-top:20px">Resources</div>
+    <div class="nav-item" onclick="goTo('schedules')">
+      <span class="nav-icon">⏱</span> Schedules
+    </div>
     <div class="nav-item" onclick="goTo('compliance')">
       <span class="nav-icon">⚖</span> Compliance
     </div>
@@ -1191,6 +1241,25 @@ window.addEventListener('load', initCookieBanner, { once: false });
         onmouseover="this.style.background='#33dff7'"
         onmouseout="this.style.background='#00d4f0'">
         ◈ Start Client Audit
+      </a>
+    </div>
+    <!-- Security + Gov badges -->
+    <div style="padding:8px 12px 4px;display:flex;flex-direction:column;gap:6px">
+      <a href="/security" style="display:flex;align-items:center;gap:7px;
+        background:rgba(0,200,128,.08);border:1px solid rgba(0,200,128,.2);
+        border-radius:3px;padding:7px 10px;text-decoration:none;transition:all .15s;"
+        onmouseover="this.style.borderColor='var(--green)'"
+        onmouseout="this.style.borderColor='rgba(0,200,128,.2)'">
+        <span style="font-size:10px">🔒</span>
+        <span style="font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--green)">Security Posture</span>
+      </a>
+      <a href="/security#government" style="display:flex;align-items:center;gap:7px;
+        background:rgba(144,96,240,.08);border:1px solid rgba(144,96,240,.2);
+        border-radius:3px;padding:7px 10px;text-decoration:none;transition:all .15s;"
+        onmouseover="this.style.borderColor='var(--purple)'"
+        onmouseout="this.style.borderColor='rgba(144,96,240,.2)'">
+        <span style="font-size:10px">🏛️</span>
+        <span style="font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--purple)">Gov Edition</span>
       </a>
     </div>
   </nav>
@@ -1448,6 +1517,77 @@ window.addEventListener('load', initCookieBanner, { once: false });
   </div>
 
 
+
+  <!-- ── PAGE: Agentic Schedules ── -->
+  <div class="page" id="page-schedules">
+    <div class="section-head">
+      <div>
+        <div class="section-title">AGENTIC SCHEDULES</div>
+        <div class="section-sub">// Set it and forget it — autonomous AI stack monitoring</div>
+      </div>
+    </div>
+
+    <!-- Scheduler status bar -->
+    <div class="sched-status-bar" id="schedStatusBar">
+      <span class="ssb-dot" id="schedDot"></span>
+      <span id="schedStatusText">Checking scheduler...</span>
+      <span style="margin-left:auto;color:var(--text3)" id="schedStats"></span>
+    </div>
+
+    <!-- Add schedule form -->
+    <div class="sched-form">
+      <div class="sched-form-title">◈ Schedule a New Audit</div>
+      <div class="sched-form-grid">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Company</div>
+          <input class="sched-input" id="schedCompany" placeholder="e.g. Stripe, Meta, Nubank"/>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Mode</div>
+          <select class="sched-select" id="schedMode">
+            <option value="competitor">Competitor</option>
+            <option value="own">Own Company</option>
+            <option value="generic">Generic</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Cadence</div>
+          <select class="sched-select" id="schedCadence">
+            <option value="weekly">Weekly</option>
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+      </div>
+      <div class="sched-form-grid" style="margin-bottom:16px">
+        <div style="grid-column:1/3">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Alert Email (optional)</div>
+          <input class="sched-input" id="schedEmail" type="email" placeholder="alerts@yourcompany.com"/>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Webhook URL (optional)</div>
+          <input class="sched-input" id="schedWebhook" placeholder="https://hooks.slack.com/..."/>
+        </div>
+      </div>
+      <button class="sched-btn primary" onclick="addSchedule()" style="max-width:200px">
+        ◈ Add Schedule
+      </button>
+    </div>
+
+    <!-- Active schedules grid -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Active Schedules</div>
+    <div class="sched-grid" id="schedGrid">
+      <div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">No schedules yet</div><div class="empty-sub">Add a company above to start automated monitoring</div></div>
+    </div>
+
+    <!-- Alert feed -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Change Detection Alerts</div>
+    <div class="alert-feed" id="alertFeed">
+      <div class="empty"><div class="empty-icon">🔔</div><div class="empty-title">No alerts yet</div><div class="empty-sub">Alerts appear here when audits detect significant changes</div></div>
+    </div>
+  </div>
+
   <!-- ── PAGE: Compliance Reference ── -->
   <div class="page" id="page-compliance">
     <div class="section-head">
@@ -1698,7 +1838,7 @@ function goTo(page) {
   const titles = {
     overview: '// Overview Dashboard', companies: '// Company Cards',
     trends: '// Trend Analysis', compare: '// Comparison Radar',
-    history: '// Audit History', compliance: '// Compliance Reference', integrate: '// Integration Guide'
+    history: '// Audit History', schedules: '// Agentic Schedules', compliance: '// Compliance Reference', integrate: '// Integration Guide'
   };
   document.getElementById('topbarTitle').textContent = titles[page] || '//';
 
@@ -1706,6 +1846,7 @@ function goTo(page) {
   if (page === 'compare')    loadCompare();
   if (page === 'history')    loadHistory();
   if (page === 'compliance') renderComplianceGrid();
+  if (page === 'schedules')  loadSchedulesPage();
 }
 
 // ── Score color ─────────────────────────────────────────────────────────────
@@ -2515,6 +2656,206 @@ function getSearchPayload() {
 
 // ══════════════════════════════════════════════════════════════════════════════
 
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AGENTIC SCHEDULES
+// ══════════════════════════════════════════════════════════════════════════════
+
+async function loadSchedulesPage() {
+  await Promise.all([loadSchedulerStatus(), loadSchedules(), loadAlerts()]);
+}
+
+async function loadSchedulerStatus() {
+  const base = getApiBase();
+  if (!base) { showSchedulerOffline(); return; }
+  try {
+    const data = await safeFetch(base + '/api/scheduler/status');
+    if (!data) { showSchedulerOffline(); return; }
+    const dot  = document.getElementById('schedDot');
+    const text = document.getElementById('schedStatusText');
+    const stats= document.getElementById('schedStats');
+    if (data.running) {
+      dot.className  = 'ssb-dot';
+      text.innerHTML = '<strong style="color:var(--green)">Scheduler Online</strong> — autonomous audits active';
+      stats.textContent = `${data.schedules_active} active · ${data.schedules_paused} paused · checks every ${data.check_interval}s`;
+    } else {
+      showSchedulerOffline();
+    }
+  } catch(e) { showSchedulerOffline(); }
+}
+
+function showSchedulerOffline() {
+  const dot  = document.getElementById('schedDot');
+  const text = document.getElementById('schedStatusText');
+  const stats= document.getElementById('schedStats');
+  if (dot)  dot.className = 'ssb-dot offline';
+  if (text) text.innerHTML = '<strong style="color:var(--amber)">Demo Mode</strong> — scheduler runs when server is active';
+  if (stats) stats.textContent = 'Start dashboard_server.py to enable';
+}
+
+async function loadSchedules() {
+  const base = getApiBase();
+  const grid = document.getElementById('schedGrid');
+  if (!grid) return;
+  if (!base) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">Scheduler available in Internet mode</div><div class="empty-sub">Connect to your local server to manage schedules</div></div>';
+    return;
+  }
+  try {
+    const schedules = await safeFetch(base + '/api/scheduler/schedules') || [];
+    if (!schedules.length) {
+      grid.innerHTML = '<div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">No schedules yet</div><div class="empty-sub">Add a company above to start automated monitoring</div></div>';
+      return;
+    }
+    grid.innerHTML = schedules.map(s => renderScheduleCard(s)).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">Could not load schedules</div></div>';
+  }
+}
+
+function renderScheduleCard(s) {
+  const score     = s.last_score;
+  const scoreCls  = !score ? '' : score >= 80 ? 'score-green' : score >= 60 ? 'score-amber' : 'score-red';
+  const scoreStr  = score ? score + '/100' : '—';
+  const statusCls = s.status === 'paused' ? 'paused' : 'active';
+  const isPaused  = s.status === 'paused';
+
+  return `
+  <div class="sched-card" id="scard-${s.id}">
+    <div class="sched-card-head">
+      <div class="sched-company">${s.company.toUpperCase()}</div>
+      <div class="sched-status ${statusCls}">${s.status}</div>
+    </div>
+    <div class="sched-body">
+      <div class="sched-row">
+        <span class="sched-key">Cadence</span>
+        <span class="sched-val">${s.cadence_label || s.cadence}</span>
+      </div>
+      <div class="sched-row">
+        <span class="sched-key">Last Score</span>
+        <span class="sched-val ${scoreCls}">${scoreStr}</span>
+      </div>
+      <div class="sched-row">
+        <span class="sched-key">Last Run</span>
+        <span class="sched-val">${s.last_run ? s.last_run.slice(0,10) : 'Never'}</span>
+      </div>
+      <div class="sched-row">
+        <span class="sched-key">Next Run</span>
+        <span class="sched-val" style="color:var(--cyan)">${s.next_run_label || '—'}</span>
+      </div>
+      <div class="sched-row">
+        <span class="sched-key">Runs</span>
+        <span class="sched-val">${s.run_count || 0} total</span>
+      </div>
+      ${s.alert_email ? `<div class="sched-row"><span class="sched-key">Alert</span><span class="sched-val" style="color:var(--cyan);font-size:9px">${s.alert_email}</span></div>` : ''}
+    </div>
+    <div class="sched-actions">
+      <button class="sched-btn primary" onclick="runNow('${s.id}')">▶ Run Now</button>
+      <button class="sched-btn" onclick="${isPaused ? 'resumeSched' : 'pauseSched'}('${s.id}')">${isPaused ? '▶ Resume' : '⏸ Pause'}</button>
+      <button class="sched-btn danger" onclick="removeSched('${s.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+async function addSchedule() {
+  const company = document.getElementById('schedCompany')?.value.trim();
+  const mode    = document.getElementById('schedMode')?.value;
+  const cadence = document.getElementById('schedCadence')?.value;
+  const email   = document.getElementById('schedEmail')?.value.trim();
+  const webhook = document.getElementById('schedWebhook')?.value.trim();
+  if (!company) { toast('Enter a company name'); return; }
+
+  const base = getApiBase();
+  if (!base) { toast('Connect to Internet mode to schedule audits'); return; }
+
+  try {
+    const res = await fetch(base + '/api/scheduler/schedule', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ company, mode, cadence, alert_email: email, webhook_url: webhook }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      toast(`✓ Scheduled: ${company} — ${cadence}`);
+      document.getElementById('schedCompany').value = '';
+      document.getElementById('schedEmail').value   = '';
+      document.getElementById('schedWebhook').value = '';
+      await loadSchedules();
+    }
+  } catch(e) { toast('Failed to add schedule'); }
+}
+
+async function runNow(id) {
+  const base = getApiBase();
+  if (!base) return;
+  try {
+    await fetch(base + `/api/scheduler/schedule/${id}/run`, { method: 'POST' });
+    toast('◈ Audit started — results in ~90 seconds');
+    setTimeout(loadSchedules, 5000);
+  } catch(e) { toast('Failed to start audit'); }
+}
+
+async function pauseSched(id) {
+  const base = getApiBase();
+  if (!base) return;
+  await fetch(base + `/api/scheduler/schedule/${id}/pause`, { method: 'POST' });
+  toast('Schedule paused');
+  loadSchedules();
+}
+
+async function resumeSched(id) {
+  const base = getApiBase();
+  if (!base) return;
+  await fetch(base + `/api/scheduler/schedule/${id}/resume`, { method: 'POST' });
+  toast('Schedule resumed');
+  loadSchedules();
+}
+
+async function removeSched(id) {
+  const base = getApiBase();
+  if (!base) return;
+  if (!confirm('Remove this schedule?')) return;
+  await fetch(base + `/api/scheduler/schedule/${id}`, { method: 'DELETE' });
+  toast('Schedule removed');
+  loadSchedules();
+}
+
+async function loadAlerts() {
+  const base = getApiBase();
+  const feed = document.getElementById('alertFeed');
+  if (!feed) return;
+  if (!base) return;
+  try {
+    const alerts = await safeFetch(base + '/api/scheduler/alerts') || [];
+    if (!alerts.length) {
+      feed.innerHTML = '<div class="empty"><div class="empty-icon">🔔</div><div class="empty-title">No alerts yet</div><div class="empty-sub">Alerts appear here when audits detect significant changes</div></div>';
+      return;
+    }
+    feed.innerHTML = alerts.map(a => `
+      <div class="alert-item">
+        <div class="alert-sev ${a.severity}">${a.severity}</div>
+        <div class="alert-msg">
+          <strong style="color:var(--text)">${a.company?.toUpperCase() || ''}</strong>
+          ${a.type === 'score_change' ? '&nbsp;·&nbsp;Score change' : a.type === 'category_change' ? `&nbsp;·&nbsp;${a.category}` : ''}
+          <br>${a.message}
+        </div>
+        <div class="alert-time">${a.created_at ? a.created_at.slice(0,16).replace('T',' ') : ''}</div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+// Auto-refresh schedules page every 30s when visible
+setInterval(() => {
+  const page = document.getElementById('page-schedules');
+  if (page && page.classList.contains('active')) {
+    loadSchedulerStatus();
+    loadSchedules();
+    loadAlerts();
+  }
+}, 30000);
+
+// ══════════════════════════════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════════════════════
 // COHORT FILTERING
 // ══════════════════════════════════════════════════════════════════════════════
@@ -2916,6 +3257,8 @@ window.addEventListener('load', function() {
     <a href="/legal#privacy" target="_blank">Privacy Policy</a>
     <a href="/legal#cookies" target="_blank">Cookie Policy</a>
     <a href="/legal#data" target="_blank">Data Processing</a>
+    <a href="/security" target="_blank">Security</a>
+    <a href="/security#government" target="_blank">Gov Edition</a>
     <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">GitHub</a>
   </div>
 </div>

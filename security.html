@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Stack Doctor — Security & Compliance Posture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06090e;--bg1:#090d14;--bg2:#0d1520;--card:#0f1824;--border:#1a2840;--b2:#1f3050;--cyan:#00d4f0;--green:#00c880;--amber:#f0a000;--red:#f04040;--purple:#9060f0;--text:#c8ddf0;--text2:#7090b0;--text3:#405070;--mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,240,.018) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.shell{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 24px 80px}
+.header{padding:24px 0 28px;border-bottom:1px solid var(--border);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-mark{width:32px;height:32px;border:2px solid var(--cyan);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--cyan)}
+.logo-name{font-family:var(--display);font-size:18px;letter-spacing:2px;color:var(--text)}
+.back-link{font-family:var(--mono);font-size:9px;color:var(--text3);text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .15s}
+.back-link:hover{color:var(--cyan)}
+
+/* Hero */
+.sec-hero{margin-bottom:40px}
+.sec-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+.sec-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.sec-title{font-family:var(--display);font-size:clamp(36px,6vw,60px);letter-spacing:2px;line-height:.9;margin-bottom:12px}
+.sec-sub{font-size:14px;color:var(--text2);line-height:1.8;max-width:560px}
+
+/* Posture summary cards */
+.posture-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px}
+.posture-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px 16px;text-align:center}
+.posture-icon{font-size:22px;margin-bottom:8px}
+.posture-label{font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.posture-val{font-family:var(--display);font-size:18px;letter-spacing:1px}
+.posture-val.green{color:var(--green)}
+.posture-val.amber{color:var(--amber)}
+.posture-val.red{color:var(--red)}
+.posture-val.blue{color:var(--cyan)}
+
+/* Status table */
+.status-section{margin-bottom:40px}
+.sec-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.sec-heading{font-family:var(--display);font-size:28px;letter-spacing:1px;line-height:1;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px}
+hr.rule{border:none;border-top:1.5px solid var(--cyan);margin-bottom:20px;width:60px}
+
+.status-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.status-table th{font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);text-align:left;padding:9px 14px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.status-table td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:1px solid rgba(26,40,64,.4);vertical-align:top}
+.status-table tr:hover td{background:rgba(0,212,240,.02)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:2px}
+.badge.live{background:rgba(0,200,128,.1);color:var(--green);border:1px solid rgba(0,200,128,.25)}
+.badge.progress{background:rgba(0,212,240,.08);color:var(--cyan);border:1px solid rgba(0,212,240,.2)}
+.badge.planned{background:rgba(240,160,0,.08);color:var(--amber);border:1px solid rgba(240,160,0,.2)}
+.badge.future{background:rgba(144,96,240,.08);color:var(--purple);border:1px solid rgba(144,96,240,.2)}
+.badge.na{background:rgba(64,80,112,.15);color:var(--text3);border:1px solid var(--border)}
+
+/* Roadmap timeline */
+.roadmap{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
+.rm-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--border)}
+.rm-item:last-child{border-bottom:none}
+.rm-left{flex-shrink:0;width:120px;text-align:right}
+.rm-phase{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+.rm-timeline{font-family:var(--display);font-size:14px;letter-spacing:1px;margin-top:3px}
+.rm-timeline.green{color:var(--green)}
+.rm-timeline.cyan{color:var(--cyan)}
+.rm-timeline.amber{color:var(--amber)}
+.rm-timeline.purple{color:var(--purple)}
+.rm-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:4px;position:relative}
+.rm-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%}
+.rm-dot.live{border-color:var(--green)}.rm-dot.live::after{background:var(--green)}
+.rm-dot.progress{border-color:var(--cyan)}.rm-dot.progress::after{background:var(--cyan)}
+.rm-dot.planned{border-color:var(--amber)}.rm-dot.planned::after{background:var(--amber)}
+.rm-dot.future{border-color:var(--purple)}.rm-dot.future::after{background:var(--purple)}
+.rm-right{flex:1}
+.rm-title{font-weight:600;color:var(--text);margin-bottom:5px;font-size:14px}
+.rm-items{display:flex;flex-direction:column;gap:4px}
+.rm-feat{font-family:var(--mono);font-size:10px;color:var(--text2);display:flex;align-items:flex-start;gap:6px;line-height:1.5}
+.rm-feat::before{content:'◈';color:var(--text3);font-size:8px;margin-top:2px;flex-shrink:0}
+
+/* Gov Edition callout */
+.gov-callout{background:linear-gradient(135deg,rgba(144,96,240,.08),rgba(0,212,240,.05));border:1px solid rgba(144,96,240,.25);border-radius:6px;padding:28px;margin-bottom:36px}
+.gov-callout-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gov-badge{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;background:rgba(144,96,240,.15);color:var(--purple);border:1px solid rgba(144,96,240,.3)}
+.gov-title{font-family:var(--display);font-size:24px;letter-spacing:1px;color:var(--text)}
+.gov-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:18px}
+.gov-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.gov-feat{font-family:var(--mono);font-size:10px;color:var(--text2);display:flex;align-items:center;gap:7px}
+.gov-feat::before{content:'🔒';font-size:10px}
+.gov-cta{display:flex;gap:10px;flex-wrap:wrap}
+.gov-btn{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 22px;border-radius:4px;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.gov-btn-pri{background:var(--purple);color:#fff;border:none;font-weight:700}
+.gov-btn-pri:hover{background:#a070ff;box-shadow:0 0 16px rgba(144,96,240,.4)}
+.gov-btn-sec{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.gov-btn-sec:hover{border-color:var(--purple);color:var(--purple)}
+
+/* Private server mode */
+.psm-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:36px}
+.psm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.psm-title{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--cyan)}
+.code-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:16px;font-family:var(--mono);font-size:11px;color:var(--cyan);line-height:1.8;overflow-x:auto;margin-top:12px}
+.cm{color:var(--text3)}.ck{color:var(--amber)}.cs{color:var(--green)}
+
+/* Contact */
+.contact-strip{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.cs-left h3{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--cyan);margin-bottom:5px}
+.cs-left p{font-size:13px;color:var(--text2);line-height:1.6}
+.cs-links{display:flex;gap:10px;flex-wrap:wrap}
+.cs-link{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:3px;border:1px solid var(--border);color:var(--text2);text-decoration:none;transition:all .15s}
+.cs-link:hover{border-color:var(--cyan);color:var(--cyan)}
+
+footer{text-align:center;font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:48px;padding-top:20px;border-top:1px solid var(--border);line-height:1.8}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--cyan)}
+
+@media(max-width:600px){.posture-grid{grid-template-columns:1fr 1fr}.gov-features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="header">
+  <a href="/" class="logo">
+    <div class="logo-mark">Dx</div>
+    <div class="logo-name">AI STACK DOCTOR</div>
+  </a>
+  <a href="/" class="back-link">← Dashboard</a>
+</div>
+
+<!-- Hero -->
+<div class="sec-hero">
+  <div class="sec-badge">Security & Compliance</div>
+  <h1 class="sec-title">SECURITY<br>POSTURE</h1>
+  <p class="sec-sub">
+    Honest, up-to-date disclosure of our current security status,
+    active controls, known gaps, and the roadmap to full
+    government-grade compliance. We believe in transparency — not
+    marketing.
+  </p>
+</div>
+
+<!-- Summary cards -->
+<div class="posture-grid">
+  <div class="posture-card">
+    <div class="posture-icon">🔐</div>
+    <div class="posture-label">Auth Status</div>
+    <div class="posture-val amber">In Progress</div>
+  </div>
+  <div class="posture-card">
+    <div class="posture-icon">🌐</div>
+    <div class="posture-label">Transport</div>
+    <div class="posture-val green">HTTPS / TLS</div>
+  </div>
+  <div class="posture-card">
+    <div class="posture-icon">📋</div>
+    <div class="posture-label">Audit Logs</div>
+    <div class="posture-val amber">Partial</div>
+  </div>
+  <div class="posture-card">
+    <div class="posture-icon">🏛️</div>
+    <div class="posture-label">FedRAMP</div>
+    <div class="posture-val amber">Roadmap</div>
+  </div>
+</div>
+
+<!-- Current security controls -->
+<div class="status-section" id="current">
+  <div class="sec-eyebrow">// What's Live Today</div>
+  <h2 class="sec-heading">CURRENT CONTROLS</h2>
+  <hr class="rule"/>
+  <table class="status-table">
+    <thead>
+      <tr><th>Control</th><th>Status</th><th>Details</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>HTTPS / TLS Encryption (transit)</td><td><span class="badge live">✓ Live</span></td><td>All data in transit encrypted via TLS 1.2+. Enforced by Render.com infrastructure.</td></tr>
+      <tr><td>Public Information Only</td><td><span class="badge live">✓ Live</span></td><td>All company intelligence derived exclusively from publicly available sources. No proprietary data used or stored.</td></tr>
+      <tr><td>No Password Storage</td><td><span class="badge live">✓ Live</span></td><td>No user passwords collected or stored. Current version requires no login.</td></tr>
+      <tr><td>No Advertising / Tracking</td><td><span class="badge live">✓ Live</span></td><td>Zero advertising cookies, no cross-site tracking, no data sold to third parties.</td></tr>
+      <tr><td>Intake Data Isolation</td><td><span class="badge live">✓ Live</span></td><td>Client intake submissions stored in isolated JSON files. Not commingled with audit history.</td></tr>
+      <tr><td>Cookie Consent (GDPR)</td><td><span class="badge live">✓ Live</span></td><td>Cookie consent banner with accept/decline. Preferences stored in localStorage only.</td></tr>
+      <tr><td>Privacy Policy + Terms</td><td><span class="badge live">✓ Live</span></td><td>Full legal documentation at /legal including GDPR rights, CCPA rights, Data Processing Agreement.</td></tr>
+      <tr><td>EU AI Act Disclosure</td><td><span class="badge live">✓ Live</span></td><td>AI use disclosed at /legal#ai-disclosure. Classified as GPAI, not high-risk under Annex III.</td></tr>
+      <tr><td>Private Server Mode</td><td><span class="badge live">✓ Live</span></td><td>Full self-hosted deployment. All data stays on your infrastructure. No external API calls required in offline mode.</td></tr>
+      <tr><td>Open Source (MIT)</td><td><span class="badge live">✓ Live</span></td><td>Full codebase auditable at github.com/dwnjuguna/AI-Stack-Doctor.</td></tr>
+      <tr><td>Authentication / Login</td><td><span class="badge progress">⚙ In Progress</span></td><td>API key-based auth for Pro tier. Full SSO/SAML in roadmap.</td></tr>
+      <tr><td>Role-Based Access Control</td><td><span class="badge progress">⚙ In Progress</span></td><td>Admin/Analyst/Viewer roles. Scoped to Team tier and above.</td></tr>
+      <tr><td>Audit Logging</td><td><span class="badge progress">⚙ In Progress</span></td><td>Basic run logs in scheduler. Full tamper-evident audit trail in roadmap.</td></tr>
+      <tr><td>Data Encryption at Rest</td><td><span class="badge planned">📅 Planned</span></td><td>SQLite + JSON files currently unencrypted at rest. FIPS 140-2 encryption planned for Gov Edition.</td></tr>
+      <tr><td>SSO / SAML Integration</td><td><span class="badge planned">📅 Planned</span></td><td>Okta, Azure AD, Google Workspace SSO planned for Enterprise tier.</td></tr>
+      <tr><td>Penetration Testing</td><td><span class="badge planned">📅 Planned</span></td><td>Third-party pentest scheduled before paid tier launch.</td></tr>
+      <tr><td>SOC 2 Type II</td><td><span class="badge future">🔮 Future</span></td><td>Targeted for Gov Edition Phase 2. Requires dedicated infrastructure and 12-month observation period.</td></tr>
+      <tr><td>FedRAMP Authorization</td><td><span class="badge future">🔮 Future</span></td><td>FedRAMP 20x fast-track pathway identified. Target: Gov Edition Phase 2 (12–18 months).</td></tr>
+      <tr><td>CMMC 2.0 Alignment</td><td><span class="badge future">🔮 Future</span></td><td>CMMC Level 2 alignment targeted for DoD contractor use cases.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Data flow -->
+<div class="status-section" id="data-flow">
+  <div class="sec-eyebrow">// Where Your Data Goes</div>
+  <h2 class="sec-heading">DATA FLOW</h2>
+  <hr class="rule"/>
+  <table class="status-table">
+    <thead>
+      <tr><th>Data Type</th><th>Destination</th><th>Can You Prevent It?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Company name (search queries)</td><td>DuckDuckGo (default) or your configured search engine</td><td>Yes — use Private Server Mode with local search</td></tr>
+      <tr><td>Company name + audit prompt</td><td>Anthropic API (Claude)</td><td>Yes — self-host with local LLM (Ollama/LM Studio)</td></tr>
+      <tr><td>Intake form submissions</td><td>Your server only (JSON files)</td><td>N/A — never leaves your server</td></tr>
+      <tr><td>Audit history / scores</td><td>Your server SQLite DB</td><td>N/A — never leaves your server</td></tr>
+      <tr><td>Server logs (IP, browser)</td><td>Render.com infrastructure (30 days)</td><td>Yes — self-host to eliminate Render</td></tr>
+      <tr><td>Font requests</td><td>Google Fonts CDN</td><td>Yes — self-host fonts (documented in README)</td></tr>
+      <tr><td>Waitlist emails</td><td>Your server waitlist.json</td><td>N/A — stays on server</td></tr>
+    </tbody>
+  </table>
+  <div style="background:rgba(0,212,240,.06);border:1px solid rgba(0,212,240,.2);border-radius:4px;padding:14px 18px;font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.7;margin-top:12px">
+    <strong style="color:var(--cyan)">Air-Gap Mode:</strong>
+    For maximum data isolation, deploy AI Stack Doctor in Private Server Mode with a local LLM
+    (Ollama / LM Studio) and local search. In this configuration <strong style="color:var(--text)">zero data leaves your network</strong>.
+    See README for setup instructions.
+  </div>
+</div>
+
+<!-- Security roadmap -->
+<div class="status-section" id="roadmap">
+  <div class="sec-eyebrow">// Security Roadmap</div>
+  <h2 class="sec-heading">ROADMAP</h2>
+  <hr class="rule"/>
+  <div class="roadmap">
+    <div class="rm-item">
+      <div class="rm-left">
+        <div class="rm-phase">Phase 0</div>
+        <div class="rm-timeline green">NOW LIVE</div>
+      </div>
+      <div class="rm-dot live" style="margin-top:6px"></div>
+      <div class="rm-right">
+        <div class="rm-title">Foundation — Open Source Security</div>
+        <div class="rm-items">
+          <div class="rm-feat">HTTPS / TLS on all connections</div>
+          <div class="rm-feat">Public information only — no proprietary data</div>
+          <div class="rm-feat">GDPR-compliant privacy policy and cookie consent</div>
+          <div class="rm-feat">EU AI Act disclosure and CCPA rights</div>
+          <div class="rm-feat">Private Server Mode (full air-gap capable)</div>
+          <div class="rm-feat">Open source codebase (fully auditable)</div>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-left">
+        <div class="rm-phase">Phase 1</div>
+        <div class="rm-timeline cyan">Q2–Q3 2026</div>
+      </div>
+      <div class="rm-dot progress" style="margin-top:6px"></div>
+      <div class="rm-right">
+        <div class="rm-title">Commercial Security — Pro & Team Tiers</div>
+        <div class="rm-items">
+          <div class="rm-feat">API key authentication for Pro tier users</div>
+          <div class="rm-feat">Role-based access control (Admin / Analyst / Viewer)</div>
+          <div class="rm-feat">Tamper-evident audit logging (who ran what when)</div>
+          <div class="rm-feat">Data encryption at rest (AES-256)</div>
+          <div class="rm-feat">Third-party penetration test</div>
+          <div class="rm-feat">Vulnerability disclosure program (VDP)</div>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-left">
+        <div class="rm-phase">Phase 2</div>
+        <div class="rm-timeline amber">Q4 2026</div>
+      </div>
+      <div class="rm-dot planned" style="margin-top:6px"></div>
+      <div class="rm-right">
+        <div class="rm-title">Enterprise Security — Government Edition</div>
+        <div class="rm-items">
+          <div class="rm-feat">SSO / SAML 2.0 (Okta, Azure AD, Google)</div>
+          <div class="rm-feat">FIPS 140-2 encryption throughout</div>
+          <div class="rm-feat">NIST AI RMF alignment documentation</div>
+          <div class="rm-feat">NIST 800-171 controls mapping</div>
+          <div class="rm-feat">SOC 2 Type II audit initiated</div>
+          <div class="rm-feat">AWS GovCloud / Azure Government deployment</div>
+          <div class="rm-feat">Data residency controls (US-only, EU-only)</div>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-left">
+        <div class="rm-phase">Phase 3</div>
+        <div class="rm-timeline purple">2027</div>
+      </div>
+      <div class="rm-dot future" style="margin-top:6px"></div>
+      <div class="rm-right">
+        <div class="rm-title">Federal / DoD — Full Authorization</div>
+        <div class="rm-items">
+          <div class="rm-feat">FedRAMP 20x authorization (fast-track pathway)</div>
+          <div class="rm-feat">CMMC 2.0 Level 2 alignment + C3PAO assessment</div>
+          <div class="rm-feat">IL4/IL5 impact level support</div>
+          <div class="rm-feat">Air-gap deployment (SCIF-capable)</div>
+          <div class="rm-feat">ITAR compliance review</div>
+          <div class="rm-feat">DoD prime contractor partnership program</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Government Edition callout -->
+<div class="gov-callout" id="government">
+  <div class="gov-callout-head">
+    <span class="gov-badge">🏛️ Government Edition</span>
+    <span class="gov-title">DEFENSE &amp; FEDERAL</span>
+  </div>
+  <p class="gov-desc">
+    AI Stack Doctor Government Edition is a separate, purpose-built product
+    for defense contractors, federal agencies, and cleared organizations.
+    It inherits none of the commercial product's infrastructure —
+    it runs in your boundary, on your terms, with your authorization.
+  </p>
+  <div class="gov-features">
+    <div class="gov-feat">Dedicated AWS GovCloud instance</div>
+    <div class="gov-feat">Air-gap deployable (no internet required)</div>
+    <div class="gov-feat">FIPS 140-2 encryption at rest + transit</div>
+    <div class="gov-feat">SSO + MFA + RBAC built in</div>
+    <div class="gov-feat">Tamper-evident audit trail</div>
+    <div class="gov-feat">CUI data handling procedures</div>
+    <div class="gov-feat">NIST 800-171 controls documented</div>
+    <div class="gov-feat">CMMC Level 2 alignment (Phase 2)</div>
+    <div class="gov-feat">FedRAMP 20x pathway (Phase 3)</div>
+    <div class="gov-feat">Dedicated support + SLA</div>
+    <div class="gov-feat">Custom intelligence profiles (classified)</div>
+    <div class="gov-feat">No shared infrastructure with commercial users</div>
+  </div>
+  <div class="gov-cta">
+    <a href="/intake/executive" class="gov-btn gov-btn-pri">🏛️ Register Government Interest</a>
+    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank" class="gov-btn gov-btn-sec">View Source Code →</a>
+  </div>
+</div>
+
+<!-- Private Server Mode -->
+<div class="psm-card" id="private-mode">
+  <div class="psm-head">
+    <div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:4px">Maximum Data Isolation</div>
+      <div style="font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--text)">PRIVATE SERVER MODE</div>
+    </div>
+    <span class="badge live" style="height:fit-content">✓ Available Now</span>
+  </div>
+  <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">
+    Run AI Stack Doctor entirely on your own infrastructure.
+    No data leaves your network. No Anthropic API calls.
+    No external search. Fully air-gap capable.
+    Available to all users — free and paid.
+  </p>
+  <div class="code-block"><span class="cm"># Clone and run on your own server</span>
+git clone https://github.com/dwnjuguna/AI-Stack-Doctor
+cd AI-Stack-Doctor
+
+<span class="cm"># Set your own Anthropic key (or configure local LLM)</span>
+<span class="ck">export</span> ANTHROPIC_API_KEY=<span class="cs">"your-key"</span>
+
+<span class="cm"># Optional: use a local LLM instead (Ollama)</span>
+<span class="cm"># OLLAMA_BASE_URL="http://localhost:11434"</span>
+
+<span class="cm"># Start the dashboard (all data stays local)</span>
+python3 dashboard_server.py
+
+<span class="cm"># Your data never leaves this machine ✓</span></div>
+</div>
+
+<!-- Contact -->
+<div class="contact-strip">
+  <div class="cs-left">
+    <h3>Security Questions?</h3>
+    <p>Responsible disclosure, government procurement enquiries,<br>or security architecture questions — reach us directly.</p>
+  </div>
+  <div class="cs-links">
+    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor/issues" target="_blank" class="cs-link">GitHub Issues →</a>
+    <a href="/legal#contact" class="cs-link">Contact →</a>
+    <a href="/legal#data" class="cs-link">Data Processing →</a>
+  </div>
+</div>
+
+<footer>
+  AI Stack Doctor v4.0 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp;
+  <a href="/">Dashboard</a> &nbsp;·&nbsp;
+  <a href="/legal">Legal</a> &nbsp;·&nbsp;
+  <a href="/guide">User Guide</a> &nbsp;·&nbsp;
+  <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">GitHub</a><br>
+  This page is updated with every release. Last updated: May 2026 v4.0
+</footer>
+
+</div>
+</body>
+</html>

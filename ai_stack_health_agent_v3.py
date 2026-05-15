@@ -1,4 +1,6 @@
 """
+AI Stack Doctor v4 — ROI / Cost-Benefit Layer added
+
 AI Stack Doctor v3
 ==================
 Phase 4: Historical Tracking · API Mode · Mode Selector · Top-Tier Company Intelligence
@@ -645,6 +647,168 @@ def get_compliance_context(company: str, industry: str = "") -> str:
     return "\n".join(lines)
 
 
+# ── ROI Calculation Framework ─────────────────────────────────────────────────
+# Evidence-based cost and ROI estimates per AI infrastructure gap category.
+# Sources: Gartner, McKinsey, Forrester, DORA reports, industry benchmarks.
+# All figures are ranges — agent selects appropriate point based on company size.
+
+ROI_FRAMEWORK = {
+    "GenAI / LLMs": {
+        "gap_cost_range": "$150K–$2M/year",
+        "gap_cost_drivers": [
+            "Engineer hours spent on manual content/code tasks that GenAI would automate",
+            "Lost competitive differentiation vs AI-native competitors",
+            "Delayed product shipping due to lack of AI-assisted development",
+        ],
+        "fix_cost_range": "$20K–$150K",
+        "fix_cost_drivers": "API costs + integration engineering + prompt engineering",
+        "roi_range": "200–500%",
+        "payback_months": "2–6 months",
+        "roi_basis": "McKinsey: GenAI adoption saves 20-40% of knowledge worker time",
+    },
+    "Agentic AI": {
+        "gap_cost_range": "$200K–$3M/year",
+        "gap_cost_drivers": [
+            "Manual orchestration of multi-step workflows that agents would automate",
+            "Human review bottlenecks in repetitive decision pipelines",
+            "Competitive gap vs companies shipping agentic products",
+        ],
+        "fix_cost_range": "$50K–$300K",
+        "fix_cost_drivers": "Framework licensing + agent development + orchestration infrastructure",
+        "roi_range": "300–800%",
+        "payback_months": "3–9 months",
+        "roi_basis": "Forrester: Agentic AI reduces process cycle times by 60-80%",
+    },
+    "Machine Learning": {
+        "gap_cost_range": "$300K–$5M/year",
+        "gap_cost_drivers": [
+            "Revenue lost to poor personalization, pricing, or fraud detection",
+            "Engineering rework from ad-hoc ML without proper infrastructure",
+            "Model incidents caused by lack of monitoring",
+        ],
+        "fix_cost_range": "$100K–$500K",
+        "fix_cost_drivers": "Platform licensing + ML engineering + compute infrastructure",
+        "roi_range": "400–1200%",
+        "payback_months": "4–12 months",
+        "roi_basis": "MIT: ML-mature companies achieve 2x revenue growth vs peers",
+    },
+    "Data Engineering": {
+        "gap_cost_range": "$250K–$4M/year",
+        "gap_cost_drivers": [
+            "Data team hours spent on unreliable pipeline maintenance",
+            "Business decisions delayed by poor data availability",
+            "AI initiatives blocked by data quality issues",
+        ],
+        "fix_cost_range": "$80K–$400K",
+        "fix_cost_drivers": "Modern data stack tooling + data engineering + migration",
+        "roi_range": "250–600%",
+        "payback_months": "6–12 months",
+        "roi_basis": "DAMA: Poor data quality costs organizations 15-25% of revenue",
+    },
+    "AI Platforms": {
+        "gap_cost_range": "$200K–$3M/year",
+        "gap_cost_drivers": [
+            "Duplicated tooling across teams without shared platform",
+            "Slow model deployment cycles (weeks vs hours)",
+            "Inability to scale AI experiments to production",
+        ],
+        "fix_cost_range": "$100K–$600K",
+        "fix_cost_drivers": "Platform build/buy + DevOps + model serving infrastructure",
+        "roi_range": "200–500%",
+        "payback_months": "6–18 months",
+        "roi_basis": "DORA: High-performing ML teams deploy 10x faster with proper platforms",
+    },
+    "MLOps / LLMOps": {
+        "gap_cost_range": "$150K–$2M/year",
+        "gap_cost_drivers": [
+            "Model incidents and regressions caught late costing engineering time",
+            "LLM output quality degradation undetected in production",
+            "Compliance exposure from unmonitored AI decisions",
+            "Time spent on manual model retraining and deployment",
+        ],
+        "fix_cost_range": "$40K–$250K",
+        "fix_cost_drivers": "LLMOps tooling (LangSmith/Arize/etc.) + observability + CI/CD for models",
+        "roi_range": "300–700%",
+        "payback_months": "2–6 months",
+        "roi_basis": "Gartner: 85% of AI projects fail — MLOps halves failure rate",
+    },
+    "Cloud AI Services": {
+        "gap_cost_range": "$100K–$1.5M/year",
+        "gap_cost_drivers": [
+            "Building custom infrastructure that managed cloud AI services provide",
+            "Over-provisioned compute from lack of managed scaling",
+            "Missing cloud-native AI capabilities requiring rebuild",
+        ],
+        "fix_cost_range": "$20K–$150K",
+        "fix_cost_drivers": "Cloud AI service migration + architecture + training",
+        "roi_range": "150–400%",
+        "payback_months": "3–9 months",
+        "roi_basis": "AWS/GCP/Azure: Managed AI services reduce infrastructure cost by 30-60%",
+    },
+    "Governance / Compliance": {
+        "gap_cost_range": "$500K–$50M+ (regulatory fine exposure)",
+        "gap_cost_drivers": [
+            "GDPR/CCPA violation fines (up to 4% global revenue)",
+            "EU AI Act penalties (up to 7% global revenue)",
+            "Regulatory audit costs and remediation",
+            "Reputational damage from AI incidents",
+        ],
+        "fix_cost_range": "$30K–$300K",
+        "fix_cost_drivers": "Legal review + governance framework + tooling + training",
+        "roi_range": "500–10000% (risk-adjusted)",
+        "payback_months": "Immediate — risk mitigation",
+        "roi_basis": "IBM: Average cost of AI compliance failure = $4.45M",
+    },
+    "Redundancy Elimination": {
+        "gap_cost_range": "$50K–$2M/year",
+        "gap_cost_drivers": [
+            "Duplicate SaaS subscriptions for overlapping AI capabilities",
+            "Engineering time maintaining redundant integrations",
+            "Inconsistent outputs from competing AI systems",
+        ],
+        "fix_cost_range": "$10K–$50K",
+        "fix_cost_drivers": "Audit + consolidation + migration + training",
+        "roi_range": "200–800%",
+        "payback_months": "1–3 months",
+        "roi_basis": "Gartner: Average enterprise has 30-40% redundant SaaS spend",
+    },
+}
+
+def get_roi_context(company_size: str = "", industry: str = "") -> str:
+    """Build ROI framework context for the agent to use in recommendations."""
+    size_multipliers = {
+        "startup": "Use the lower end of all cost ranges.",
+        "growth":  "Use the lower-to-mid range of cost estimates.",
+        "mid-market": "Use mid-range cost estimates.",
+        "enterprise": "Use upper-mid to high end of cost ranges.",
+        "large enterprise": "Use the high end of all cost ranges.",
+    }
+    size_key = "mid-market"
+    for k in size_multipliers:
+        if k in company_size.lower():
+            size_key = k
+            break
+
+    lines = [
+        "ROI CALCULATION FRAMEWORK — Use these benchmarks to quantify every recommendation:",
+        f"Company size guidance: {size_multipliers.get(size_key, 'Use mid-range estimates.')}",
+        "",
+    ]
+    for domain, data in ROI_FRAMEWORK.items():
+        lines.append(f"[{domain}]")
+        lines.append(f"  Gap Cost:    {data['gap_cost_range']}/year")
+        lines.append(f"  Fix Cost:    {data['fix_cost_range']}")
+        lines.append(f"  ROI:         {data['roi_range']} in 12 months")
+        lines.append(f"  Payback:     {data['payback_months']}")
+        lines.append(f"  Basis:       {data['roi_basis']}")
+        lines.append("")
+
+    lines.append("FORMAT for each recommendation:")
+    lines.append("  Action | Business justification | Gap Cost: $X/year | Fix Cost: ~$X")
+    lines.append("  Projected ROI: X% | Payback: X months | Impact: H/M/L | Owner: role")
+    return "\n".join(lines)
+
+
 # ── System Prompt v3 ──────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """
 You are an elite AI infrastructure analyst with deep knowledge of the world's leading
@@ -694,6 +858,15 @@ Mode: [YOUR COMPANY / COMPETITOR / GENERIC]
 EXECUTIVE SUMMARY
 [2-3 sentences: overall AI maturity, biggest risk, biggest opportunity]
 
+EXECUTIVE ROI SUMMARY
+[A table a CFO can read in 30 seconds. Format:]
+| Priority | Gap | Est. Annual Cost of Gap | Fix Cost | Projected ROI | Payback |
+|----------|-----|------------------------|----------|---------------|---------|
+[Top 3-5 gaps ranked by ROI potential]
+Total Estimated Gap Cost: $X–$Y/year
+Total Fix Investment:     ~$X–$Y
+Blended ROI (12 months):  X%
+
 COMPANY OVERVIEW
 [Industry | Founded | HQ | Size | AI Investment Signals]
 
@@ -732,7 +905,16 @@ PEER BENCHMARKING
 Maturity: Experimenting → Building → Scaling → Optimizing → Leading
 
 STRATEGIC RECOMMENDATIONS
-[Top 5: Action | Business justification | Impact H/M/L | Timeline | Owner]
+[Top 5 recommendations, each with FULL ROI analysis. Format per recommendation:]
+
+## [NUMBER]. [ACTION TITLE]
+Business Case: [Why this matters in business terms]
+Gap Cost: $X–$Y/year [what inaction is costing]
+Fix Cost: ~$X–$Y [investment required]
+Projected ROI: X% over 12 months
+Payback Period: X months
+Impact: H/M/L | Timeline: [Quarter] | Owner: [Role]
+Quick Win: [One thing they can do this week for free or low cost]
 
 AUDIT CONFIDENCE SUMMARY
 [Overall confidence | Low-confidence areas | Re-audit frequency]
@@ -1000,7 +1182,8 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         ]
         queries = enrich_queries(base, intel)
         results = [web_search(q) for q in queries[:7]]
-        return compliance_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results)
+        roi_ctx = get_roi_context(industry=industry)
+        return compliance_ctx + "\n\n" + roi_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results)
 
     elif tool_name == "detect_redundancies_and_gaps":
         base = [

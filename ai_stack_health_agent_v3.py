@@ -1,5 +1,5 @@
 """
-AI Stack Doctor v4 — ROI / Cost-Benefit Layer added
+AI Stack Doctor v4 — ROI Layer + Enhanced Prescriptions (Feature 6)
 
 AI Stack Doctor v3
 ==================
@@ -1125,6 +1125,104 @@ def get_roi_context(company_size: str = "", industry: str = "") -> str:
     return "\n".join(lines)
 
 
+# ── Prescription Priority Framework ──────────────────────────────────────────
+# Used by the agent to score and prioritize recommendations consistently.
+# Priority Score = (Impact × Urgency) ÷ Complexity
+# Impact:    1–5 (revenue/risk effect)
+# Urgency:   1–5 (time sensitivity)
+# Complexity: 1–5 (implementation effort)
+
+PRESCRIPTION_PRIORITY = {
+    "CRITICAL": {
+        "criteria": [
+            "Compliance violation risk (regulatory fine exposure)",
+            "Security vulnerability in AI systems",
+            "Score gap > 5 points in any domain",
+            "Gap cost > $500K/year",
+            "Competitive threat — competitor has capability, you don't",
+        ],
+        "sla": "Address within 30 days",
+        "color": "🔴",
+    },
+    "HIGH": {
+        "criteria": [
+            "Significant revenue or cost impact ($100K–$500K/year)",
+            "Score gap 3–5 points in any domain",
+            "Blocking other improvements (dependency chain)",
+            "Customer-facing AI quality issues",
+        ],
+        "sla": "Address within 90 days",
+        "color": "🟠",
+    },
+    "MEDIUM": {
+        "criteria": [
+            "Moderate improvement opportunity ($50K–$100K/year)",
+            "Score gap 1–3 points",
+            "Best practice gap without immediate risk",
+            "Technical debt accumulation",
+        ],
+        "sla": "Address within 6 months",
+        "color": "🟡",
+    },
+    "LOW": {
+        "criteria": [
+            "Optimization opportunity (< $50K/year impact)",
+            "Minor gap vs industry best practice",
+            "Nice-to-have capability",
+            "Future-proofing",
+        ],
+        "sla": "Address within 12 months",
+        "color": "🟢",
+    },
+}
+
+QUICK_WIN_EXAMPLES = {
+    "GenAI / LLMs": [
+        "Sign up for Anthropic Claude API free tier — test in sandbox this week",
+        "Enable GitHub Copilot trial for engineering team — 30 days free",
+        "Run a 2-hour GenAI prompt engineering workshop with your team",
+    ],
+    "MLOps / LLMOps": [
+        "Enable LangSmith free tier for LLM observability — zero cost",
+        "Set up basic model monitoring with free Evidently AI",
+        "Create a model incident runbook this week — costs only time",
+    ],
+    "Data Engineering": [
+        "Audit your top 3 data pipelines for failures — free with existing tools",
+        "Enable dbt Cloud free tier for data transformation visibility",
+        "Document your data lineage in a single shared doc this week",
+    ],
+    "Governance / Compliance": [
+        "Draft a 1-page AI usage policy this week — costs only time",
+        "Create an AI model inventory spreadsheet — free, immediate value",
+        "Schedule a 1-hour compliance review with your legal team",
+    ],
+    "Agentic AI": [
+        "Explore LangChain free tier — build a simple agent prototype this week",
+        "Map your top 3 manual workflows that could be automated — costs only time",
+        "Join the CrewAI community and review open-source agent examples",
+    ],
+}
+
+def get_prescription_context() -> str:
+    """Build concise prescription framework context for the agent."""
+    lines = [
+        "PRESCRIPTION PRIORITY LEVELS:",
+        "  CRITICAL = compliance risk OR gap >5pts OR cost >$500K/year → fix in 30 days",
+        "  HIGH     = revenue/cost impact $100K-$500K OR gap 3-5pts → fix in 90 days",
+        "  MEDIUM   = improvement opportunity $50K-$100K OR gap 1-3pts → fix in 6 months",
+        "  LOW      = optimization OR best practice gap → fix in 12 months",
+        "",
+        "QUICK WIN EXAMPLES (one per prescription, free or <$500):",
+        "  MLOps/LLMOps: Enable LangSmith free tier — zero cost",
+        "  GenAI/LLMs:   Sign up for Claude API free tier — zero cost",
+        "  Data Eng:     Audit top 3 pipelines with existing tools — zero cost",
+        "  Governance:   Draft 1-page AI policy — costs only time",
+        "  Agentic:      Map top 3 automatable workflows — costs only time",
+    ]
+    return "\n".join(lines)
+
+
 # ── System Prompt v3 ──────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """
 You are an elite AI infrastructure analyst with deep knowledge of the world's leading
@@ -1221,16 +1319,36 @@ PEER BENCHMARKING
 Maturity: Experimenting → Building → Scaling → Optimizing → Leading
 
 STRATEGIC RECOMMENDATIONS
-[Top 5 recommendations, each with FULL ROI analysis. Format per recommendation:]
+[Top 5–7 prescriptions, prioritized by ROI and urgency. Use EXACTLY this format:]
 
-## [NUMBER]. [ACTION TITLE]
-Business Case: [Why this matters in business terms]
-Gap Cost: $X–$Y/year [what inaction is costing]
-Fix Cost: ~$X–$Y [investment required]
-Projected ROI: X% over 12 months
-Payback Period: X months
-Impact: H/M/L | Timeline: [Quarter] | Owner: [Role]
-Quick Win: [One thing they can do this week for free or low cost]
+## PRESCRIPTION #[N] — [CRITICAL|HIGH|MEDIUM|LOW]
+Action:        [Specific actionable title]
+Domain:        [Scoring domain]
+Why Now:       [Business risk of inaction — one sentence]
+Gap Cost:      $X–$Y/year | Fix Cost: ~$X–$Y
+ROI:           X% over 12 months | Payback: X months
+Priority:      [1–10]/10
+Steps:         Week 1: [quick start] → Month 1: [core] → Month 3: [complete]
+Owner:         [Role] | Timeline: [Quarter] | Dependencies: [or "None"]
+Unlocks:       [Next prescriptions enabled by fixing this]
+Risk Ignored:  [Specific 6–12 month consequence]
+Quick Win:     ⚡ [Free/low-cost action startable THIS WEEK]
+
+PRESCRIPTION PRIORITY MATRIX
+[After all prescriptions, add a summary table:]
+| # | Action | Priority | Gap Cost | Fix Cost | ROI | Payback | Start |
+|---|--------|----------|----------|----------|-----|---------|-------|
+[Rank all prescriptions by Priority Score descending]
+
+PRESCRIPTION RULES:
+- CRITICAL = compliance risk OR score gap > 5 pts OR cost > $500K/year
+- HIGH = significant competitive disadvantage OR score gap 3–5 pts
+- MEDIUM = improvement opportunity OR score gap 1–3 pts
+- LOW = optimization OR best practice gap
+- Every prescription MUST have a Quick Win actionable this week
+- Dependencies must be honest — don't create false urgency
+- Unlocks field shows the compounding value of fixing things in order
+- Risk if Ignored must be specific — not generic "falling behind"
 
 AUDIT CONFIDENCE SUMMARY
 [Overall confidence | Low-confidence areas | Re-audit frequency]
@@ -1307,7 +1425,10 @@ def save_search_config(config: dict):
     print(f"  Search engine updated: {config.get('engine','ddg')}")
 
 def _search_ddg(query: str, max_results: int) -> list[dict]:
-    from duckduckgo_search import DDGS
+    try:
+        from ddgs import DDGS
+    except ImportError:
+        from duckduckgo_search import DDGS
     with DDGS() as ddgs:
         return list(ddgs.text(query, max_results=max_results))
 
@@ -1498,8 +1619,10 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         ]
         queries = enrich_queries(base, intel)
         results = [web_search(q) for q in queries[:7]]
-        roi_ctx = get_roi_context(industry=industry)
-        return compliance_ctx + "\n\n" + roi_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results)
+        roi_ctx   = get_roi_context(industry=industry)
+        presc_ctx = get_prescription_context()
+        return (compliance_ctx + "\n\n" + roi_ctx + "\n\n" +
+                presc_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results))
 
     elif tool_name == "detect_redundancies_and_gaps":
         base = [
@@ -1653,8 +1776,8 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
 
     while True:
         response = client.messages.create(
-            model="claude-opus-4-5",
-            max_tokens=8192,
+            model="claude-sonnet-4-20250514",
+            max_tokens=16000,
             system=SYSTEM_PROMPT,
             tools=tools,
             messages=messages

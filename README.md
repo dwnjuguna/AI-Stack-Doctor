@@ -11,6 +11,25 @@ AI Stack Doctor is a free, open-source AI infrastructure audit tool that gives a
 
 ---
 
+## 📊 Why This Exists — The Data
+
+From the **State of Martech 2026** (Brinker & Riemersma, n=208 marketing & martech leaders):
+
+| Stat | Finding |
+|------|---------|
+| **88 / 130** | Marketing leaders NOT using AI to manage their own stack — highest gap of any AI use case surveyed |
+| **Only 8%** | Of organizations report full confidence in their AI governance readiness |
+| **73%** | Have a formal GenAI policy — but a policy is not a finish line |
+| **7.1%** | Growth in Governance, Compliance & Privacy tools — one of only 11 subcategories growing |
+| **−37 net** | Content Marketing tools lost — first wave of AI content tools being absorbed by major platforms |
+
+> *"A policy is a starting point, not a finish line — and the gap between 'we have a policy' and 'we have the infrastructure to enforce it' is where most organizations are still working things out."*
+> — State of Martech 2026
+
+**AI Stack Doctor fills that gap.** Free. In 90 seconds.
+
+---
+
 ## 🌐 Live Demo
 
 | URL | Description |
@@ -29,12 +48,14 @@ AI Stack Doctor is a free, open-source AI infrastructure audit tool that gives a
 |---------|-------------|
 | 🎯 **Smart Intake Forms** | 4 persona-tailored forms — Consultant, Executive, Marketer, General |
 | 💰 **ROI Layer** | Every recommendation includes gap cost, fix cost, projected ROI, payback period |
-| 📖 **User Guide** | Beautiful non-technical landing page at `/guide` |
+| 📖 **User Guide** | Beautiful non-technical landing page at `/guide` with research-backed stats |
 | 🌍 **44 Company Profiles** | US, Europe, Asia, Latin America, Africa — including first-ever African AI benchmarks |
 | 🔍 **Cohort Filtering** | Filter by industry (28 categories), size, and region |
 | ⏱️ **Agentic Scheduler** | Autonomous audit scheduling, change detection, and alerts |
 | 🔒 **Security Foundation** | Auth scaffolding, audit logging, Gov Edition roadmap |
 | ⚖️ **Full Legal Layer** | GDPR, CCPA, EU AI Act, Data Processing Agreement |
+| 📉 **Deprecation Risk Intel** | Flags tools at high risk of being absorbed by major AI platforms |
+| 🔌 **MCP Server Spec** | Model Context Protocol server design — call audits from Claude/ChatGPT |
 
 ---
 
@@ -93,7 +114,7 @@ AI Stack Doctor is a free, open-source AI infrastructure audit tool that gives a
     │                                                          │
     │  ┌──────────────────┐   ┌────────────────────────────┐  │
     │  │  Anthropic API   │   │  Search (configurable)     │  │
-    │  │  Claude Opus     │   │  ├─ DuckDuckGo (default)   │  │
+    │  │  Claude Sonnet   │   │  ├─ DuckDuckGo (default)   │  │
     │  │  AI analysis     │   │  ├─ Google Custom Search   │  │
     │  └──────────────────┘   │  ├─ Bing / SerpAPI         │  │
     │                         │  └─ Private / Custom        │  │
@@ -121,6 +142,7 @@ User Input (company + mode)
 │                                                         │
 │  Tool 2: research_stack_health                          │
 │  └─ Deprecations · vendor stability · G2 data           │
+│     + State of Martech 2026 deprecation risk intel      │
 │                                                         │
 │  Tool 3: check_ai_integrations                          │
 │  └─ Pipeline health · data flows · observability        │
@@ -142,11 +164,13 @@ User Input (company + mode)
 │                                                         │
 │  Executive Summary + ROI Table                          │
 │  Stack Inventory (confirmed tools)                      │
+│  Deprecation Risk Flags (State of Martech 2026)         │
 │  Category Scores (7 domains / 100 pts)                  │
 │  Category Deep Dives                                    │
 │  Governance & Compliance Health                         │
 │  Peer Benchmarking                                      │
 │  Strategic Recommendations + Full ROI Analysis          │
+│  Enhanced Prescriptions with Priority Matrix            │
 │  Audit Confidence Summary                               │
 │                                                         │
 │  Export: TXT  ·  PDF (dark-themed)  ·  Dashboard        │
@@ -174,6 +198,30 @@ TOTAL                    100 pts
 🟡 Needs Attention  60–79
 🔴 At Risk           < 60
 ```
+
+---
+
+## 📉 Deprecation Risk Intelligence
+
+Powered by **State of Martech 2026** data (Brinker & Riemersma):
+
+```
+HIGH RISK — Being absorbed by ChatGPT / Claude / Gemini:
+  Jasper · Copy.ai · Writesonic · Anyword · Persado
+  Phrasee · Lately.ai · Lumen5 · Rytr
+
+MEDIUM RISK — Major platforms building equivalent features:
+  Grammarly Business AI · standalone SEO AI writers
+  basic AI personalization engines
+
+WATCH LIST — Categories under pressure:
+  Sales Automation point solutions  (-23 net tools in 2026)
+  Social Media AI monitoring        (-8 net)
+  Live Chat standalone AI           (-23 net)
+  Video Marketing AI tools          (-14 net)
+```
+
+Every audit now flags at-risk tools and estimates annual spend at risk from consolidation.
 
 ---
 
@@ -266,6 +314,7 @@ ai-stack-doctor/
 ├── 📖  guide.html                   # Non-technical user guide
 ├── ⚖️  legal.html                   # Legal & privacy (GDPR/CCPA/EU AI Act)
 ├── 🔒  security.html                # Security posture & Gov Edition
+├── 🔌  MCP_SERVER_SPEC.md           # MCP server specification (Q3 2026)
 │
 ├── ⚙️  requirements.txt             # Python dependencies
 ├── ☁️  render.yaml                  # Render.com deployment config
@@ -277,7 +326,6 @@ ai-stack-doctor/
 # schedules.json          Agentic scheduler configuration
 # audit_log.jsonl         Append-only tamper-evident audit trail
 # api_keys.json           Pro tier API key store
-# waitlist.json           Email waitlist
 # gov_interest.json       Government Edition interest registrations
 # intake_submissions/     Client intake JSON files
 ```
@@ -292,8 +340,10 @@ Send clients a tailored link before your first call:
 |---------|-----|------|----------|
 | **Consultant** | `/intake/consultant` | ~10 min | Client engagements, gap analysis |
 | **C-Suite / Exec** | `/intake/executive` | ~8 min | Board-ready reports, compliance risk |
-| **Marketer / Growth** | `/intake/marketer` | ~7 min | MarTech AI stack, content tools |
+| **Marketer / CMO** | `/intake/marketer` | ~7 min | MarTech AI stack, content AI audit, deprecated tool detection |
 | **General** | `/intake/general` | ~5 min | Quick self-assessment |
+
+The **Marketer persona** now includes a **Content AI Stack Audit** module — identifying tools at deprecation risk based on State of Martech 2026 data, and asking whether the stack is "AI everywhere, integrated nowhere."
 
 Intake data = **high-confidence ground truth**. The agent uses it as primary source over web research.
 
@@ -344,6 +394,29 @@ Quick Win:     Enable LangSmith free tier this week — zero cost
 9 ROI domains with evidence-based benchmarks:
 GenAI/LLMs · Agentic AI · Machine Learning · Data Engineering ·
 AI Platforms · MLOps/LLMOps · Cloud AI Services · Governance · Redundancy
+
+---
+
+## 🔌 MCP Server (Coming Q3 2026)
+
+AI Stack Doctor will expose a **Model Context Protocol (MCP) server** — letting any enterprise using Claude, ChatGPT, or MCP-compatible agents call audits directly from within their AI workflow.
+
+```
+Tools planned:
+  run_audit           → Full 90-second audit on any company
+  get_score           → Latest score from history (instant)
+  compare_companies   → Side-by-side 7-domain comparison
+  get_compliance_flags → 14-framework compliance risk check
+  list_companies      → All 44 profiles with scores
+  get_deprecation_risks → Flag tools at consolidation risk
+```
+
+This will make AI Stack Doctor callable from Claude Connectors, ChatGPT Apps, LangChain, CrewAI, and any MCP-compatible agent framework.
+
+See [`MCP_SERVER_SPEC.md`](MCP_SERVER_SPEC.md) for the full specification.
+
+> **Context:** The State of Martech 2026 report documents 29,000+ MCP servers built in 18 months —
+> more than twice the entire martech landscape took 15 years to reach. This is a real distribution channel.
 
 ---
 
@@ -413,6 +486,7 @@ Contributions are very welcome! Priority areas:
 - **New compliance frameworks** — extend `GLOBAL_COMPLIANCE`
 - **New regions** — Middle East, Southeast Asia, South Asia
 - **Local LLM support** — Ollama / LM Studio integration
+- **MCP server implementation** — see `MCP_SERVER_SPEC.md`
 - **Translations** — guide.html in other languages
 - **UI improvements** — dashboard, intake form, guide
 
@@ -433,6 +507,7 @@ MIT License — free to use, modify, and distribute.
 > Company names and trademarks referenced in audit reports belong to their respective owners.
 > All scores are analytical estimates derived from publicly available information only.
 > Not legal, financial, or professional advice.
+> State of Martech 2026 data cited with attribution to Scott Brinker & Frans Riemersma.
 
 ---
 
@@ -444,6 +519,7 @@ MIT License — free to use, modify, and distribute.
 - [Chart.js](https://chartjs.org) — Dashboard data visualizations
 - [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Terminal typography
 - [Bebas Neue](https://fonts.google.com/specimen/Bebas+Neue) — Display typography
+- [Scott Brinker & Frans Riemersma](https://chiefmartec.com) — State of Martech 2026 research
 - The open source community — for making tools like this possible
 
 ---

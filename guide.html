@@ -84,6 +84,27 @@ section{position:relative;z-index:1}
   line-height:1.7;max-width:560px;margin:0 auto 40px;font-weight:300;
 }
 .hero-sub strong{color:var(--text);font-weight:600}
+/* ── Martech stat callout ── */
+.martech-callout{
+  margin:0 auto;max-width:720px;
+  background:linear-gradient(135deg,rgba(240,160,0,.07) 0%,rgba(0,212,240,.05) 100%);
+  border:1px solid rgba(240,160,0,.25);border-radius:8px;
+  padding:18px 24px;display:flex;align-items:stretch;
+}
+.mc-inner{display:flex;align-items:center;gap:20px;width:100%;flex-wrap:wrap}
+.mc-stat{display:flex;align-items:baseline;gap:3px;flex-shrink:0}
+.mc-num{font-family:var(--display);font-size:52px;color:var(--amber);line-height:1}
+.mc-denom{font-family:var(--display);font-size:24px;color:var(--text3)}
+.mc-text{font-size:13px;color:var(--text2);line-height:1.6;flex:1}
+.mc-text strong{color:var(--amber)}
+.mc-source{display:block;font-family:var(--mono);font-size:8px;color:var(--text3);
+  letter-spacing:.5px;margin-top:5px;font-style:italic}
+.mc-cta{flex-shrink:0}
+.mc-link{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,212,240,.3);
+  padding-bottom:2px;white-space:nowrap;transition:border-color .15s}
+.mc-link:hover{border-color:var(--cyan)}
+@media(max-width:600px){.martech-callout{padding:14px 16px}.mc-num{font-size:38px}}
 .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
 .btn-primary{
   font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
@@ -322,7 +343,8 @@ footer{
     <p class="hero-sub">
       AI Stack Doctor gives any company a <strong>complete health check</strong> of their
       AI infrastructure — in plain English, with scores, benchmarks, and a clear
-      action plan. <strong>No technical background required.</strong>
+      action plan. When AI agents run your customer interactions, your ungoverned stack
+      shows. <strong>Know your score before it shows up in your numbers.</strong>
     </p>
     <div class="hero-actions">
       <a href="/intake" class="btn-primary">◈ Start Free Audit</a>
@@ -344,6 +366,23 @@ footer{
       <div class="hero-stat">
         <div class="hs-num">90s</div>
         <div class="hs-label">Average Audit Time</div>
+      </div>
+    </div>
+
+    <!-- State of Martech 2026 stat callout -->
+    <div class="martech-callout">
+      <div class="mc-inner">
+        <div class="mc-stat">
+          <span class="mc-num">88</span><span class="mc-denom">/130</span>
+        </div>
+        <div class="mc-text">
+          marketing leaders are <strong>not using AI to manage their own stack</strong> —
+          the highest gap of any AI use case in the 2026 State of Martech report.
+          <span class="mc-source">Source: State of Martech 2026, Brinker & Riemersma</span>
+        </div>
+        <div class="mc-cta">
+          <a href="/intake" class="mc-link">Audit yours →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -394,6 +433,67 @@ footer{
   </div>
 </section>
 
+<!-- THE PROBLEM IN NUMBERS -->
+<section id="problem" style="background:var(--bg1);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);padding:64px 32px">
+  <div class="section-wrap" style="max-width:900px">
+    <div class="section-eyebrow">// The Problem — 2026 Research</div>
+    <h2 class="section-h2">THE GAP IS<br>ENORMOUS.</h2>
+    <p class="section-desc" style="margin-bottom:36px">
+      The State of Martech 2026 report surveyed 208 marketing and marketing operations
+      leaders. The findings confirm exactly why AI Stack Doctor exists.
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px">
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;
+        padding:24px;border-top:3px solid var(--red)">
+        <div style="font-family:var(--display);font-size:52px;color:var(--red);line-height:1;
+          margin-bottom:8px">88<span style="font-size:28px;color:var(--text3)">/130</span></div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">
+          marketing leaders are <strong style="color:var(--text)">not using AI to manage
+          their own martech stack</strong> — the highest gap of any AI use case surveyed.
+        </div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:10px">
+          VENDOR SELECTION & STACK MANAGEMENT</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;
+        padding:24px;border-top:3px solid var(--amber)">
+        <div style="font-family:var(--display);font-size:52px;color:var(--amber);line-height:1;
+          margin-bottom:8px">8%</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">
+          of organizations report <strong style="color:var(--text)">full confidence in their
+          AI governance readiness</strong> — despite 73% claiming they have a formal policy.
+        </div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:10px">
+          AI GOVERNANCE READINESS — SAS RESEARCH 2026</div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;
+        padding:24px;border-top:3px solid var(--cyan)">
+        <div style="font-family:var(--display);font-size:52px;color:var(--cyan);line-height:1;
+          margin-bottom:8px">7.1%</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">
+          growth in <strong style="color:var(--text)">Governance, Compliance & Privacy</strong>
+          tools in 2026 — one of only 11 subcategories growing while the market was flat.
+        </div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:10px">
+          MARTECH LANDSCAPE 2026 — BRINKER & RIEMERSMA</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,212,240,.05);border:1px solid rgba(0,212,240,.15);
+      border-radius:6px;padding:16px 20px;font-size:13px;color:var(--text2);line-height:1.7">
+      <strong style="color:var(--cyan)">"A policy is a starting point, not a finish line —
+      and the gap between 'we have a policy' and 'we have the infrastructure to enforce it'
+      is where most organizations are still working things out."</strong>
+      <span style="display:block;font-family:var(--mono);font-size:8px;color:var(--text3);
+        margin-top:8px">— STATE OF MARTECH 2026 · BRINKER & RIEMERSMA</span>
+    </div>
+  </div>
+</section>
+
 <!-- WHO IT'S FOR -->
 <section id="who">
   <div class="section-wrap">
@@ -434,12 +534,14 @@ footer{
         <div class="pcard-icon">📣</div>
         <div class="pcard-role">For Marketers</div>
         <div class="pcard-title">CMO / GROWTH LEAD</div>
-        <div class="pcard-desc">Understand which AI tools are powering your competitors' marketing and where your MarTech stack is falling behind. Find the gaps before they show up in your numbers.</div>
+        <div class="pcard-desc">"AI everywhere, integrated nowhere" — 88 out of 130 marketing leaders aren't using AI to manage their own stack. Find what's redundant, deprecated, or siloed before it shows in your numbers.</div>
         <div class="pcard-gets">
           <div class="pcard-get">MarTech AI stack assessment</div>
           <div class="pcard-get">Content AI gap analysis</div>
+          <div class="pcard-get">Deprecated tool detection</div>
           <div class="pcard-get">Personalization maturity score</div>
           <div class="pcard-get">Competitor AI marketing tools</div>
+          <div class="pcard-get">Integration coherence score</div>
         </div>
         <div class="pcard-cta">Start marketer intake → ⏱ 7 min</div>
       </a>
@@ -725,6 +827,46 @@ footer{
           ✓ Interest registered.<br>
           We'll reach out to discuss your specific requirements<br>
           and security architecture needs.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH SOURCES -->
+<section style="background:var(--bg1);border-top:1px solid var(--border);padding:40px 32px">
+  <div class="section-wrap" style="max-width:800px">
+    <div class="section-eyebrow">// Research & Sources</div>
+    <h3 style="font-family:var(--display);font-size:22px;letter-spacing:1px;
+      color:var(--text);margin-bottom:16px">DATA BEHIND THE AUDIT</h3>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">
+      AI Stack Doctor's scoring benchmarks, deprecation risk flags, and compliance frameworks
+      are informed by leading industry research. All audit results reference publicly
+      available information only.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;
+        padding:16px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--cyan);
+          letter-spacing:1px;margin-bottom:6px">PRIMARY SOURCE</div>
+        <div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px">
+          State of Martech 2026</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6">
+          Scott Brinker & Frans Riemersma<br>
+          chiefmartec.com · MartechTribe · May 2026<br>
+          <span style="color:var(--text3)">n=208 marketing & martech leaders</span>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;
+        padding:16px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--cyan);
+          letter-spacing:1px;margin-bottom:6px">COMPLIANCE FRAMEWORKS</div>
+        <div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px">
+          14 Global Regulatory Frameworks</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6">
+          EU AI Act · GDPR+AI · US EO on AI<br>
+          CCPA · HIPAA+AI · CMMC · FedRAMP<br>
+          <span style="color:var(--text3)">NIST AI RMF · ISO 42001 · SOC 2 · PCI-DSS v4</span>
         </div>
       </div>
     </div>

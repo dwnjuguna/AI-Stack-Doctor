@@ -1223,6 +1223,70 @@ def get_prescription_context() -> str:
     return "\n".join(lines)
 
 
+# ── Deprecation Risk Intelligence (State of Martech 2026) ────────────────────
+# Source: Brinker & Riemersma, State of Martech 2026
+# Content Marketing had the largest net decline: -37 tools (-176 removed, +139 added)
+# These categories/tools are at highest risk of being absorbed by major AI platforms
+
+DEPRECATION_RISK_CATEGORIES = {
+    "HIGH_RISK": [
+        # Content AI — first wave being absorbed by ChatGPT/Claude/Gemini
+        "Jasper", "Copy.ai", "Writesonic", "Anyword", "Persado", "Phrasee",
+        "Lately", "Lumen5", "Lately.ai", "Rytr", "Peppertype",
+        # Standalone chatbots being absorbed by major platforms
+        "Drift", "Intercom (standalone AI)", "Drift AI",
+        # Standalone AI image tools being absorbed
+        "standalone DALL-E wrapper", "standalone Stable Diffusion wrapper",
+    ],
+    "MEDIUM_RISK": [
+        # Tools where major platforms have built equivalent features
+        "Grammarly Business AI", "Hemingway Editor",
+        "standalone SEO AI writers", "standalone social caption tools",
+        "basic AI personalization engines",
+    ],
+    "WATCH_LIST": [
+        # Categories under pressure per State of Martech 2026
+        "Sales Automation point solutions",  # -23 net
+        "Social Media AI monitoring",         # -8 net
+        "Live Chat standalone AI",            # -23 net
+        "Video Marketing AI tools",           # -14 net
+    ]
+}
+
+MARTECH_2026_CONTEXT = """
+KEY MARKET INTELLIGENCE — State of Martech 2026 (Brinker & Riemersma):
+- 15,505 total martech tools in 2026 — effectively flat (+0.79% growth)
+- UNDER THE SURFACE: 1,488 new tools added, 1,367 removed — market is churning
+- Content Marketing: LARGEST NET DECLINE (-37 tools, -176 removed vs +139 added)
+  → First wave of AI content tools being absorbed by ChatGPT, Claude, Gemini
+- Governance, Compliance & Privacy: 7.1% GROWTH — buyers actively spending here
+- 88 out of 130 marketing leaders NOT using AI to manage their own stack
+- Only 8% of organizations confident in their AI governance readiness
+- "AI everywhere, integrated nowhere" — most orgs in the Chrysalis phase
+- MCP protocol: 29,000+ servers in 18 months — integration layer maturing fast
+- Data silos remain the #1 constraint on AI effectiveness
+
+DEPRECATION RISK SIGNAL: When auditing any company's AI stack, flag tools in
+the HIGH_RISK category above as potential consolidation opportunities.
+Estimate annual spend waste from deprecated or at-risk tools.
+"""
+
+STATE_OF_AI_STACK_HEALTH_TEASER = """
+────────────────────────────────────────────────────
+📊 CONTRIBUTING TO THE STATE OF AI STACK HEALTH 2027
+This audit contributes anonymised benchmark data to the first-ever
+State of AI Stack Health annual report — publishing Q1 2027.
+The report will track AI stack maturity trends across 500+ companies
+globally — the Bloomberg data moat for AI infrastructure intelligence.
+────────────────────────────────────────────────────
+"""
+
+def get_deprecation_context() -> str:
+    """Return market intelligence for stack health assessment."""
+    high_risk = ", ".join(DEPRECATION_RISK_CATEGORIES["HIGH_RISK"][:8])
+    return MARTECH_2026_CONTEXT + f"\nHIGH DEPRECATION RISK TOOLS: {high_risk} (and similar point solutions)"
+
+
 # ── System Prompt v3 ──────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """
 You are an elite AI infrastructure analyst with deep knowledge of the world's leading
@@ -1369,7 +1433,7 @@ tools = [
     },
     {
         "name": "research_stack_health",
-        "description": "Research health/currency of detected tools — deprecations, security advisories, vendor stability, user sentiment, G2/Gartner data.",
+        "description": "Research health/currency of detected tools — deprecations, security advisories, vendor stability, user sentiment, G2/Gartner data. Flag tools at HIGH deprecation risk (being absorbed by major AI platforms per State of Martech 2026).",
         "input_schema": {"type": "object", "properties": {"company_name": {"type": "string"}}, "required": ["company_name"]}
     },
     {
@@ -1389,7 +1453,7 @@ tools = [
     },
     {
         "name": "benchmark_against_peers",
-        "description": "Benchmark against 3 industry peers on maturity and tooling.",
+        "description": "Benchmark against 3 industry peers on maturity and tooling. Reference State of Martech 2026 data where relevant (governance gap: only 8% of orgs confident in AI governance readiness; 88/130 not using AI to manage their stack).",
         "input_schema": {"type": "object", "properties": {"company_name": {"type": "string"}, "industry": {"type": "string"}}, "required": ["company_name", "industry"]}
     },
 ]
@@ -1573,7 +1637,8 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
 
     elif tool_name == "research_stack_health":
         if is_generic:
-            return "Generic mode: assess health based on tool currency and deprecation risk for typical enterprise stacks."
+            deprecation_ctx = get_deprecation_context()
+            return f"Generic mode: assess health based on tool currency and deprecation risk for typical enterprise stacks.\n\n{deprecation_ctx}"
         base = [
             f"{company} AI platform deprecations migrations {year}",
             f"{company} machine learning infrastructure challenges technical debt",

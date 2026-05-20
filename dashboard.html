@@ -940,6 +940,58 @@ main {
 .ssb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0;animation:pulse 2s infinite}
 .ssb-dot.offline{background:var(--red);box-shadow:0 0 6px var(--red)}
 
+
+/* ── Pro Gate ── */
+.pro-gate{
+  position:relative;overflow:hidden;
+  background:var(--card);border:1px solid rgba(0,212,240,.2);
+  border-radius:var(--r);padding:28px 24px;text-align:center;
+  margin:16px 0;
+}
+.pro-gate::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,212,240,.04) 0%,rgba(144,96,240,.04) 100%);
+  pointer-events:none;
+}
+.pro-gate-icon{font-size:32px;margin-bottom:10px}
+.pro-gate-title{
+  font-family:var(--display);font-size:22px;letter-spacing:1px;
+  color:var(--text);margin-bottom:8px
+}
+.pro-gate-desc{
+  font-size:12px;color:var(--text2);line-height:1.7;
+  max-width:400px;margin:0 auto 18px;
+}
+.pro-gate-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--cyan);
+  background:rgba(0,212,240,.08);border:1px solid rgba(0,212,240,.2);
+  border-radius:20px;padding:4px 14px;margin-bottom:16px;
+}
+.pro-gate-features{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px;
+}
+.pro-gate-feat{
+  font-family:var(--mono);font-size:9px;color:var(--text2);
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:3px;padding:4px 10px;
+}
+.pro-gate-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:11px 28px;border-radius:4px;
+  background:var(--cyan);color:#000;border:none;
+  cursor:pointer;text-decoration:none;
+  transition:all .2s;
+}
+.pro-gate-btn:hover{background:#33dff7;box-shadow:0 0 20px rgba(0,212,240,.3)}
+.pro-gate-note{
+  font-family:var(--mono);font-size:8px;color:var(--text3);
+  margin-top:12px;line-height:1.7;
+}
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg1); }
@@ -1253,6 +1305,17 @@ window.addEventListener('load', initCookieBanner, { once: false });
         <span style="font-size:10px">🔒</span>
         <span style="font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--green)">Security Posture</span>
       </a>
+      <!-- Pro Waitlist CTA -->
+      <a href="/guide#waitlist" style="display:flex;align-items:center;justify-content:center;
+        gap:7px;background:linear-gradient(135deg,rgba(0,212,240,.1),rgba(144,96,240,.08));
+        border:1px solid rgba(0,212,240,.25);border-radius:3px;padding:9px 10px;
+        text-decoration:none;transition:all .15s;margin-top:2px;"
+        onmouseover="this.style.borderColor='var(--cyan)'"
+        onmouseout="this.style.borderColor='rgba(0,212,240,.25)'">
+        <span style="font-size:10px">⭐</span>
+        <span style="font-family:var(--mono);font-size:8px;letter-spacing:1px;
+          text-transform:uppercase;color:var(--cyan)">Pro — Coming Soon</span>
+      </a>
       <a href="/security#government" style="display:flex;align-items:center;gap:7px;
         background:rgba(144,96,240,.08);border:1px solid rgba(144,96,240,.2);
         border-radius:3px;padding:7px 10px;text-decoration:none;transition:all .15s;"
@@ -1514,6 +1577,26 @@ window.addEventListener('load', initCookieBanner, { once: false });
         <tbody id="historyBody"></tbody>
       </table>
     </div>
+    <div class="pro-gate" style="margin-top:16px">
+      <div class="pro-gate-icon">📈</div>
+      <div class="pro-gate-badge">Pro Feature — Coming Soon</div>
+      <div class="pro-gate-title">CLOUD HISTORY & TRENDS</div>
+      <div class="pro-gate-desc">
+        Score trend charts, delta tracking, and full audit history
+        synced to your account — accessible from any device, any time.
+      </div>
+      <div class="pro-gate-features">
+        <span class="pro-gate-feat">Unlimited cloud history</span>
+        <span class="pro-gate-feat">Score trend charts</span>
+        <span class="pro-gate-feat">Delta vs last audit</span>
+        <span class="pro-gate-feat">Export to CSV</span>
+      </div>
+      <a href="/guide#waitlist" class="pro-gate-btn">◈ Join the Pro Waitlist</a>
+      <div class="pro-gate-note">
+        No commitment · No price shown until launch<br>
+        Self-hosting? History is fully available locally — see README.
+      </div>
+    </div>
   </div>
 
 
@@ -1578,7 +1661,30 @@ window.addEventListener('load', initCookieBanner, { once: false });
     <!-- Active schedules grid -->
     <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Active Schedules</div>
     <div class="sched-grid" id="schedGrid">
-      <div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">No schedules yet</div><div class="empty-sub">Add a company above to start automated monitoring</div></div>
+      <div id="schedEmptyState" class="pro-gate" style="display:none">
+        <div class="pro-gate-icon">⏱️</div>
+        <div class="pro-gate-badge">Pro Feature</div>
+        <div class="pro-gate-title">AGENTIC SCHEDULER</div>
+        <div class="pro-gate-desc">
+          Autonomous audit scheduling with change detection alerts, email notifications,
+          and Slack webhooks. Set it and forget it — we monitor while you work.
+        </div>
+        <div class="pro-gate-features">
+          <span class="pro-gate-feat">Daily / Weekly / Monthly cadences</span>
+          <span class="pro-gate-feat">Change detection alerts (3+ pt delta)</span>
+          <span class="pro-gate-feat">Email + Slack webhook delivery</span>
+          <span class="pro-gate-feat">Digest reports</span>
+          <span class="pro-gate-feat">Run Now on demand</span>
+        </div>
+        <a href="https://ai-stack-doctor.onrender.com/guide#waitlist" class="pro-gate-btn">
+          ◈ Join the Pro Waitlist
+        </a>
+        <div class="pro-gate-note">
+          Pro tier launching soon · No commitment required<br>
+          Self-hosting? The scheduler is fully available — see README.
+        </div>
+      </div>
+      <div id="schedGridInner"><div class="empty"><div class="empty-icon">⏱</div><div class="empty-title">No schedules yet</div><div class="empty-sub">Add a company above to start automated monitoring</div></div></div>
     </div>
 
     <!-- Alert feed -->

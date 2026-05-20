@@ -30,6 +30,49 @@ From the **State of Martech 2026** (Brinker & Riemersma, n=208 marketing & marte
 
 ---
 
+
+## 🚦 Free vs Pro — What's Available Where
+
+AI Stack Doctor follows the **open source engine / hosted service** model.
+The code is MIT — free forever. The cloud service is where the business value lives.
+
+| Feature | Open Source (Self-Host) | Hosted Free | Pro Tier | Team Tier | Enterprise |
+|---------|------------------------|-------------|----------|-----------|------------|
+| CLI audit agent | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| Basic PDF export | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| Single audit run | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Self-hosted dashboard | ✅ Full | — | — | — | — |
+| Audit history & trends | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| All 44 company profiles | ✅ Self-hosted | 10 profiles | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| Agentic scheduler | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| Enhanced prescriptions | ✅ Self-hosted | Basic only | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| Cohort filtering | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| Branded PDF export | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| API access | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise |
+| Team workspace | — | — | — | 🔒 Team | 🔒 Enterprise |
+| White-label reports | — | — | — | 🔒 Team | 🔒 Enterprise |
+| Custom company profiles | — | — | — | 🔒 Team | 🔒 Enterprise |
+| SSO / SAML | — | — | — | — | 🔒 Enterprise |
+| Gov Edition | — | — | — | — | 🔒 Gov |
+| Dedicated CSM + SLA | — | — | — | — | 🔒 Enterprise |
+
+### 💡 The Model Explained
+
+**Self-hosters** get everything — you bring your own Anthropic API key and run your own server.
+That is the spirit of open source and we fully support it.
+
+**Hosted service** users get a managed, always-on experience with cloud history,
+scheduling, and team features — without managing infrastructure.
+
+> **Pro, Team, and Enterprise tiers are currently in development.**
+> Pricing and availability will be announced at launch.
+> Join the waitlist to be first to know and get early access.
+
+**[→ Join the Pro Waitlist](https://ai-stack-doctor.onrender.com/guide#waitlist)**
+**[→ Register Government Interest](https://ai-stack-doctor.onrender.com/security#government)**
+
+---
+
 ## 🌐 Live Demo
 
 | URL | Description |

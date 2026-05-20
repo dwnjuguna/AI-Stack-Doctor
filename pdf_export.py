@@ -20,6 +20,7 @@ import sys
 import argparse
 from datetime import datetime
 
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib import colors
@@ -575,6 +576,31 @@ def build_pdf(report_text, company, output_path):
         # lands alone at the very bottom of a frame
         story.append(Paragraph(safe, styles["body"]))
         story.append(Spacer(1, 1))
+
+    # ── DEPRECATION RISK CALLOUT (State of Martech 2026) ────────────────────
+    # Add a research-backed context note at the end of every report
+    story.append(Spacer(1, 0.2 * inch))
+    deprecation_data = [[Paragraph(
+        "<b>Market Intelligence — State of Martech 2026</b><br/>"
+        "88 out of 130 marketing leaders are not using AI to manage their own stack — "
+        "the highest gap of any AI use case (Brinker &amp; Riemersma, 2026). "
+        "Only 8% of organizations report full confidence in AI governance readiness. "
+        "Content Marketing saw the largest net decline: −37 tools in 2026, as the first wave "
+        "of AI content tools is absorbed by major platforms. "
+        "Governance, Compliance &amp; Privacy tools grew 7.1% — buyers are actively investing here.",
+        styles["body"]
+    )]]
+    dep_tbl = Table(deprecation_data, colWidths=[INNER_W])
+    dep_tbl.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1, -1), HexColor("#0D2A10")),
+        ("BOX",           (0, 0), (-1, -1), 1, HexColor("#00C880")),
+        ("TOPPADDING",    (0, 0), (-1, -1), 12),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+        ("LEFTPADDING",   (0, 0), (-1, -1), 14),
+        ("RIGHTPADDING",  (0, 0), (-1, -1), 14),
+    ]))
+    story.append(dep_tbl)
+    story.append(Spacer(1, 0.15 * inch))
 
     # ── BUILD (two passes for page count) ────────────────────────────────────
     from io import BytesIO

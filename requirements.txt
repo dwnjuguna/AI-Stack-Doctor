@@ -1,5 +1,5 @@
 anthropic
-duckduckgo-search
+ddgs
 rich
 flask
 reportlab

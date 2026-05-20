@@ -150,6 +150,21 @@ ADDITIONAL CONTEXT
 ──────────────────
 {data.get('additionalContext', 'None')}
 
+MARKETER PERSONA — CONTENT AI STACK AUDIT
+──────────────────────────────────────────
+AI Content Tools In Use:    {', '.join(data.get('mktai', [])) or '—'}
+Marketing Platforms (AI):   {', '.join(data.get('mktplat', [])) or '—'}
+Deprecated Tools At Risk:   {', '.join(data.get('cntdep', [])) or 'None declared'}
+Stack Integration Level:    {', '.join(data.get('mktintegration', [])) or '—'}
+Marketing AI Goals:         {', '.join(data.get('mktgoal', [])) or '—'}
+Marketing AI Challenge:     {data.get('mktChallenge', '—')}
+Marketer Competitors:       {', '.join(data.get('mktCompetitors', [])) or '—'}
+
+DEPRECATION RISK NOTE (State of Martech 2026):
+If any tools in 'Deprecated Tools At Risk' are declared above, flag them
+as HIGH deprecation risk — these are being absorbed by major AI platforms.
+Estimate annual spend at risk and recommend consolidation opportunities.
+
 ══════════════════════════════════════════════════════════════════
 SCORING INSTRUCTIONS FOR THIS INTAKE-BASED AUDIT:
 1. Score each category based on declared tools — not speculation
@@ -160,6 +175,9 @@ SCORING INSTRUCTIONS FOR THIS INTAKE-BASED AUDIT:
 6. Benchmark against declared competitors where possible
 7. Flag compliance gaps against declared obligations: {comp}
 8. Frame all recommendations toward stated goals: {goals}
+9. If deprecated content AI tools declared: flag as HIGH risk, estimate spend waste
+10. Integration coherence: if 'AI everywhere, integrated nowhere' declared, make
+    redundancy detection and integration scoring a primary focus area
 ══════════════════════════════════════════════════════════════════
 """
     return context

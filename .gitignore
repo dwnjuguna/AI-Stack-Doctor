@@ -263,3 +263,39 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 >>>>>>> 79221cfbfc9506616a772700baa2396750ffcf5b
+
+# ── Confidential / Pricing / Enterprise ─────────────────────
+guide.html
+MCP_SERVER_SPEC.md
+legal.html
+dashboard.html
+dashboard_server.py
+pdf_export.py
+ai_stack_health_agent_v3.py
+intake_form.html
+scheduler.py
+
+# ── Runtime / Never commit ───────────────────────────────────
+*.db
+*.sqlite
+__pycache__/
+*.pyc
+*.pyo
+
+# -- Confidential / Pricing / Enterprise ---------------------
+guide.html
+MCP_SERVER_SPEC.md
+legal.html
+dashboard.html
+dashboard_server.py
+pdf_export.py
+ai_stack_health_agent_v3.py
+intake_form.html
+scheduler.py
+
+# -- Runtime / Never commit ----------------------------------
+*.db
+*.sqlite
+__pycache__/
+*.pyc
+*.pyo

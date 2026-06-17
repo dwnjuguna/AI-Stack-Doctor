@@ -12,7 +12,7 @@ Requirements:
 """
 
 import sqlite3, json, re, argparse, webbrowser, os, logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, jsonify, send_from_directory, request
 
@@ -54,9 +54,28 @@ def ensure_table():
         report_text TEXT, created_at TEXT)""")
     conn.commit(); conn.close()
 
+def _parse_iso_utc(s):
+    """Parse an ISO timestamp into a tz-aware UTC datetime. Returns None on failure."""
+    if not s:
+        return None
+    try:
+        dt = datetime.fromisoformat(s.replace(" ", "T"))
+    except (ValueError, AttributeError):
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
 def seed_from_json_if_needed():
-    """Populate an empty DB from data/seed_audits.json so a fresh clone
-    shows the pre-computed v4 audits immediately. No-op if DB has rows."""
+    """Populate (or refresh) DB from data/seed_audits.json.
+
+    - Empty DB → seed.
+    - Seed file's generated_at is newer than the latest created_at in the DB →
+      wipe and reseed (full DELETE FROM reports).
+    - Otherwise → no-op.
+
+    WARNING: the wipe-and-reseed path deletes ALL rows, including any audits
+    a self-hoster ran themselves. Pull updated seed files knowing this."""
     if not SEED_PATH.exists():
         return
     conn = sqlite3.connect(DB_PATH)
@@ -65,12 +84,28 @@ def seed_from_json_if_needed():
         company TEXT, mode TEXT DEFAULT 'competitor',
         overall INTEGER, scores_json TEXT,
         report_text TEXT, created_at TEXT)""")
-    if conn.execute("SELECT COUNT(*) FROM reports").fetchone()[0] > 0:
-        conn.close()
-        return
+
     try:
         snapshot = json.loads(SEED_PATH.read_text())
-        audits = snapshot.get("audits", [])
+    except Exception as e:
+        print(f"  ⚠ Could not parse {SEED_PATH}: {e}")
+        conn.close()
+        return
+    audits = snapshot.get("audits", [])
+
+    row_count = conn.execute("SELECT COUNT(*) FROM reports").fetchone()[0]
+
+    if row_count > 0:
+        seed_dt = _parse_iso_utc(snapshot.get("generated_at"))
+        latest_db = conn.execute("SELECT MAX(created_at) FROM reports").fetchone()[0]
+        latest_dt = _parse_iso_utc(latest_db)
+        if not (seed_dt and latest_dt and seed_dt > latest_dt):
+            conn.close()
+            return
+        conn.execute("DELETE FROM reports")
+        print(f"  ♻ Seed file is newer ({seed_dt.isoformat()} > {latest_dt.isoformat()}); wiping and reseeding")
+
+    try:
         for a in audits:
             conn.execute(
                 "INSERT INTO reports (company,mode,overall,scores_json,report_text,created_at) VALUES (?,?,?,?,?,?)",

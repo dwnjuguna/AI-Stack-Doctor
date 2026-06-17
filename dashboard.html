@@ -3057,7 +3057,7 @@ function showCohortInsights(filtered, isFiltered) {
 const DS_KEY = 'asd_datasource';   // localStorage key
 
 // State
-let dsMode = 'demo';          // 'demo' | 'internet' | 'private'
+let dsMode = 'internet';      // 'demo' | 'internet' | 'private'
 let dsUrl  = '';              // custom server URL for private mode
 let dsConfirmed = false;      // has the user confirmed a choice this session
 
@@ -3081,7 +3081,7 @@ function loadDS() {
 
 // ── Effective API base URL ────────────────────────────────────────────────────
 function getApiBase() {
-  if (dsMode === 'internet') return 'http://localhost:5050';
+  if (dsMode === 'internet') return 'https://ai-stack-doctor.onrender.com';
   if (dsMode === 'private')  return dsUrl.replace(/\/$/, '');
   return null;   // demo mode — no server
 }

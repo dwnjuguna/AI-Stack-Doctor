@@ -89,6 +89,10 @@ scheduling, and team features — without managing infrastructure.
 
 | Feature | Description |
 |---------|-------------|
+| 🏭 **Industry Intelligence** | 9 sector profiles — prescriptions weighted by highest-value AI domains per industry |
+| 🩺 **AI Org Health** | New report section: CAIO signals, AI platform team, production depth |
+| ⚠️ **Scaling Purgatory Flag** | Sharpened maturity ladder — detects companies stuck between Scaling and Optimizing |
+| 🔍 **Sector Benchmark Hints** | Peer comparisons enriched with industry-specific search signals |
 | 🎯 **Smart Intake Forms** | 4 persona-tailored forms — Consultant, Executive, Marketer, General |
 | 💰 **ROI Layer** | Every recommendation includes gap cost, fix cost, projected ROI, payback period |
 | 📖 **User Guide** | Beautiful non-technical landing page at `/guide` with research-backed stats |
@@ -192,6 +196,8 @@ User Input (company + mode)
 │                                                         │
 │  Tool 4: audit_governance_and_ownership                 │
 │  └─ 14 compliance frameworks + ROI context              │
+│     + AI Org Health: CAIO, platform team, prod depth    │
+│     + Industry-weighted priority context                │
 │                                                         │
 │  Tool 5: detect_redundancies_and_gaps                   │
 │  └─ Capability overlaps · wasted spend                  │

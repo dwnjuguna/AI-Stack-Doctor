@@ -1,14 +1,21 @@
 """
-AI Stack Doctor v4 — ROI Layer + Enhanced Prescriptions (Feature 6)
+AI Stack Doctor v4 — REWIRED Edition
 
-AI Stack Doctor v3
+AI Stack Doctor v4
 ==================
-Phase 4: Historical Tracking · API Mode · Mode Selector · Top-Tier Company Intelligence
+Phase 5: Industry Intelligence · AI Org Health · Maturity Calibration
 
-New in v3:
+New in v4 (REWIRED-inspired additions):
+  - INDUSTRY_VALUE_MAP: 9 sector profiles with highest-value AI domains per industry
+  - Industry-weighted recommendations: top domains surfaced first per sector
+  - AI Org Health section: CAIO/VP AI signals, platform team, production depth
+  - Maturity ladder refinement: Scaling Purgatory flag, sharper calibration signals
+  - Sector benchmark hints injected into peer comparison searches
+
+Built on v3 (retained):
   - Mode selector: Analyze YOUR company | Analyze a competitor | Generic audit
   - Historical tracking: every report saved to SQLite with trend comparison
-  - Dedicated top-tier company intelligence layer (Meta, Nvidia, OpenAI, Microsoft,
+  - Top-tier company intelligence layer (Meta, Nvidia, OpenAI, Microsoft,
     Anthropic, Apple, Amazon, Netflix, Salesforce, Google, Mistral, Intel, etc.)
   - Company-specific search query routing (engineering blogs, research pages, etc.)
   - API server mode: expose the agent as a REST endpoint (--api flag)
@@ -1176,6 +1183,143 @@ PRESCRIPTION_PRIORITY = {
     },
 }
 
+# ── Industry Value Map (REWIRED: highest-value AI domains per sector) ─────────
+# Source: McKinsey REWIRED — prioritize investments by domain value for the sector.
+# Used to rerank prescriptions so the highest-ROI domains surface first.
+
+INDUSTRY_VALUE_MAP = {
+    "fintech": {
+        "top_domains": ["Machine Learning", "Data Engineering", "MLOps / LLMOps"],
+        "why": "Fraud detection, credit scoring, and real-time decisioning are table-stakes competitive advantages",
+        "benchmark_hints": ["fintech AI fraud detection ML benchmark", "neobank credit scoring AI stack"],
+        "gap_signals": ["real-time inference <50ms", "causal ML for credit", "AML model monitoring"],
+    },
+    "healthcare": {
+        "top_domains": ["AI Platforms", "Governance / Compliance", "Machine Learning"],
+        "why": "FDA clearance requirements and PHI constraints make governance the unlock for everything else",
+        "benchmark_hints": ["healthcare AI platform HIPAA compliance benchmark", "clinical ML FDA clearance"],
+        "gap_signals": ["HIPAA-compliant model training", "clinical decision support audit trails", "bias monitoring"],
+    },
+    "ecommerce": {
+        "top_domains": ["GenAI / LLMs", "Machine Learning", "Data Engineering"],
+        "why": "Personalization and recommendation engines directly compound revenue per visit",
+        "benchmark_hints": ["ecommerce recommendation AI stack benchmark", "retail personalization ML platform"],
+        "gap_signals": ["real-time recommendation latency", "A/B testing infrastructure", "demand forecasting"],
+    },
+    "media": {
+        "top_domains": ["GenAI / LLMs", "Agentic AI", "MLOps / LLMOps"],
+        "why": "Content generation velocity and recommendation quality are the core competitive levers",
+        "benchmark_hints": ["media company GenAI content production stack", "streaming recommendation ML benchmark"],
+        "gap_signals": ["content moderation AI", "personalization at scale", "synthetic media governance"],
+    },
+    "enterprise_software": {
+        "top_domains": ["Agentic AI", "GenAI / LLMs", "Cloud AI Services"],
+        "why": "AI-native product features and copilots are now table-stakes for enterprise SaaS retention",
+        "benchmark_hints": ["enterprise SaaS AI copilot feature benchmark", "B2B software GenAI adoption"],
+        "gap_signals": ["in-product AI assistant", "workflow automation agents", "customer-facing LLM features"],
+    },
+    "semiconductors": {
+        "top_domains": ["AI Platforms", "Machine Learning", "Cloud AI Services"],
+        "why": "Yield optimization and predictive maintenance ML directly reduce CapEx at scale",
+        "benchmark_hints": ["semiconductor AI yield optimization ML benchmark", "chip design AI platform"],
+        "gap_signals": ["process yield ML", "chip design automation", "supply chain AI"],
+    },
+    "logistics": {
+        "top_domains": ["Machine Learning", "Data Engineering", "Agentic AI"],
+        "why": "Route optimization and demand forecasting are the highest-ROI AI investments in this sector",
+        "benchmark_hints": ["logistics AI route optimization benchmark", "supply chain ML platform"],
+        "gap_signals": ["dynamic routing ML", "demand forecasting accuracy", "autonomous agent dispatch"],
+    },
+    "telecom": {
+        "top_domains": ["Data Engineering", "Machine Learning", "Cloud AI Services"],
+        "why": "Network optimization and churn prediction ML directly impact margins at scale",
+        "benchmark_hints": ["telecom AI network optimization benchmark", "telco churn prediction ML"],
+        "gap_signals": ["network anomaly detection", "predictive maintenance", "customer churn ML"],
+    },
+    "social_media": {
+        "top_domains": ["Machine Learning", "Data Engineering", "MLOps / LLMOps"],
+        "why": "Recommendation quality and content moderation reliability define product retention",
+        "benchmark_hints": ["social media recommendation ML benchmark", "content moderation AI scale"],
+        "gap_signals": ["recommendation freshness", "moderation latency", "A/B experimentation velocity"],
+    },
+    "default": {
+        "top_domains": ["GenAI / LLMs", "MLOps / LLMOps", "Data Engineering"],
+        "why": "These three domains deliver the highest cross-industry ROI for most companies",
+        "benchmark_hints": [],
+        "gap_signals": [],
+    },
+}
+
+def detect_industry_slug(company: str, intel: dict, industry_hint: str = "") -> str:
+    """Map company/industry string to an INDUSTRY_VALUE_MAP key."""
+    combined = (intel.get("industry", "") + " " + industry_hint).lower()
+    mapping = {
+        "fintech":            ["fintech", "payment", "banking", "neobank", "credit", "insurance"],
+        "healthcare":         ["health", "pharma", "medical", "biotech", "clinical"],
+        "ecommerce":          ["ecommerce", "e-commerce", "retail", "marketplace", "shopping"],
+        "media":              ["media", "streaming", "entertainment", "content", "music", "video"],
+        "enterprise_software":["enterprise software", "saas", "b2b software", "crm", "erp"],
+        "semiconductors":     ["semiconductor", "chip", "hardware", "silicon", "gpu"],
+        "logistics":          ["logistics", "supply chain", "shipping", "freight", "delivery"],
+        "telecom":            ["telecom", "telco", "wireless", "carrier", "network operator"],
+        "social_media":       ["social media", "social network", "platform"],
+    }
+    for slug, keywords in mapping.items():
+        if any(kw in combined for kw in keywords):
+            return slug
+    return "default"
+
+def get_industry_context(company: str, intel: dict, industry_hint: str = "") -> str:
+    """Return industry-weighted priority context for the agent."""
+    slug = detect_industry_slug(company, intel, industry_hint)
+    data = INDUSTRY_VALUE_MAP.get(slug, INDUSTRY_VALUE_MAP["default"])
+    lines = [
+        f"INDUSTRY-WEIGHTED PRIORITIES ({slug.replace('_', ' ').title()}):",
+        f"Top value domains for this sector: {', '.join(data['top_domains'])}",
+        f"Why: {data['why']}",
+        f"Key gap signals to look for: {', '.join(data['gap_signals']) or 'standard gaps apply'}",
+        "",
+        "INSTRUCTION: When ranking prescriptions, surface gaps in the top_domains listed above",
+        "first, unless a CRITICAL compliance or security issue overrides the order.",
+    ]
+    return "\n".join(lines)
+
+
+# ── Maturity Ladder Signals (REWIRED: death by pilots calibration) ────────────
+# Sharpens the 5-level maturity ladder with concrete observable signals.
+# Adds "Scaling Purgatory" — the most common stuck state per McKinsey research.
+
+MATURITY_SIGNALS = {
+    "Experimenting": [
+        "Running AI pilots with no production deployments",
+        "No dedicated ML engineering team",
+        "AI tools chosen by individual engineers, not centrally governed",
+    ],
+    "Building": [
+        "1-2 production AI systems live",
+        "Small ML team (1-5 engineers) hired",
+        "Basic MLOps: model versioning or experiment tracking in place",
+    ],
+    "Scaling": [
+        "Multiple production AI systems across 2+ business units",
+        "Dedicated ML platform team or internal AI platform forming",
+        "Structured MLOps with CI/CD for models",
+        "⚠ SCALING PURGATORY: many pilots, inconsistent production rollout — flag this explicitly",
+    ],
+    "Optimizing": [
+        "AI embedded in core product and operational workflows",
+        "LLMOps / model monitoring in place with alerting",
+        "Formal AI governance policy and model inventory",
+        "Cross-functional AI product teams (not siloed ML team)",
+    ],
+    "Leading": [
+        "AI is a core competitive moat, not a cost center",
+        "Published research, open-source contributions, or industry-first AI features",
+        "CAIO or equivalent C-suite AI leadership",
+        "AI talent density: 10%+ of engineering in AI/ML roles",
+    ],
+}
+
 QUICK_WIN_EXAMPLES = {
     "GenAI / LLMs": [
         "Sign up for Anthropic Claude API free tier — test in sandbox this week",
@@ -1374,6 +1518,12 @@ CATEGORY DEEP DIVES
 GOVERNANCE & COMPLIANCE HEALTH
 [Data privacy | AI governance frameworks | Security signals | Vendor health | Ownership %]
 
+AI ORG HEALTH
+[Leadership: CAIO / VP AI present? | AI Platform Team: dedicated internal platform team?
+ Production Depth: AI in customer-facing products or internal/experimental only?
+ Maturity Signal: Experimenting / Building / Scaling / Scaling Purgatory / Optimizing / Leading
+ Industry Priority Alignment: are investments weighted toward the highest-value domains for this sector?]
+
 DATA FLOW HEALTH
 [Pipeline quality | Data silos | Broken integrations]
 
@@ -1381,6 +1531,15 @@ PEER BENCHMARKING
 | Company | Score | Strongest | Weakest | Maturity | Key Differentiator |
 [3 peers + target]
 Maturity: Experimenting → Building → Scaling → Optimizing → Leading
+
+MATURITY CALIBRATION (use these signals, not just vibes):
+- Experimenting: pilots only, no production AI, no dedicated ML team
+- Building: 1-2 prod systems live, small ML team, basic MLOps in place
+- Scaling: multiple prod systems, ML platform forming — CHECK FOR SCALING PURGATORY
+  (many pilots but inconsistent production rollout = stuck Scaling, flag it explicitly)
+- Optimizing: AI in core product + ops, LLMOps live, formal governance policy
+- Leading: AI is competitive moat, C-suite AI leadership (CAIO), high talent density
+Flag "Scaling Purgatory" explicitly when evidence shows many experiments but few at scale.
 
 STRATEGIC RECOMMENDATIONS
 [Top 5–7 prescriptions, prioritized by ROI and urgency. Use EXACTLY this format:]
@@ -1681,12 +1840,16 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
             f"{company} AI security access control data protection SOC2",
             f"{company} EU AI Act compliance high-risk AI {year}",
             f"{company} data protection officer DPO DPIA privacy",
+            f"{company} chief AI officer CAIO VP AI head of machine learning {year}",
+            f"{company} AI platform team internal developer platform ML infrastructure hiring",
+            f"{company} AI production deployment customer-facing product AI feature launch {year}",
         ]
         queries = enrich_queries(base, intel)
         results = [web_search(q) for q in queries[:7]]
         roi_ctx   = get_roi_context(industry=industry)
         presc_ctx = get_prescription_context()
-        return (compliance_ctx + "\n\n" + roi_ctx + "\n\n" +
+        industry_ctx = get_industry_context(company, intel, industry)
+        return (compliance_ctx + "\n\n" + industry_ctx + "\n\n" + roi_ctx + "\n\n" +
                 presc_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results))
 
     elif tool_name == "detect_redundancies_and_gaps":
@@ -1711,6 +1874,9 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         ]
         if is_generic:
             return "Generic mode: benchmark against typical Scaling-stage AI companies."
+        slug = detect_industry_slug(company, intel, industry)
+        sector_data = INDUSTRY_VALUE_MAP.get(slug, INDUSTRY_VALUE_MAP["default"])
+        base += sector_data.get("benchmark_hints", [])
         queries = enrich_queries(base, intel)
         results = [web_search(q) for q in queries[:6]]
         return intel_block + "\n\n═══\n\n".join(results)

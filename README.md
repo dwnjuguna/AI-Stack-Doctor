@@ -532,6 +532,7 @@ curl http://localhost:8080/companies
 Contributions are very welcome! Priority areas:
 
 - **New company profiles** — add to `COMPANY_INTEL` in the agent
+- **New industry profiles** — add sector intelligence to `INDUSTRY_VALUE_MAP` in the agent
 - **New compliance frameworks** — extend `GLOBAL_COMPLIANCE`
 - **New regions** — Middle East, Southeast Asia, South Asia
 - **Local LLM support** — Ollama / LM Studio integration

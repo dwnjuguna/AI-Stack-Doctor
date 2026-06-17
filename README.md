@@ -570,6 +570,7 @@ MIT License — free to use, modify, and distribute.
 - [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Terminal typography
 - [Bebas Neue](https://fonts.google.com/specimen/Bebas+Neue) — Display typography
 - [Scott Brinker & Frans Riemersma](https://chiefmartec.com) — State of Martech 2026 research
+- [Eric Lamarre, Kate Smaje & Rodney Zemmel](https://www.wiley.com/en-us/Rewired) — *Rewired: The McKinsey Guide to Outcompeting in the Age of Digital and AI* — industry intelligence framework and maturity calibration methodology
 - The open source community — for making tools like this possible
 
 ---

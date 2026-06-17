@@ -29,8 +29,9 @@ except Exception as _se:
     _scheduler = None
     print(f"  ⚠ Scheduler not available: {_se}")
 
-DB_PATH = Path("ai_stack_history.db")
-app     = Flask(__name__)
+DB_PATH   = Path("ai_stack_history.db")
+SEED_PATH = Path("data/seed_audits.json")
+app       = Flask(__name__)
 
 CATEGORIES = [
     "GenAI / LLMs", "Agentic AI", "Machine Learning",
@@ -52,6 +53,40 @@ def ensure_table():
         overall INTEGER, scores_json TEXT,
         report_text TEXT, created_at TEXT)""")
     conn.commit(); conn.close()
+
+def seed_from_json_if_needed():
+    """Populate an empty DB from data/seed_audits.json so a fresh clone
+    shows the pre-computed v4 audits immediately. No-op if DB has rows."""
+    if not SEED_PATH.exists():
+        return
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""CREATE TABLE IF NOT EXISTS reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        company TEXT, mode TEXT DEFAULT 'competitor',
+        overall INTEGER, scores_json TEXT,
+        report_text TEXT, created_at TEXT)""")
+    if conn.execute("SELECT COUNT(*) FROM reports").fetchone()[0] > 0:
+        conn.close()
+        return
+    try:
+        snapshot = json.loads(SEED_PATH.read_text())
+        audits = snapshot.get("audits", [])
+        for a in audits:
+            conn.execute(
+                "INSERT INTO reports (company,mode,overall,scores_json,report_text,created_at) VALUES (?,?,?,?,?,?)",
+                (a["company"], a.get("mode", "competitor"), a.get("overall"),
+                 json.dumps(a.get("scores", {})),
+                 f"Seeded from {SEED_PATH} — {snapshot.get('source','')}",
+                 a.get("created_at")),
+            )
+        conn.commit()
+        print(f"  📦 Seeded {len(audits)} audits from {SEED_PATH}")
+    except Exception as e:
+        print(f"  ⚠ Seed load failed: {e}")
+    finally:
+        conn.close()
+
+seed_from_json_if_needed()
 
 # ── API routes ────────────────────────────────────────────────────────────────
 @app.route("/api/summary")

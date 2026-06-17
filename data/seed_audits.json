@@ -1,0 +1,2094 @@
+{
+  "version": 1,
+  "generated_at": "2026-06-17T15:50:33+00:00",
+  "source": "REWIRED v4 batch run — latest audit per company",
+  "audits": [
+    {
+      "company": "microsoft",
+      "mode": "competitor",
+      "overall": 97,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 16,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:00:33.575559"
+    },
+    {
+      "company": "google",
+      "mode": "competitor",
+      "overall": 96,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 16,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:07:16.157949"
+    },
+    {
+      "company": "nvidia",
+      "mode": "competitor",
+      "overall": 95,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 12,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 16,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T20:41:30.882025"
+    },
+    {
+      "company": "meta",
+      "mode": "competitor",
+      "overall": 92,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T20:35:03.444413"
+    },
+    {
+      "company": "amazon web services",
+      "mode": "competitor",
+      "overall": 91,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 16,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-04-22T12:50:36.321850"
+    },
+    {
+      "company": "stripe",
+      "mode": "competitor",
+      "overall": 90,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 15,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-05-15T18:26:06.589616"
+    },
+    {
+      "company": "deepmind",
+      "mode": "competitor",
+      "overall": 89,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 15,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:32:14.152873"
+    },
+    {
+      "company": "adobe",
+      "mode": "competitor",
+      "overall": 88,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:52:18.183577"
+    },
+    {
+      "company": "open ai",
+      "mode": "competitor",
+      "overall": 88,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-04-22T12:55:56.602154"
+    },
+    {
+      "company": "amazon",
+      "mode": "competitor",
+      "overall": 87,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 15,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:13:43.585000"
+    },
+    {
+      "company": "salesforce",
+      "mode": "competitor",
+      "overall": 86,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:33:35.075839"
+    },
+    {
+      "company": "alibaba",
+      "mode": "competitor",
+      "overall": 85,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 15,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:04:49.410514"
+    },
+    {
+      "company": "anthropic",
+      "mode": "competitor",
+      "overall": 84,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 6,
+          "total": 14,
+          "conf": "L"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 16,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T20:54:05.445192"
+    },
+    {
+      "company": "bytedance",
+      "mode": "competitor",
+      "overall": 84,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T22:58:18.967960"
+    },
+    {
+      "company": "openai",
+      "mode": "competitor",
+      "overall": 84,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T20:47:34.415525"
+    },
+    {
+      "company": "baidu",
+      "mode": "competitor",
+      "overall": 81,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:51:57.333360"
+    },
+    {
+      "company": "elevenlabs",
+      "mode": "competitor",
+      "overall": 81,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:46:04.441610"
+    },
+    {
+      "company": "revolut",
+      "mode": "competitor",
+      "overall": 81,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:37:57.350699"
+    },
+    {
+      "company": "nubank",
+      "mode": "competitor",
+      "overall": 79,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T23:46:58.637206"
+    },
+    {
+      "company": "oracle",
+      "mode": "competitor",
+      "overall": 79,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:10:59.961085"
+    },
+    {
+      "company": "mercado libre",
+      "mode": "competitor",
+      "overall": 78,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:52:42.398463"
+    },
+    {
+      "company": "mistral",
+      "mode": "competitor",
+      "overall": 78,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:39:55.771349"
+    },
+    {
+      "company": "infosys",
+      "mode": "competitor",
+      "overall": 77,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T23:23:03.178264"
+    },
+    {
+      "company": "synthesia",
+      "mode": "competitor",
+      "overall": 77,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:34:09.585592"
+    },
+    {
+      "company": "tesla",
+      "mode": "competitor",
+      "overall": 77,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 8,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T21:58:22.648211"
+    },
+    {
+      "company": "broadcom",
+      "mode": "competitor",
+      "overall": 73,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T22:04:34.139301"
+    },
+    {
+      "company": "netflix",
+      "mode": "competitor",
+      "overall": 73,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 4,
+          "total": 14,
+          "conf": "L"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T21:26:56.799154"
+    },
+    {
+      "company": "apple",
+      "mode": "competitor",
+      "overall": 72,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 8,
+          "total": 14,
+          "conf": "L"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:20:39.558572"
+    },
+    {
+      "company": "paytm",
+      "mode": "competitor",
+      "overall": 72,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:34:56.501721"
+    },
+    {
+      "company": "aleph alpha",
+      "mode": "competitor",
+      "overall": 71,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:39:46.477317"
+    },
+    {
+      "company": "samsung",
+      "mode": "competitor",
+      "overall": 71,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 8,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:10:39.944257"
+    },
+    {
+      "company": "amd",
+      "mode": "competitor",
+      "overall": 70,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:17:02.385406"
+    },
+    {
+      "company": "al-futtaim group",
+      "mode": "competitor",
+      "overall": 69,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 3,
+          "total": 14,
+          "conf": "L"
+        },
+        "Machine Learning": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 4,
+          "total": 14,
+          "conf": "L"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-05-20T17:20:53.085455"
+    },
+    {
+      "company": "stability ai",
+      "mode": "competitor",
+      "overall": 68,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T22:22:29.046391"
+    },
+    {
+      "company": "rappi",
+      "mode": "competitor",
+      "overall": 66,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T23:58:08.805799"
+    },
+    {
+      "company": "deepseek",
+      "mode": "competitor",
+      "overall": 65,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 6,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 4,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:16:47.153831"
+    },
+    {
+      "company": "intel",
+      "mode": "competitor",
+      "overall": 64,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 5,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 5,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 14,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T21:45:49.155183"
+    },
+    {
+      "company": "klarna",
+      "mode": "competitor",
+      "overall": 64,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 6,
+          "total": 14,
+          "conf": "H"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:50:14.338557"
+    },
+    {
+      "company": "adyen",
+      "mode": "competitor",
+      "overall": 63,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 4,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:44:02.412398"
+    },
+    {
+      "company": "moniepoint",
+      "mode": "competitor",
+      "overall": 61,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 5,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:25:54.494286"
+    },
+    {
+      "company": "wise",
+      "mode": "competitor",
+      "overall": 60,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 4,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 3,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:55:30.454289"
+    },
+    {
+      "company": "kakao",
+      "mode": "competitor",
+      "overall": 58,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-16T23:40:56.545421"
+    },
+    {
+      "company": "flutterwave",
+      "mode": "competitor",
+      "overall": 52,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 6,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 10,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:14:00.657435"
+    },
+    {
+      "company": "clip",
+      "mode": "competitor",
+      "overall": 50,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 2,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 1,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:03:12.167937"
+    },
+    {
+      "company": "uala",
+      "mode": "competitor",
+      "overall": 46,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 3,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 3,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 11,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "AI Platforms": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 4,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:08:22.945919"
+    },
+    {
+      "company": "ant group",
+      "mode": "competitor",
+      "overall": 0,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 11,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T23:29:01.861350"
+    },
+    {
+      "company": "deepl",
+      "mode": "competitor",
+      "overall": 0,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 8,
+          "total": 14,
+          "conf": "H"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 13,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 12,
+          "total": 16,
+          "conf": "M"
+        }
+      },
+      "created_at": "2026-06-16T22:28:14.241640"
+    },
+    {
+      "company": "mistral ai",
+      "mode": "competitor",
+      "overall": 0,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 14,
+          "total": 14,
+          "conf": "H"
+        },
+        "Agentic AI": {
+          "score": 11,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Data Engineering": {
+          "score": 5,
+          "total": 14,
+          "conf": "L"
+        },
+        "AI Platforms": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "MLOps / LLMOps": {
+          "score": 10,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-04-22T12:58:39.344297"
+    },
+    {
+      "company": "safaricom",
+      "mode": "competitor",
+      "overall": 0,
+      "scores": {
+        "GenAI / LLMs": {
+          "score": 8,
+          "total": 14,
+          "conf": "M"
+        },
+        "Agentic AI": {
+          "score": 5,
+          "total": 14,
+          "conf": "M"
+        },
+        "Machine Learning": {
+          "score": 12,
+          "total": 14,
+          "conf": "H"
+        },
+        "Data Engineering": {
+          "score": 10,
+          "total": 14,
+          "conf": "H"
+        },
+        "AI Platforms": {
+          "score": 9,
+          "total": 14,
+          "conf": "M"
+        },
+        "MLOps / LLMOps": {
+          "score": 7,
+          "total": 14,
+          "conf": "M"
+        },
+        "Cloud AI Services": {
+          "score": 13,
+          "total": 16,
+          "conf": "H"
+        }
+      },
+      "created_at": "2026-06-17T00:20:07.365308"
+    }
+  ]
+}

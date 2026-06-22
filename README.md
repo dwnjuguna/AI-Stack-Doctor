@@ -575,6 +575,68 @@ MIT License — free to use, modify, and distribute.
 
 ---
 
+## 🔌 MCP Integration (Connect Claude Desktop)
+
+AI Stack Doctor speaks the **Model Context Protocol (MCP)** — the open standard that lets AI assistants call external tools directly. Connect it to Claude Desktop and you can run a full stack audit, pull peer benchmarks, and review your audit history without ever leaving the chat — Claude calls the engine for you and reasons over the results in real time.
+
+### Prerequisites
+
+- **Python 3.11+**
+- **Claude Desktop** installed ([download](https://claude.ai/download))
+- **`ANTHROPIC_API_KEY`** set in your environment — the audit engine runs on Claude
+
+### Install
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/dwnjuguna/AI-Stack-Doctor.git && cd AI-Stack-Doctor
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Copy the config below into Claude Desktop's config file, then restart Claude Desktop
+#    macOS:   ~/Library/Application Support/Claude/claude_desktop_config.json
+#    Windows: %APPDATA%\Claude\claude_desktop_config.json
+```
+
+### `claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "ai-stack-doctor": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/absolute/path/to/AI-Stack-Doctor",
+      "env": {
+        "ANTHROPIC_API_KEY": "sk-ant-your-key-here"
+      }
+    }
+  }
+}
+```
+
+### Try it
+
+Once connected, just ask Claude in plain English:
+
+> - *"Audit Stripe's AI stack"*
+> - *"Show me benchmarks for fintech companies"*
+> - *"What audits have I run recently?"*
+
+The free tier exposes three tools — `run_audit`, `get_audit_history`, and `list_benchmarks` — over stdio.
+
+### 🚀 Going Pro
+
+The free tier connects to **Claude Desktop** only. **[Stratos](https://stratosai.io)** *(coming soon)* — the hosted Pro tier — adds **scheduled monitoring**, **team workspaces**, **competitor alerts**, and **branded PDF exports**, served over Streamable HTTP for **any MCP client**.
+
+| Tier | Transport | Works with |
+|------|-----------|------------|
+| **Free** | stdio | Claude Desktop |
+| **Pro (Stratos)** | Streamable HTTP | Any MCP client — LangChain, LlamaIndex, OpenAI Assistants, custom |
+
+---
+
 <div align="center">
 
 ---

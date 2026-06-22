@@ -276,12 +276,12 @@ Every audit now flags at-risk tools and estimates annual spend at risk from cons
 
 ## 🌍 Company Intelligence Coverage
 
-**44 pre-loaded profiles across 5 regions and 28 industries:**
+**44 pre-loaded company profiles across 5 regions and 28 industries:**
 
 ### 🇺🇸 United States (17)
 Google · Microsoft · NVIDIA · Meta · OpenAI · Anthropic · Netflix · Tesla · Apple · Amazon · Mistral · Salesforce · Adobe · AMD · Oracle · Broadcom · Intel
 
-### 🇪🇺 Europe (9)
+### 🇪🇺 Europe (10)
 Stability AI · DeepL · Synthesia · Aleph Alpha · ElevenLabs · DeepMind · Revolut · Adyen · Klarna · Wise
 
 ### 🌏 Asia (9)

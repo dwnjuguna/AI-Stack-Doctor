@@ -102,7 +102,7 @@ scheduling, and team features — without managing infrastructure.
 | 🔒 **Security Foundation** | Auth scaffolding, audit logging, Gov Edition roadmap |
 | ⚖️ **Full Legal Layer** | GDPR, CCPA, EU AI Act, Data Processing Agreement |
 | 📉 **Deprecation Risk Intel** | Flags tools at high risk of being absorbed by major AI platforms |
-| 🔌 **MCP Server Spec** | Model Context Protocol server design — call audits from Claude/ChatGPT |
+| 🔌 **MCP Server (Live)** | Free-tier Model Context Protocol server — run audits, pull history, and list benchmarks from Claude Desktop over stdio |
 
 ---
 
@@ -250,6 +250,37 @@ TOTAL                    100 pts
 
 ---
 
+## 🏭 Industry Value Map (REWIRED Edition)
+
+v4 is the **REWIRED Edition** — calibrated on the methodology from *Rewired: The McKinsey Guide to Outcompeting in the Age of Digital and AI* (Lamarre, Smaje & Zemmel). The core idea: **not every AI domain is worth the same to every industry.** A fraud-detection ML stack is table stakes for a neobank and a footnote for a media company.
+
+The `INDUSTRY_VALUE_MAP` encodes **9 sector profiles** (plus a default fallback). Each profile prioritizes the audit's prescriptions toward the domains that drive the most value for that sector:
+
+```
+SECTOR               HIGHEST-VALUE AI DOMAINS
+──────────────────────────────────────────────────────────
+Fintech              Machine Learning · Data Engineering · MLOps
+Healthcare           AI Platforms · Governance · Machine Learning
+E-commerce           GenAI/LLMs · Machine Learning · Data Engineering
+Media                GenAI/LLMs · Agentic AI · MLOps
+Enterprise Software  Agentic AI · GenAI/LLMs · Cloud AI
+Semiconductors       AI Platforms · Machine Learning · Cloud AI
+Logistics            Machine Learning · Data Engineering · Agentic AI
+Telecom              Data Engineering · Machine Learning · Cloud AI
+Social Media         Machine Learning · Data Engineering · MLOps
+```
+
+Each profile carries:
+
+- **`top_domains`** — the highest-value domains used to weight prescription priority
+- **`why`** — the business rationale (e.g. *"Fraud detection, credit scoring, and real-time decisioning are table-stakes competitive advantages"*)
+- **`benchmark_hints`** — sector-specific search signals that enrich peer benchmarking
+- **`gap_signals`** — concrete capabilities the auditor probes for (e.g. *real-time inference <50ms*, *AML model monitoring*)
+
+The map also feeds the **Scaling Purgatory** maturity calibration (REWIRED's "death by pilots" signal), sharpening detection of companies stuck between Scaling and Optimizing. Add a sector by extending `INDUSTRY_VALUE_MAP` in the agent.
+
+---
+
 ## 📉 Deprecation Risk Intelligence
 
 Powered by **State of Martech 2026** data (Brinker & Riemersma):
@@ -358,12 +389,18 @@ ai-stack-doctor/
 ├── 🌐  dashboard_server.py          # Flask backend (31 routes)
 ├── ⏱️  scheduler.py                 # Agentic scheduler (zero external deps)
 │
+├── 🔌  mcp_server/                  # MCP server (free tier, live)
+│   ├── server.py                   #   stdio transport — 3 free tools
+│   └── schemas.py                  #   tool contracts (free + Pro), single source of truth
+│
+├── 📦  data/
+│   └── seed_audits.json            # Pre-computed audit seed data (REWIRED v4 batch)
+│
 ├── 🎨  dashboard.html               # Intelligence dashboard (44 companies)
 ├── 📝  intake_form.html             # Smart 4-persona intake form
 ├── 📖  guide.html                   # Non-technical user guide
 ├── ⚖️  legal.html                   # Legal & privacy (GDPR/CCPA/EU AI Act)
 ├── 🔒  security.html                # Security posture & Gov Edition
-├── 🔌  MCP_SERVER_SPEC.md           # MCP server specification (Q3 2026)
 │
 ├── ⚙️  requirements.txt             # Python dependencies
 ├── ☁️  render.yaml                  # Render.com deployment config
@@ -446,23 +483,25 @@ AI Platforms · MLOps/LLMOps · Cloud AI Services · Governance · Redundancy
 
 ---
 
-## 🔌 MCP Server (Coming Q3 2026)
+## 🔌 MCP Server
 
-AI Stack Doctor will expose a **Model Context Protocol (MCP) server** — letting any enterprise using Claude, ChatGPT, or MCP-compatible agents call audits directly from within their AI workflow.
+AI Stack Doctor ships a working **Model Context Protocol (MCP) server** — call the audit engine directly from Claude, or any MCP-compatible agent, without leaving the chat. The free tier is **live today** over stdio; Pro-tier tools are in development.
 
 ```
-Tools planned:
+Free tier — live now (stdio, Claude Desktop):
   run_audit           → Full 90-second audit on any company
-  get_score           → Latest score from history (instant)
-  compare_companies   → Side-by-side 7-domain comparison
-  get_compliance_flags → 14-framework compliance risk check
-  list_companies      → All 44 profiles with scores
-  get_deprecation_risks → Flag tools at consolidation risk
+  get_audit_history   → Past audits with scores and finding counts
+  list_benchmarks     → Sector + company reference benchmarks
+
+Pro tier — in development (Streamable HTTP, any MCP client):
+  compare_stacks       → Side-by-side multi-company comparison
+  schedule_monitoring  → Recurring autonomous audits
+  get_competitor_alerts → Change-detection alerts
+  export_report        → Branded PDF export
+  get_team_audits      → Shared team workspace history
 ```
 
-This will make AI Stack Doctor callable from Claude Connectors, ChatGPT Apps, LangChain, CrewAI, and any MCP-compatible agent framework.
-
-See [`MCP_SERVER_SPEC.md`](MCP_SERVER_SPEC.md) for the full specification.
+The implementation lives in [`mcp_server/`](mcp_server/) — `server.py` (stdio transport) and `schemas.py` (the tool contracts, the single source of truth for both tiers). Setup instructions are in **[MCP Integration](#-mcp-integration-connect-claude-desktop)** below.
 
 > **Context:** The State of Martech 2026 report documents 29,000+ MCP servers built in 18 months —
 > more than twice the entire martech landscape took 15 years to reach. This is a real distribution channel.
@@ -536,7 +575,7 @@ Contributions are very welcome! Priority areas:
 - **New compliance frameworks** — extend `GLOBAL_COMPLIANCE`
 - **New regions** — Middle East, Southeast Asia, South Asia
 - **Local LLM support** — Ollama / LM Studio integration
-- **MCP server implementation** — see `MCP_SERVER_SPEC.md`
+- **MCP Pro-tier tools** — implement the HTTP transport in `mcp_server/` (schemas already defined in `schemas.py`)
 - **Translations** — guide.html in other languages
 - **UI improvements** — dashboard, intake form, guide
 
@@ -628,12 +667,12 @@ The free tier exposes three tools — `run_audit`, `get_audit_history`, and `lis
 
 ### 🚀 Going Pro
 
-The free tier connects to **Claude Desktop** only. **[Stratos](https://stratosai.io)** *(coming soon)* — the hosted Pro tier — adds **scheduled monitoring**, **team workspaces**, **competitor alerts**, and **branded PDF exports**, served over Streamable HTTP for **any MCP client**.
+The free tier connects to **Claude Desktop** only. **The Pro tier** *(coming soon)* — hosted — adds **scheduled monitoring**, **team workspaces**, **competitor alerts**, and **branded PDF exports**, served over Streamable HTTP for **any MCP client**.
 
 | Tier | Transport | Works with |
 |------|-----------|------------|
 | **Free** | stdio | Claude Desktop |
-| **Pro (Stratos)** | Streamable HTTP | Any MCP client — LangChain, LlamaIndex, OpenAI Assistants, custom |
+| **Pro** | Streamable HTTP | Any MCP client — LangChain, LlamaIndex, OpenAI Assistants, custom |
 
 ---
 

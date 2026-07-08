@@ -827,20 +827,9 @@ GLOBAL_COMPLIANCE = {
             "effective floor until preemption is settled."
         ),
     },
-    "US State AI Laws (2024-25 wave)": {
-        "jurisdiction": "United States — Multiple States",
-        "tier": "HIGH",
-        "effective": "Varies by state (2024-2026)",
-        "scope": "Colorado, Texas, Illinois, Connecticut, Virginia AI regulation wave",
-        "key_requirements": [
-            "Colorado SB 205: High-risk AI developer and deployer obligations (2026)",
-            "Illinois BIPA: Biometric data collection and AI facial recognition consent",
-            "Texas AI in Employment: Restrictions on AI use in hiring decisions",
-            "Virginia VCDPA: Automated profiling opt-out rights",
-        ],
-        "penalties": "Varies by state — up to $50K per violation (Colorado)",
-        "url": "https://www.ncsl.org/technology-and-communication/artificial-intelligence-2024-legislation",
-    },
+    # NOTE: the former "US State AI Laws (2024-25 wave)" umbrella entry was removed —
+    # it is now superseded by the specific state laws below (Texas TRAIGA, California
+    # TFAIA, California ADMT, Connecticut AI Safety Act).
 
     # ── UNITED KINGDOM ─────────────────────────────────────────────────────────
     "UK AI Regulation (Pro-Innovation Approach)": {

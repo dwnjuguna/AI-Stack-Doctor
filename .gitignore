@@ -299,3 +299,8 @@ scheduler.py
 __pycache__/
 *.pyc
 *.pyo
+audit_log.jsonl
+gov_interest.json
+api_keys.json
+schedules.json
+intake_submissions/

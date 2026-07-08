@@ -11,7 +11,7 @@ Requirements:
     pip3 install flask
 """
 
-import sqlite3, json, re, argparse, webbrowser, os, logging
+import sqlite3, json, re, argparse, webbrowser, os, logging, pathlib
 from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, jsonify, send_from_directory, request

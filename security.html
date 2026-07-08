@@ -94,6 +94,21 @@ hr.rule{border:none;border-top:1.5px solid var(--cyan);margin-bottom:20px;width:
 .gov-btn-pri:hover{background:#a070ff;box-shadow:0 0 16px rgba(144,96,240,.4)}
 .gov-btn-sec{background:transparent;color:var(--text2);border:1px solid var(--border)}
 .gov-btn-sec:hover{border-color:var(--purple);color:var(--purple)}
+.gov-btn-pri:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.gov-form{display:flex;flex-direction:column;gap:12px;margin-bottom:0}
+.gov-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gov-field{display:flex;flex-direction:column;gap:5px}
+.gov-field label{font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+.gov-field input,.gov-field select{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:9px 11px;font-family:var(--body);font-size:13px;color:var(--text);width:100%}
+.gov-field input:focus,.gov-field select:focus{outline:none;border-color:var(--purple)}
+.gov-field input::placeholder{color:var(--text3)}
+.gov-field select{cursor:pointer}
+.gov-form-msg{display:none;font-family:var(--mono);font-size:10px;letter-spacing:.5px;line-height:1.6}
+.gov-form-msg.err{display:block;color:var(--red)}
+.gov-success{display:none;background:rgba(0,200,128,.08);border:1px solid rgba(0,200,128,.3);border-radius:6px;padding:22px 20px}
+.gov-success.show{display:block}
+.gov-success-title{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--green);margin-bottom:8px}
+.gov-success p{font-size:13px;color:var(--text2);line-height:1.7}
 
 /* Private server mode */
 .psm-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:36px}
@@ -343,9 +358,55 @@ footer a:hover{color:var(--cyan)}
     <div class="gov-feat">No shared infrastructure with commercial users</div>
     <div class="gov-feat">MCP Server — gov-grade, air-gap capable</div>
   </div>
-  <div class="gov-cta">
-    <a href="/intake/executive" class="gov-btn gov-btn-pri">🏛️ Register Government Interest</a>
-    <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank" class="gov-btn gov-btn-sec">View Source Code →</a>
+  <form class="gov-form" id="govForm" novalidate>
+    <div class="gov-form-row">
+      <div class="gov-field">
+        <label for="govName">Name</label>
+        <input type="text" id="govName" placeholder="Jane Doe" autocomplete="name"/>
+      </div>
+      <div class="gov-field">
+        <label for="govEmail">Email *</label>
+        <input type="email" id="govEmail" placeholder="jane@agency.gov" autocomplete="email" required/>
+      </div>
+    </div>
+    <div class="gov-field">
+      <label for="govOrg">Organization</label>
+      <input type="text" id="govOrg" placeholder="Agency / contractor name" autocomplete="organization"/>
+    </div>
+    <div class="gov-form-row">
+      <div class="gov-field">
+        <label for="govOrgType">Organization Type</label>
+        <select id="govOrgType">
+          <option value="">Select...</option>
+          <option>Federal Agency</option>
+          <option>Defense Contractor / Prime</option>
+          <option>Subcontractor / Supplier</option>
+          <option>Systems Integrator</option>
+          <option>State / Local Government</option>
+          <option>Research / FFRDC / University</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="gov-field">
+        <label for="govUrgency">Timeline</label>
+        <select id="govUrgency">
+          <option value="">Select...</option>
+          <option>Active procurement (0–3 months)</option>
+          <option>Near-term (3–6 months)</option>
+          <option>Exploratory (6–12 months)</option>
+          <option>Just researching</option>
+        </select>
+      </div>
+    </div>
+    <div class="gov-form-msg" id="govMsg" role="alert"></div>
+    <div class="gov-cta">
+      <button type="submit" class="gov-btn gov-btn-pri" id="govSubmit">🏛️ Register Government Interest</button>
+      <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank" class="gov-btn gov-btn-sec">View Source Code →</a>
+    </div>
+  </form>
+  <div class="gov-success" id="govSuccess">
+    <div class="gov-success-title">✓ Interest Registered</div>
+    <p>Thank you — your government interest registration has been received. Our team will reach out regarding Government Edition procurement and authorization pathways.</p>
   </div>
 </div>
 
@@ -399,9 +460,59 @@ python3 dashboard_server.py
   <a href="/legal">Legal</a> &nbsp;·&nbsp;
   <a href="/guide">User Guide</a> &nbsp;·&nbsp;
   <a href="https://github.com/dwnjuguna/AI-Stack-Doctor" target="_blank">GitHub</a><br>
-  This page is updated with every release. Last updated: May 2026 v4.1
+  This page is updated with every release. Last updated: May 2026 v4.0
 </footer>
 
 </div>
+
+<script>
+(function(){
+  var form=document.getElementById('govForm');
+  if(!form)return;
+  var btn=document.getElementById('govSubmit');
+  var msg=document.getElementById('govMsg');
+  var success=document.getElementById('govSuccess');
+  var defaultLabel=btn.textContent;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    msg.className='gov-form-msg';msg.textContent='';
+    var email=document.getElementById('govEmail').value.trim();
+    if(!email||email.indexOf('@')===-1){
+      msg.className='gov-form-msg err';
+      msg.textContent='Please enter a valid email address.';
+      return;
+    }
+    var payload={
+      name:     document.getElementById('govName').value.trim(),
+      email:    email,
+      org:      document.getElementById('govOrg').value.trim(),
+      org_type: document.getElementById('govOrgType').value,
+      urgency:  document.getElementById('govUrgency').value,
+      source:   'security_page'
+    };
+    btn.disabled=true;
+    btn.textContent='Registering…';
+    fetch('/api/gov-interest',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(function(r){
+      return r.json().catch(function(){return null;}).then(function(d){
+        if(!r.ok||!d||!d.ok)throw new Error((d&&d.error)||'request failed');
+        return d;
+      });
+    }).then(function(){
+      form.style.display='none';
+      success.classList.add('show');
+      success.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }).catch(function(){
+      btn.disabled=false;
+      btn.textContent=defaultLabel;
+      msg.className='gov-form-msg err';
+      msg.textContent='Something went wrong. Please try again, or reach us via the Contact link below.';
+    });
+  });
+})();
+</script>
 </body>
 </html>

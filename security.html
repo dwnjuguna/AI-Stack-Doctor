@@ -130,6 +130,32 @@ footer a{color:var(--text3);text-decoration:none}
 footer a:hover{color:var(--cyan)}
 
 @media(max-width:600px){.posture-grid{grid-template-columns:1fr 1fr}.gov-features{grid-template-columns:1fr}}
+
+/* Compliance reference */
+.cmp-note{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:18px}
+.cmp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cmp-fbtn{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.cmp-fbtn:hover{border-color:var(--cyan);color:var(--cyan)}
+.cmp-fbtn.active{background:rgba(0,212,240,.1);border-color:var(--cyan);color:var(--cyan)}
+.cmp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.cmp-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.cmp-card.hidden{display:none}
+.cmp-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cmp-name{font-weight:600;color:var(--text);font-size:14px;line-height:1.3}
+.cmp-jur{font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-top:4px}
+.badge.crit{background:rgba(240,64,64,.1);color:var(--red);border:1px solid rgba(240,64,64,.28)}
+.badge.high{background:rgba(240,160,0,.08);color:var(--amber);border:1px solid rgba(240,160,0,.22)}
+.cmp-eff{font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.5}
+.cmp-eff strong{color:var(--text3);font-weight:500}
+.cmp-bullets{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none}
+.cmp-bullets li{font-size:11px;color:var(--text2);line-height:1.5;display:flex;gap:6px}
+.cmp-bullets li::before{content:'\25C8';color:var(--text3);font-size:8px;margin-top:3px;flex-shrink:0}
+.cmp-pen{font-size:10px;color:var(--text3);line-height:1.5;border-top:1px solid rgba(26,40,64,.5);padding-top:8px}
+.cmp-pen strong{color:var(--amber);font-weight:500}
+.cmp-ref{font-family:var(--mono);font-size:9px;letter-spacing:.5px;color:var(--cyan);text-decoration:none;margin-top:auto}
+.cmp-ref:hover{text-decoration:underline}
+.cmp-empty{grid-column:1/-1;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);padding:20px}
+@media(max-width:600px){.cmp-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -219,6 +245,359 @@ footer a:hover{color:var(--cyan)}
       <tr><td>CMMC 2.0 Alignment</td><td><span class="badge future">🔮 Future</span></td><td>CMMC Level 2 alignment targeted for DoD contractor use cases.</td></tr>
     </tbody>
   </table>
+</div>
+
+<!-- Compliance reference -->
+<div class="status-section" id="compliance">
+  <div class="sec-eyebrow">// Frameworks We Audit Against</div>
+  <h2 class="sec-heading">COMPLIANCE REFERENCE</h2>
+  <hr class="rule"/>
+  <div class="cmp-note">Frameworks assessed in every AI Stack Doctor governance audit. Updated July 2026.</div>
+  <div class="cmp-filters" id="cmp-filters">
+    <button class="cmp-fbtn active" data-filter="all">All</button>
+    <button class="cmp-fbtn" data-filter="critical">Critical</button>
+    <button class="cmp-fbtn" data-filter="high">High</button>
+    <button class="cmp-fbtn" data-filter="eu">European Union</button>
+    <button class="cmp-fbtn" data-filter="us">United States</button>
+    <button class="cmp-fbtn" data-filter="global">Global / ISO</button>
+    <button class="cmp-fbtn" data-filter="other">Rest of World</button>
+  </div>
+  <div class="cmp-grid" id="cmp-grid">
+  <div class="cmp-card" data-tier="critical" data-region="eu">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">EU AI Act (2024)</div>
+        <div class="cmp-jur">European Union</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Aug 1 2024 (prohibited practices Feb 2 2025; GPAI Aug 2 2025; high-risk Aug 2 2026; regulated-product AI Aug 2 2028)</div>
+    <ul class="cmp-bullets">
+      <li>Prohibited AI practices banned from Feb 2025 (social scoring, real-time biometric surveillance in public)</li>
+      <li>High-risk AI systems require conformity assessment, registration, human oversight</li>
+      <li>General Purpose AI (GPAI) models &gt;10^25 FLOPs face systemic risk obligations</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to €35M or 7% global annual turnover</div>
+    <a class="cmp-ref" href="https://artificialintelligenceact.eu" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="eu">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">GDPR (2018) + AI Implications</div>
+        <div class="cmp-jur">European Union</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> May 2018 (ongoing enforcement)</div>
+    <ul class="cmp-bullets">
+      <li>Lawful basis required for training AI on personal data</li>
+      <li>Data minimisation — only collect what AI genuinely needs</li>
+      <li>Right to erasure ('right to be forgotten') — must be honoured in AI systems</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to €20M or 4% global annual turnover</div>
+    <a class="cmp-ref" href="https://gdpr.eu" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="eu">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">EU Data Act (2024)</div>
+        <div class="cmp-jur">European Union</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Sep 2025</div>
+    <ul class="cmp-bullets">
+      <li>Data sharing obligations between businesses and consumers</li>
+      <li>Cloud switching rights — must support data portability</li>
+      <li>B2G data sharing in public emergencies</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to €20M or 4% global turnover</div>
+    <a class="cmp-ref" href="https://digital-strategy.ec.europa.eu/en/policies/data-act" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="eu">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">EU Digital Services Act / DSA (2022)</div>
+        <div class="cmp-jur">European Union</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Feb 2024 (VLOPs/VLOSEs from Aug 2023)</div>
+    <ul class="cmp-bullets">
+      <li>Algorithmic transparency and explainability for recommender systems</li>
+      <li>Annual risk assessments for Very Large Online Platforms (VLOPs)</li>
+      <li>Ad targeting restrictions (profiling minors prohibited)</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to 6% global annual turnover; repeat offenders can be banned</div>
+    <a class="cmp-ref" href="https://digital-strategy.ec.europa.eu/en/policies/digital-services-act-package" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">US Executive Order on AI (Oct 2023)</div>
+        <div class="cmp-jur">United States</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Oct 2023 (ongoing agency rulemaking)</div>
+    <ul class="cmp-bullets">
+      <li>AI safety testing for foundation models before deployment (NIST AI RMF alignment)</li>
+      <li>Mandatory reporting for AI models trained above compute thresholds</li>
+      <li>Watermarking/authentication of AI-generated content</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Contractual and procurement consequences for federal contractors</div>
+    <a class="cmp-ref" href="https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">CCPA / CPRA (2020/2023)</div>
+        <div class="cmp-jur">United States — California</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Jan 2020 / Jan 2023</div>
+    <ul class="cmp-bullets">
+      <li>Right to know what personal data is collected and used in AI training</li>
+      <li>Right to opt-out of sale or sharing of personal data</li>
+      <li>Right to correct inaccurate personal data</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to $7,500 per intentional violation</div>
+    <a class="cmp-ref" href="https://cppa.ca.gov" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">NIST AI Risk Management Framework (2023)</div>
+        <div class="cmp-jur">United States (voluntary, widely adopted globally)</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Jan 2023</div>
+    <ul class="cmp-bullets">
+      <li>GOVERN: Establish AI risk culture, policies, and accountability structures</li>
+      <li>MAP: Identify and categorise AI risks in context</li>
+      <li>MEASURE: Analyse and assess AI risks with metrics</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Voluntary — but referenced in US federal procurement and sector regulation</div>
+    <a class="cmp-ref" href="https://www.nist.gov/artificial-intelligence" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="other">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">UK AI Regulation (Pro-Innovation Approach)</div>
+        <div class="cmp-jur">United Kingdom</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> 2024 onwards (existing law + sector guidance)</div>
+    <ul class="cmp-bullets">
+      <li>Principles-based approach: safety, transparency, fairness, accountability, contestability</li>
+      <li>Sector-specific regulators enforce AI rules (FCA, ICO, CMA, MHRA)</li>
+      <li>ICO Guidance on AI and data protection (GDPR UK equivalent)</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Sector-specific — ICO up to £17.5M or 4% global turnover</div>
+    <a class="cmp-ref" href="https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="other">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">China Generative AI Regulations (2023)</div>
+        <div class="cmp-jur">China</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Aug 2023</div>
+    <ul class="cmp-bullets">
+      <li>Content must adhere to socialist core values; no content subverting state power</li>
+      <li>Training data must have clear IP licensing</li>
+      <li>Mandatory labelling of AI-generated content</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Service suspension, fines, criminal liability for severe cases</div>
+    <a class="cmp-ref" href="https://www.cac.gov.cn" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="global">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">ISO/IEC 42001 — AI Management System (2023)</div>
+        <div class="cmp-jur">Global (ISO standard)</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Dec 2023</div>
+    <ul class="cmp-bullets">
+      <li>Establish an AI Management System (AIMS) with documented policies</li>
+      <li>AI risk assessment and impact assessment procedures</li>
+      <li>Roles and responsibilities for AI governance</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Voluntary — but increasingly required by enterprise procurement</div>
+    <a class="cmp-ref" href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">HIPAA + AI (US Healthcare)</div>
+        <div class="cmp-jur">United States — Healthcare</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Ongoing; HHS AI guidance 2024</div>
+    <ul class="cmp-bullets">
+      <li>PHI cannot be used to train AI models without explicit authorisation or de-identification</li>
+      <li>Business Associate Agreements (BAA) required with AI vendors</li>
+      <li>AI clinical decision support tools may require FDA clearance</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Up to $1.9M per violation category per year</div>
+    <a class="cmp-ref" href="https://www.hhs.gov/hipaa/index.html" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="global">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">PCI-DSS v4.0 + AI (Payment)</div>
+        <div class="cmp-jur">Global — Payment Industry</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Mar 2024 (v4.0)</div>
+    <ul class="cmp-bullets">
+      <li>AI fraud detection systems must not store raw PAN data beyond need</li>
+      <li>Penetration testing must include AI/ML components</li>
+      <li>Automated security testing of AI pipelines handling card data</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Fines from card brands; loss of ability to process payments</div>
+    <a class="cmp-ref" href="https://www.pcisecuritystandards.org" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="global">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">SOC 2 Type II + AI Controls</div>
+        <div class="cmp-jur">Global (AICPA standard, widely required)</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> Ongoing — annual audits</div>
+    <ul class="cmp-bullets">
+      <li>AI model access controls and logical security</li>
+      <li>Change management for model updates and retraining</li>
+      <li>Availability SLAs for AI inference services</li>
+    </ul>
+    <div class="cmp-pen"><strong>Consequence:</strong> Loss of enterprise customers; failed procurement requirements</div>
+    <a class="cmp-ref" href="https://www.aicpa.org/resources/article/soc-2-reporting-on-an-examination-of-controls" target="_blank" rel="noopener">Official reference →</a>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">CMMC 2.0</div>
+        <div class="cmp-jur">United States — Department of Defense</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> 2021 (v2.0 finalized November 2021)</div>
+    <ul class="cmp-bullets">
+      <li>Required for any organization in the DoD supply chain. Level 2 requires third-party assessment. Level 3 targets advanced persistent threats.</li>
+      <li>AI systems processing CUI must meet CMMC controls. Audit logging, access control, and incident response requirements apply to AI pipelines.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="critical" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">FedRAMP 20x</div>
+        <div class="cmp-jur">United States — Federal Government</div>
+      </div>
+      <span class="badge crit">Critical</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> 2024 (20x modernization pathway active)</div>
+    <ul class="cmp-bullets">
+      <li>Required for any SaaS/cloud tool used by federal agencies. 20x pathway uses machine-readable packages and continuous monitoring for faster ATO.</li>
+      <li>AI tools deployed in federal environments must achieve FedRAMP authorization. Continuous monitoring and incident reporting obligations apply.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">Texas TRAIGA</div>
+        <div class="cmp-jur">United States — Texas</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> January 1 2026</div>
+    <ul class="cmp-bullets">
+      <li>Imposes categorical restrictions on AI for behavioral manipulation, unlawful discrimination, and constitutional rights infringement. Most private sector impact assessment obligations were removed in final version.</li>
+      <li>AI systems must not engage in behavioral manipulation or unlawful discrimination. Prohibition on AI systems designed to produce CSAM or non-consensual deepfakes.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">California TFAIA</div>
+        <div class="cmp-jur">United States — California</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> September 29 2025</div>
+    <ul class="cmp-bullets">
+      <li>Requires frontier AI developers to publish safety and security protocols and conduct third-party audits. Targets large developers (&gt;$5M compute on a single model, &gt;$100M aggregate).</li>
+      <li>Large AI model developers must implement written safety protocols, publish them, and submit to independent audits. Enforcement by California Division of Homeland Security.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">California ADMT</div>
+        <div class="cmp-jur">United States — California</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> January 1 2026 (risk assessments required)</div>
+    <ul class="cmp-bullets">
+      <li>Consumers have right to opt out of ADMT in housing, employment, credit, or healthcare decisions. Businesses must conduct privacy risk assessments for significant ADMT use.</li>
+      <li>AI systems making or substantially influencing significant decisions must offer opt-out, conduct risk assessments, and provide transparency. Applies to any business subject to CCPA.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="us">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">Connecticut AI Safety Act</div>
+        <div class="cmp-jur">United States — Connecticut</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> May 27 2026</div>
+    <ul class="cmp-bullets">
+      <li>Multi-part framework covering safety, transparency, and consumer protection for AI systems. Part of the accelerating US state-level AI governance patchwork.</li>
+      <li>AI systems must meet transparency and safety standards. Joins Texas TRAIGA and California regulations in creating a de facto multi-state compliance floor for US AI deployments.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="other">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">South Korea AI Framework Act</div>
+        <div class="cmp-jur">South Korea</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> January 2026</div>
+    <ul class="cmp-bullets">
+      <li>First comprehensive AI law in Asia-Pacific. Risk-based approach aligned with OECD AI Principles. Establishes AI safety standards, transparency requirements, and a national AI governance structure.</li>
+      <li>High-impact AI systems require risk assessment and transparency disclosures. Significant for organizations with South Korean operations or customers.</li>
+    </ul>
+  </div>
+  <div class="cmp-card" data-tier="high" data-region="other">
+    <div class="cmp-card-top">
+      <div>
+        <div class="cmp-name">Saudi Arabia PDPL + AI Framework</div>
+        <div class="cmp-jur">Saudi Arabia</div>
+      </div>
+      <span class="badge high">High</span>
+    </div>
+    <div class="cmp-eff"><strong>Effective:</strong> PDPL: September 14 2024; AI Adoption Framework: 2026 (public sector mandatory)</div>
+    <ul class="cmp-bullets">
+      <li>Saudi declared 2026 the Year of AI. Mandatory AI Adoption Framework for public sector with five pillars: data governance, model accountability, transparency, human oversight, risk management. PDPL full compliance January 1 2027.</li>
+      <li>AI systems processing Saudi personal data must comply with PDPL. Public sector AI deployments must implement the five-pillar AI Adoption Framework. SDAIA has issued 48 violation decisions in 2024-2025 — enforcement is real.</li>
+    </ul>
+  </div>
+    <div class="cmp-empty" style="display:none">No frameworks match this filter.</div>
+  </div>
 </div>
 
 <!-- Data flow -->
@@ -510,6 +889,31 @@ python3 dashboard_server.py
       btn.textContent=defaultLabel;
       msg.className='gov-form-msg err';
       msg.textContent='Something went wrong. Please try again, or reach us via the Contact link below.';
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var wrap=document.getElementById('compliance');
+  if(!wrap)return;
+  var btns=wrap.querySelectorAll('.cmp-fbtn');
+  var cards=wrap.querySelectorAll('.cmp-card');
+  var empty=wrap.querySelector('.cmp-empty');
+  function apply(f){
+    var shown=0;
+    cards.forEach(function(c){
+      var ok=(f==='all')||c.dataset.tier===f||c.dataset.region===f;
+      c.classList.toggle('hidden',!ok);
+      if(ok)shown++;
+    });
+    if(empty)empty.style.display=shown?'none':'block';
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      apply(b.dataset.filter);
     });
   });
 })();

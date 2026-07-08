@@ -11,7 +11,7 @@ Requirements:
     pip3 install flask
 """
 
-import sqlite3, json, re, argparse, webbrowser, os, logging, pathlib
+import sqlite3, json, re, argparse, webbrowser, os, logging, pathlib, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, jsonify, send_from_directory, request
@@ -488,6 +488,29 @@ def gov_interest():
             "org_type": data.get("org_type", ""),
             "urgency": data.get("urgency", ""),
         })
+        # Formspree notification — fires only on new registrations
+        formspree_data = _j.dumps({
+            "name": data.get("name", ""),
+            "email": email,
+            "org": data.get("org", ""),
+            "org_type": data.get("org_type", ""),
+            "urgency": data.get("urgency", ""),
+            "source": "[ASD] Government Edition Interest",
+            "position": len(entries),
+        }).encode("utf-8")
+        formspree_req = urllib.request.Request(
+            "https://formspree.io/f/meebwkdk",
+            data=formspree_data,
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            urllib.request.urlopen(formspree_req, timeout=5)
+        except Exception:
+            pass  # never block a registration if Formspree is down
     return jsonify({"ok": True, "position": len(entries)})
 
 @app.route("/api/gov-interest/count")

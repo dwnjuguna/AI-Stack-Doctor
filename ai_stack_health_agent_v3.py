@@ -701,9 +701,10 @@ GLOBAL_COMPLIANCE = {
 
     # ── EUROPEAN UNION ─────────────────────────────────────────────────────────
     "EU AI Act (2024)": {
+        "full_name": "European Union Artificial Intelligence Act",
         "jurisdiction": "European Union",
         "tier": "CRITICAL",
-        "effective": "Aug 2024 (phased to 2027)",
+        "effective": "Aug 1 2024 (prohibited practices Feb 2 2025; GPAI Aug 2 2025; high-risk Aug 2 2026; regulated-product AI Aug 2 2028)",
         "scope": "All AI systems deployed in the EU, regardless of where developed",
         "key_requirements": [
             "Prohibited AI practices banned from Feb 2025 (social scoring, real-time biometric surveillance in public)",
@@ -712,9 +713,13 @@ GLOBAL_COMPLIANCE = {
             "Foundation model providers must document training data, energy use, capabilities",
             "Transparency obligations for AI-generated content (deepfakes, chatbots)",
             "Right to explanation for high-risk AI decisions",
+            "AI omnibus amendment agreed May 7 2026 simplifies implementation (phased obligations, GPAI transparency + copyright)",
         ],
         "penalties": "Up to €35M or 7% global annual turnover",
         "url": "https://artificialintelligenceact.eu",
+        "relevance": "World's first comprehensive AI law. Risk-tiered: Unacceptable (banned), High-risk (strict compliance), Limited risk (transparency), Minimal risk (voluntary). AI omnibus amendment agreed May 7 2026 simplifies implementation.",
+        "ai_implications": "High-risk AI systems require conformity assessments, technical documentation, human oversight, and registration in EU database. GPAI models (like foundation models) face transparency and copyright obligations.",
+        "tags": ["EU", "global", "enterprise"],
     },
     "GDPR (2018) + AI Implications": {
         "jurisdiction": "European Union",
@@ -732,6 +737,12 @@ GLOBAL_COMPLIANCE = {
         ],
         "penalties": "Up to €20M or 4% global annual turnover",
         "url": "https://gdpr.eu",
+        "ai_implications": (
+            "The proposed AI Act Omnibus (political agreement reached 7 May 2026) would narrow "
+            "the definition of personal data in AI contexts and ease constraints on training "
+            "General-Purpose AI (GPAI) models on personal data — reducing some GDPR friction for "
+            "model developers while keeping core data-subject rights intact."
+        ),
     },
     "EU Data Act (2024)": {
         "jurisdiction": "European Union",
@@ -807,6 +818,14 @@ GLOBAL_COMPLIANCE = {
         ],
         "penalties": "Voluntary — but referenced in US federal procurement and sector regulation",
         "url": "https://www.nist.gov/artificial-intelligence",
+        "us_context": (
+            "As of December 2025, the voluntary NIST AI RMF now sits alongside a fragmented US "
+            "state-law patchwork (e.g. Texas TRAIGA, California TFAIA/ADMT, Connecticut AI Safety "
+            "Act) and a December 2025 federal preemption framework. This creates unresolved "
+            "tension between non-binding federal guidance and binding, divergent state "
+            "requirements — organizations should treat the strictest applicable state law as the "
+            "effective floor until preemption is settled."
+        ),
     },
     "US State AI Laws (2024-25 wave)": {
         "jurisdiction": "United States — Multiple States",
@@ -918,6 +937,98 @@ GLOBAL_COMPLIANCE = {
         "penalties": "Loss of enterprise customers; failed procurement requirements",
         "url": "https://www.aicpa.org/resources/article/soc-2-reporting-on-an-examination-of-controls",
     },
+
+    # ── EXPANDED FRAMEWORKS (2025-2026) ────────────────────────────────────────
+    # NOTE: these entries use a richer schema (priority/relevance/ai_implications/
+    # tags) than the originals above (tier/key_requirements). get_compliance_context()
+    # is schema-tolerant and reads either shape.
+    "CMMC 2.0": {
+        "full_name": "Cybersecurity Maturity Model Certification 2.0",
+        "jurisdiction": "United States — Department of Defense",
+        "scope": "Defense contractors and suppliers handling CUI (Controlled Unclassified Information)",
+        "effective": "2021 (v2.0 finalized November 2021)",
+        "relevance": "Required for any organization in the DoD supply chain. Level 2 requires third-party assessment. Level 3 targets advanced persistent threats.",
+        "ai_implications": "AI systems processing CUI must meet CMMC controls. Audit logging, access control, and incident response requirements apply to AI pipelines.",
+        "priority": "CRITICAL",
+        "tags": ["defense", "government", "US"]
+    },
+
+    "FedRAMP 20x": {
+        "full_name": "Federal Risk and Authorization Management Program — Modern Authorization",
+        "jurisdiction": "United States — Federal Government",
+        "scope": "Cloud service providers serving US federal agencies",
+        "effective": "2024 (20x modernization pathway active)",
+        "relevance": "Required for any SaaS/cloud tool used by federal agencies. 20x pathway uses machine-readable packages and continuous monitoring for faster ATO.",
+        "ai_implications": "AI tools deployed in federal environments must achieve FedRAMP authorization. Continuous monitoring and incident reporting obligations apply.",
+        "priority": "CRITICAL",
+        "tags": ["federal", "government", "cloud", "US"]
+    },
+
+    "Texas TRAIGA": {
+        "full_name": "Texas Responsible AI Governance Act",
+        "jurisdiction": "United States — Texas",
+        "scope": "Developers and deployers of AI systems in Texas",
+        "effective": "January 1 2026",
+        "relevance": "Imposes categorical restrictions on AI for behavioral manipulation, unlawful discrimination, and constitutional rights infringement. Most private sector impact assessment obligations were removed in final version.",
+        "ai_implications": "AI systems must not engage in behavioral manipulation or unlawful discrimination. Prohibition on AI systems designed to produce CSAM or non-consensual deepfakes.",
+        "priority": "HIGH",
+        "tags": ["US", "state", "enterprise"]
+    },
+
+    "California TFAIA": {
+        "full_name": "California Transparency in Frontier Artificial Intelligence Act",
+        "jurisdiction": "United States — California",
+        "scope": "Developers of frontier AI models (large compute thresholds)",
+        "effective": "September 29 2025",
+        "relevance": "Requires frontier AI developers to publish safety and security protocols and conduct third-party audits. Targets large developers (>$5M compute on a single model, >$100M aggregate).",
+        "ai_implications": "Large AI model developers must implement written safety protocols, publish them, and submit to independent audits. Enforcement by California Division of Homeland Security.",
+        "priority": "HIGH",
+        "tags": ["US", "state", "AI-developers", "California"]
+    },
+
+    "California ADMT": {
+        "full_name": "California Automated Decision-Making Technology Regulations (CPPA)",
+        "jurisdiction": "United States — California",
+        "scope": "Businesses using automated decision-making for significant decisions affecting consumers",
+        "effective": "January 1 2026 (risk assessments required)",
+        "relevance": "Consumers have right to opt out of ADMT in housing, employment, credit, or healthcare decisions. Businesses must conduct privacy risk assessments for significant ADMT use.",
+        "ai_implications": "AI systems making or substantially influencing significant decisions must offer opt-out, conduct risk assessments, and provide transparency. Applies to any business subject to CCPA.",
+        "priority": "HIGH",
+        "tags": ["US", "state", "California", "enterprise", "HR-tech", "fintech"]
+    },
+
+    "Connecticut AI Safety Act": {
+        "full_name": "Connecticut AI Safety Transparency and Consumer Protection Act",
+        "jurisdiction": "United States — Connecticut",
+        "scope": "Developers and deployers of AI systems affecting Connecticut consumers",
+        "effective": "May 27 2026",
+        "relevance": "Multi-part framework covering safety, transparency, and consumer protection for AI systems. Part of the accelerating US state-level AI governance patchwork.",
+        "ai_implications": "AI systems must meet transparency and safety standards. Joins Texas TRAIGA and California regulations in creating a de facto multi-state compliance floor for US AI deployments.",
+        "priority": "HIGH",
+        "tags": ["US", "state", "enterprise"]
+    },
+
+    "South Korea AI Framework Act": {
+        "full_name": "Framework Act on the Development of Artificial Intelligence and Establishment of Trust Basis",
+        "jurisdiction": "South Korea",
+        "scope": "AI developers and deployers operating in or affecting South Korea",
+        "effective": "January 2026",
+        "relevance": "First comprehensive AI law in Asia-Pacific. Risk-based approach aligned with OECD AI Principles. Establishes AI safety standards, transparency requirements, and a national AI governance structure.",
+        "ai_implications": "High-impact AI systems require risk assessment and transparency disclosures. Significant for organizations with South Korean operations or customers.",
+        "priority": "HIGH",
+        "tags": ["Asia-Pacific", "South Korea", "global"]
+    },
+
+    "Saudi Arabia PDPL + AI Framework": {
+        "full_name": "Saudi Arabia Personal Data Protection Law + National AI Adoption Framework",
+        "jurisdiction": "Saudi Arabia",
+        "scope": "Organizations processing Saudi personal data; public sector entities (AI framework mandatory)",
+        "effective": "PDPL: September 14 2024; AI Adoption Framework: 2026 (public sector mandatory)",
+        "relevance": "Saudi declared 2026 the Year of AI. Mandatory AI Adoption Framework for public sector with five pillars: data governance, model accountability, transparency, human oversight, risk management. PDPL full compliance January 1 2027.",
+        "ai_implications": "AI systems processing Saudi personal data must comply with PDPL. Public sector AI deployments must implement the five-pillar AI Adoption Framework. SDAIA has issued 48 violation decisions in 2024-2025 — enforcement is real.",
+        "priority": "HIGH",
+        "tags": ["Middle East", "Saudi Arabia", "government", "global"]
+    },
 }
 
 def get_compliance_context(company: str, industry: str = "") -> str:
@@ -927,24 +1038,41 @@ def get_compliance_context(company: str, industry: str = "") -> str:
     """
     intel  = get_company_intel(company)
     ind    = (intel.get("industry","") or industry or "").lower()
-    is_eu  = any(k in company.lower() for k in
+    comp_l = company.lower()
+    is_eu  = any(k in comp_l for k in
                  ["aleph alpha","deepl","stability","synthesia"]) or "europe" in ind
     is_health   = any(x in ind for x in ["health","pharma","medical","biotech"])
     is_payment  = any(x in ind for x in ["payment","fintech","banking","finance"])
     is_china    = "china" in ind
     is_consumer = any(x in ind for x in ["consumer","social","media","entertainment","streaming"])
+    # Geography signals for the expanded 2025-2026 framework set
+    is_apac    = any(x in ind for x in ["asia","korea","japan","singapore","apac"]) \
+                 or any(x in comp_l for x in ["samsung","naver","kakao"])
+    is_mideast = any(x in ind for x in ["middle east","saudi","gulf","uae","mena"]) \
+                 or "saudi" in comp_l
+    # Heuristic: treat as US-based (for US state-law inclusion) unless clearly
+    # EU / China / APAC / Middle East.
+    is_us      = not (is_eu or is_china or is_apac or is_mideast)
+
+    def _reqs(fw, n):
+        """Top-n requirement-style lines, tolerant of both catalog schemas."""
+        reqs = fw.get("key_requirements")
+        if reqs:
+            return reqs[:n]
+        return [v for v in (fw.get("relevance"), fw.get("ai_implications")) if v][:n]
 
     lines = ["KEY COMPLIANCE FRAMEWORKS TO ASSESS IN GOVERNANCE AUDIT:\n"]
     for name, fw in GLOBAL_COMPLIANCE.items():
-        tier = fw["tier"]
+        tier = fw.get("tier") or fw.get("priority") or "MEDIUM"   # schema-tolerant
         jur  = fw["jurisdiction"]
-        # Always include CRITICAL global/EU frameworks
+        tags = [t.lower() for t in fw.get("tags", [])]
+        # Always include CRITICAL frameworks. This covers EU AI Act, CMMC 2.0 and
+        # FedRAMP 20x — their government/defense tags make them mandatory context.
         if tier == "CRITICAL":
             lines.append(f"▸ [{tier}] {name} ({jur})")
             lines.append(f"  Effective: {fw['effective']}")
             lines.append(f"  Scope: {fw['scope']}")
-            top_reqs = fw["key_requirements"][:2]
-            for r in top_reqs:
+            for r in _reqs(fw, 2):
                 lines.append(f"  • {r}")
             lines.append("")
         # Conditionally include HIGH frameworks
@@ -959,10 +1087,16 @@ def get_compliance_context(company: str, industry: str = "") -> str:
             if is_consumer and "DSA" in name: include = True
             if "SOC 2" in name:               include = True
             if "NIST" in name:                include = True
+            # Expanded 2025-2026 selection (tag / region driven)
+            if is_us and "state" in tags:            include = True   # TX TRAIGA, CA TFAIA/ADMT, CT
+            if is_apac and "asia-pacific" in tags:   include = True   # South Korea Framework Act
+            if is_mideast and "middle east" in tags: include = True   # Saudi PDPL + AI Framework
             if include:
                 lines.append(f"▸ [{tier}] {name} ({jur})")
                 lines.append(f"  Effective: {fw['effective']}")
-                lines.append(f"  Key: {fw['key_requirements'][0]}")
+                key = _reqs(fw, 1)
+                if key:
+                    lines.append(f"  Key: {key[0]}")
                 lines.append("")
 
     lines.append("Score governance category with these frameworks in mind.")

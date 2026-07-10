@@ -775,20 +775,23 @@ GLOBAL_COMPLIANCE = {
     },
 
     # ── UNITED STATES ──────────────────────────────────────────────────────────
-    "US Executive Order on AI (Oct 2023)": {
-        "jurisdiction": "United States",
+    "US Executive Order 14409 on AI (June 2026)": {
+        "jurisdiction": "United States — Federal",
         "tier": "CRITICAL",
-        "effective": "Oct 2023 (ongoing agency rulemaking)",
-        "scope": "Federal agencies and companies doing business with US government; dual-use AI",
+        "effective": "June 2 2026",
+        "scope": "Federal agencies, AI developers, critical infrastructure operators, and organizations using AI in national security contexts",
         "key_requirements": [
-            "AI safety testing for foundation models before deployment (NIST AI RMF alignment)",
-            "Mandatory reporting for AI models trained above compute thresholds",
-            "Watermarking/authentication of AI-generated content",
-            "Equity and civil rights protections in AI systems",
-            "Critical infrastructure AI risk management",
+            "AI cybersecurity clearinghouse (Treasury + NSA + CISA) — voluntary coordination for vulnerability scanning and remediation",
+            "Voluntary framework for 'covered frontier models' — 30-day pre-release government access window",
+            "CISA Binding Operational Directives for federal civilian AI cyber defense",
+            "Criminalization of AI-assisted unauthorized computer access (18 U.S.C. 1028, 1030, 1343)",
+            "AI-enabled defensive cybersecurity tools expansion across federal agencies and critical infrastructure",
+            "OMB review of federal grant programs for AI vulnerability detection funding",
         ],
-        "penalties": "Contractual and procurement consequences for federal contractors",
-        "url": "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/",
+        "penalties": "Criminal prosecution under federal computer fraud statutes for AI-assisted unauthorized access",
+        "relevance": "Supersedes Biden-era EO 14110 (Oct 2023). Innovation-first policy — removes safety testing mandates. Key new obligations: frontier model pre-release disclosure (voluntary), federal cyber defense modernization (mandatory for agencies), and criminal enforcement against AI-enabled cyberattacks.",
+        "us_context": "Paired with December 2025 EO creating AI Litigation Task Force to challenge state AI laws. Federal direction is deregulatory + national security focused. State laws remain in effect unless successfully challenged.",
+        "tags": ["US", "federal", "government", "defense", "enterprise"],
     },
     "CCPA / CPRA (2020/2023)": {
         "jurisdiction": "United States — California",
@@ -818,14 +821,9 @@ GLOBAL_COMPLIANCE = {
         ],
         "penalties": "Voluntary — but referenced in US federal procurement and sector regulation",
         "url": "https://www.nist.gov/artificial-intelligence",
-        "us_context": (
-            "As of December 2025, the voluntary NIST AI RMF now sits alongside a fragmented US "
-            "state-law patchwork (e.g. Texas TRAIGA, California TFAIA/ADMT, Connecticut AI Safety "
-            "Act) and a December 2025 federal preemption framework. This creates unresolved "
-            "tension between non-binding federal guidance and binding, divergent state "
-            "requirements — organizations should treat the strictest applicable state law as the "
-            "effective floor until preemption is settled."
-        ),
+        "caisi_context": "NIST launched the Center for AI Standards and Innovation (CAISI) as the primary US government point of contact for commercial AI testing (February 2026). CAISI's AI Agent Standards Initiative is developing identity, authorization, and security standards for autonomous AI agents. COSAiS SP 800-53 control overlays are in development to standardize security controls for AI systems.",
+        "agent_standards": "AI Agent Standards Initiative (launched February 17 2026): focuses on agent identity, authorization, trust boundaries, and interoperability. NCCoE developing frameworks to adapt identity/auth protocols for AI agents. Red-team exercises showed 81% success rate attacking AI agents — formalizing agent security as regulatory requirement.",
+        "us_context": "NIST AI RMF sits alongside a fragmented US state patchwork and the June 2026 federal EO 14409. Treasury Department February 2026 framework maps NIST AI RMF into 230 operational control objectives for financial institutions. Growing weight: state legislatures reference NIST in their laws; EU AI Act uses it as technical companion.",
     },
     # NOTE: the former "US State AI Laws (2024-25 wave)" umbrella entry was removed —
     # it is now superseded by the specific state laws below (Texas TRAIGA, California
@@ -984,6 +982,24 @@ GLOBAL_COMPLIANCE = {
         "ai_implications": "AI systems making or substantially influencing significant decisions must offer opt-out, conduct risk assessments, and provide transparency. Applies to any business subject to CCPA.",
         "priority": "HIGH",
         "tags": ["US", "state", "California", "enterprise", "HR-tech", "fintech"]
+    },
+
+    "Colorado SB 26-189 (ADMT Law)": {
+        "jurisdiction": "United States — Colorado",
+        "tier": "HIGH",
+        "effective": "January 1 2027",
+        "scope": "Developers and deployers of automated decision-making technology (ADMT) materially influencing consequential decisions for Colorado consumers",
+        "key_requirements": [
+            "Pre-use consumer notices before ADMT deployment in consequential decisions",
+            "30-day adverse-outcome explanation rights for affected consumers",
+            "Meaningful human review rights for ADMT-influenced decisions",
+            "Developer documentation duties for ADMT systems",
+            "60-day cure period before enforcement; AG enforcement only (no private right of action)",
+        ],
+        "penalties": "Colorado Attorney General enforcement only; 60-day cure period",
+        "relevance": "Replaces Colorado SB 24-205 (repealed May 2026 before taking effect). Narrower scope than predecessor — impact assessments and risk management programs removed. Covers consequential decisions in employment, housing, education, healthcare, credit, and legal services.",
+        "us_context": "Part of accelerating US state ADMT patchwork. Narrower than original Colorado AI Act but still requires ADMT inventory and documentation.",
+        "tags": ["US", "state", "Colorado", "enterprise", "HR-tech", "fintech"],
     },
 
     "Connecticut AI Safety Act": {

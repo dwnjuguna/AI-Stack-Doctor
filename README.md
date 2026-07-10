@@ -195,7 +195,7 @@ User Input (company + mode)
 │  └─ Pipeline health · data flows · observability        │
 │                                                         │
 │  Tool 4: audit_governance_and_ownership                 │
-│  └─ 21 compliance frameworks + ROI context              │
+│  └─ 22 compliance frameworks + ROI context              │
 │     + AI Org Health: CAIO, platform team, prod depth    │
 │     + Industry-weighted priority context                │
 │                                                         │
@@ -328,11 +328,11 @@ Flutterwave · Safaricom (M-Pesa) · Moniepoint
 
 ---
 
-## 🔒 Compliance Frameworks (21)
+## 🔒 Compliance Frameworks (22)
 
-**Critical:** EU AI Act (2024, incl. 2026 Omnibus) · GDPR+AI · US EO on AI · CCPA/CPRA · HIPAA+AI · China GenAI Regs · CMMC 2.0 · FedRAMP 20x
+**Critical:** EU AI Act (2024, incl. 2026 Omnibus) · GDPR+AI · US EO 14409 (June 2026) · CCPA/CPRA · HIPAA+AI · China GenAI Regs · CMMC 2.0 · FedRAMP 20x
 
-**High:** EU Data Act · Digital Services Act · NIST AI RMF · UK AI Regulation · ISO 42001 · PCI-DSS v4.0 · SOC 2 · Texas TRAIGA · California TFAIA · California ADMT · Connecticut AI Safety Act · South Korea AI Framework Act · Saudi Arabia PDPL + AI Framework
+**High:** EU Data Act · Digital Services Act · NIST AI RMF · UK AI Regulation · ISO 42001 · PCI-DSS v4.0 · SOC 2 · Texas TRAIGA · California TFAIA · California ADMT · Colorado SB 26-189 (ADMT) · Connecticut AI Safety Act · South Korea AI Framework Act · Saudi Arabia PDPL + AI Framework
 
 ---
 

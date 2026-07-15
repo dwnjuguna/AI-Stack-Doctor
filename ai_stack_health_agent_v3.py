@@ -2261,7 +2261,7 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=16000,
+            max_tokens=24000,
             system=SYSTEM_PROMPT,
             tools=tools,
             messages=messages
@@ -2288,8 +2288,14 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
                 if hasattr(block, "text"):
                     return ensure_governance_benchmark_line(block.text)
             return ""
+        elif response.stop_reason == "max_tokens":
+            return ("ERROR: Report generation exceeded the token limit before "
+                    "completing. This tends to happen on data-rich companies with "
+                    "extensive pre-loaded intelligence. Try re-running, or increase "
+                    "max_tokens in the client.messages.create() call above. Partial "
+                    "output was discarded rather than saved as a valid report.")
         else:
-            return f"Unexpected stop reason: {response.stop_reason}"
+            return f"ERROR: Unexpected stop reason: {response.stop_reason}"
 
 
 # ── Export Helpers ────────────────────────────────────────────────────────────
@@ -2437,6 +2443,11 @@ def run_api_server(port: int = 8080):
 
         try:
             report  = run_agent(company, mode, prev)
+            # Guard: a failed generation (e.g. max_tokens) returns an
+            # "ERROR:"-prefixed string. Don't persist it as a valid report or
+            # return it as a 200 success — surface it as a 500 instead.
+            if report.startswith("ERROR:"):
+                return jsonify({"error": report}), 500
             overall = parse_overall_from_report(report)
             scores  = parse_scores_from_report(report)
             save_to_history(company, mode, report, overall or 0, scores)
@@ -2569,6 +2580,20 @@ def main():
                 print(f"\n🔍 Auditing {company} [{mode.upper()}] — 60–90 seconds...\n")
 
             report  = run_agent(company, mode, prev)
+
+            # ── Guard: a failed generation (e.g. max_tokens) returns an
+            #    "ERROR:"-prefixed string. Never display-as-success, save to
+            #    history, or export it — that produces garbage report files
+            #    that look legitimate. Report it plainly and move on.
+            if report.startswith("ERROR:"):
+                if RICH:
+                    console.print(f"\n  [red]✗ Audit failed for {company}: {report}[/red]")
+                    console.print("  [dim]Not saved to history and not exported.[/dim]")
+                else:
+                    print(f"\n  ✗ Audit failed for {company}: {report}")
+                    print("  Not saved to history and not exported.")
+                console.print("\n" + "─"*60) if RICH else print("\n" + "-"*60)
+                continue
 
             # ── Display
             if RICH:

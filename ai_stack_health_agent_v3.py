@@ -1690,6 +1690,14 @@ CATEGORY DEEP DIVES
 
 GOVERNANCE & COMPLIANCE HEALTH
 [Data privacy | AI governance frameworks | Security signals | Vendor health | Ownership %]
+[REQUIRED — Benchmark Comparator: when scoring this category, compare the company's actual
+evidence (or lack thereof) against the industry baseline — self-assessed governance
+confidence running ahead of production reality (Kana 2026), and ownership/accountability
+ambiguity as a leading indicator of stalled programs (Kana + Supermetrics 2026). State
+explicitly whether this company's evidence beats, matches, or falls short of that baseline,
+citing Kana 2026 / Supermetrics 2026 by name and tying the comparison to real findings from
+this audit. If the company's own published evidence is strong, say so plainly —
+the benchmark is a comparator, not a disclaimer to insert regardless of findings.]
 
 AI ORG HEALTH
 [Leadership: CAIO / VP AI present? | AI Platform Team: dedicated internal platform team?
@@ -2155,6 +2163,76 @@ def compute_delta(current_scores: dict, previous_scores: dict) -> dict:
 
 
 # ── Agent Loop ────────────────────────────────────────────────────────────────
+# Section headings that can follow GOVERNANCE in the report template, earliest
+# first. Used to bound the governance section. In practice, report headings
+# are consistently rendered with a "## " markdown prefix (e.g. "## AI ORG
+# HEALTH"), but this list intentionally matches on the plain text only —
+# not the "## " — so bounding still works correctly even if the model ever
+# omits or varies the prefix. Keep in sync with the report template in
+# SYSTEM_PROMPT.
+_SECTIONS_AFTER_GOVERNANCE = (
+    "AI ORG HEALTH",
+    "DATA FLOW HEALTH",
+    "PEER BENCHMARKING",
+    "MATURITY CALIBRATION",
+    "STRATEGIC RECOMMENDATIONS",
+    "PRESCRIPTION",
+)
+
+
+def ensure_governance_benchmark_line(report: str) -> str:
+    """
+    Deterministic safety net: prompt-based instructions to include the
+    Kana/Supermetrics benchmark comparator in the governance section have
+    failed silently in some audits. This guarantees the citation appears
+    every time, without relying on the model to prioritize it.
+    The "already present" check is scoped to the Governance section only —
+    a Kana/Supermetrics mention elsewhere in the report (e.g. peer benchmarking)
+    must not cause this to skip inserting into Governance.
+    """
+    marker = "GOVERNANCE & COMPLIANCE HEALTH"
+    idx = report.find(marker)
+    if idx == -1:
+        return report  # section heading not found — nothing to anchor to
+
+    line_end = report.find("\n", idx)
+    insert_at = line_end if line_end != -1 else len(report)
+
+    # Bound the Governance section at the NEXT section heading, then scope the
+    # "already present" check to that slice. The scoping is the actual fix: an
+    # earlier version checked the WHOLE report, so a Kana/Supermetrics mention
+    # OUTSIDE Governance (PEER BENCHMARKING routinely names them) wrongly
+    # counted as the model having cited them here and suppressed insertion.
+    # Real reports render headings with a "## " prefix, so a "\n## " boundary
+    # would work too; we match plain heading text so bounding stays correct
+    # even if a prefix ever varies.
+    candidates = [report.find(h, insert_at) for h in _SECTIONS_AFTER_GOVERNANCE]
+    candidates = [c for c in candidates if c != -1]
+    section_end = min(candidates) if candidates else len(report)
+    governance_section = report[idx:section_end]
+
+    if "Kana" in governance_section and "Supermetrics" in governance_section:
+        return report  # model already surfaced it within THIS section — don't duplicate
+
+    fallback_line = (
+        "\n\n> **Benchmark Comparator (auto-inserted):** Industry baseline — 76% of "
+        "enterprise leaders rate their AI governance \"ready,\" yet the same leaders "
+        "name governance and data quality among their top barriers (Kana, 2026); 40% "
+        "default AI ownership to the Chief AI Officer with no cross-functional "
+        "consensus, and 52% report AI/data strategy as externally owned (Kana + "
+        "Supermetrics, 2026). Compare this company's evidence above against that "
+        "baseline explicitly in future analysis."
+    )
+
+    warn = "⚠ Governance benchmark comparator auto-inserted — model omitted native citation"
+    if RICH:
+        console.print(f"  [yellow]{warn}[/yellow]")
+    else:
+        print(f"  {warn}")
+
+    return report[:insert_at] + fallback_line + report[insert_at:]
+
+
 def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
     context = f"Run a full AI stack health assessment for {company}."
     if mode == "own":
@@ -2208,7 +2286,7 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
         elif response.stop_reason == "end_turn":
             for block in response.content:
                 if hasattr(block, "text"):
-                    return block.text
+                    return ensure_governance_benchmark_line(block.text)
             return ""
         else:
             return f"Unexpected stop reason: {response.stop_reason}"

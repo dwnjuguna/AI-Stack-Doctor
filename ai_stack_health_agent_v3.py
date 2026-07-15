@@ -1160,6 +1160,8 @@ ROI_FRAMEWORK = {
             "Data team hours spent on unreliable pipeline maintenance",
             "Business decisions delayed by poor data availability",
             "AI initiatives blocked by data quality issues",
+            "Manual analytics-to-activation handoff — 37% of orgs report integration debt "
+            "between analytics/BI and activation tools, 23% still do manual ETL (Supermetrics, 2026)",
         ],
         "fix_cost_range": "$80K–$400K",
         "fix_cost_drivers": "Modern data stack tooling + data engineering + migration",
@@ -1552,6 +1554,38 @@ KEY MARKET INTELLIGENCE — State of Martech 2026 (Brinker & Riemersma):
 DEPRECATION RISK SIGNAL: When auditing any company's AI stack, flag tools in
 the HIGH_RISK category above as potential consolidation opportunities.
 Estimate annual spend waste from deprecated or at-risk tools.
+"""
+
+ENTERPRISE_AI_MATURITY_CONTEXT = """
+KEY MARKET INTELLIGENCE — Enterprise AI Governance & Ownership (2026):
+
+CONFIDENCE VS. PROOF GAP (Kana × Gather, "The Agentic Divide," June 2026, n=225 enterprise
+marketing/data/AI leaders, $250M+ revenue or 3,000+ employees):
+- 76% rate their AI governance model "ready" for supervised decisions; only 4% call it unready
+- 86% rate data infrastructure "ready"
+- Yet these same leaders name data governance (3.38/5) and data quality (3.36/5) among their
+  top-3 obstacles slowing progress — self-assessed readiness is running ahead of production reality
+- 82% expect agents to run 33%+ of routine decisions within two years
+- When scoring this company's governance, weigh evidence of ACTUAL production controls over
+  any stated or marketed confidence in AI readiness — self-reported readiness is not proof.
+
+OWNERSHIP AMBIGUITY (Kana, 2026 + Supermetrics, "The 2026 Marketing Data Report," n=435):
+- 40% of enterprises default AI ownership to the Chief AI Officer with no cross-functional
+  consensus on accountability
+- 52% report their AI/data strategy is defined by an external team, not owned internally
+- Only 31% report their CMO/functional leader is directly involved in AI strategy decisions
+- Flag as a governance risk when a company shows no clear internal owner of AI/data strategy —
+  contested or externally-owned accountability is a leading indicator of stalled AI programs
+
+TRUST BASELINE (Supermetrics, 2026):
+- Only 1% of organizations report complete trust in AI outputs; 17% report high trust
+  (~82% carry a meaningful AI trust deficit) — use as the industry baseline comparator
+- 39% cite AI data privacy as an active concern
+- 37% report lacking a clear AI strategy or vision from leadership
+
+Score the GOVERNANCE category using this context. Do not treat a company's own stated
+confidence in its AI governance as evidence of maturity — look for concrete signals
+(published policies, named ownership, audit trails, DPO/AI officer roles) instead.
 """
 
 STATE_OF_AI_STACK_HEALTH_TEASER = """
@@ -1965,9 +1999,10 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
     elif tool_name == "audit_governance_and_ownership":
         # Build compliance context for this company/industry
         compliance_ctx = get_compliance_context(company, industry)
+        maturity_ctx = ENTERPRISE_AI_MATURITY_CONTEXT
 
         if is_generic:
-            return (compliance_ctx + "\n\n" +
+            return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" +
                     "Generic mode: score governance against all CRITICAL frameworks above "
                     "plus any HIGH frameworks relevant to the target industry.")
 
@@ -1988,8 +2023,9 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         roi_ctx   = get_roi_context(industry=industry)
         presc_ctx = get_prescription_context()
         industry_ctx = get_industry_context(company, intel, industry)
-        return (compliance_ctx + "\n\n" + industry_ctx + "\n\n" + roi_ctx + "\n\n" +
-                presc_ctx + "\n\n" + intel_block + "\n\n═══\n\n".join(results))
+        return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" + industry_ctx + "\n\n" +
+                roi_ctx + "\n\n" + presc_ctx + "\n\n" + intel_block +
+                "\n\n═══\n\n".join(results))
 
     elif tool_name == "detect_redundancies_and_gaps":
         base = [

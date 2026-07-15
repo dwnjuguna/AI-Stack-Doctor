@@ -2148,8 +2148,20 @@ def parse_scores_from_report(text: str) -> dict:
     return scores
 
 def parse_overall_from_report(text: str) -> int | None:
-    m = re.search(r'OVERALL[:\s]+(\d+)/100', text, re.I)
-    return int(m.group(1)) if m else None
+    # The canonical CURRENT-cycle score is the CATEGORY SCORES line
+    # "OVERALL: NN/100" immediately followed by a health-status emoji
+    # (🟢/🟡/🔴), e.g. "**OVERALL: 87/100** 🟢 Healthy". Anchor on that emoji so
+    # we don't grab an earlier "Previous Overall: NN" / delta-line mention of a
+    # prior score — which is what the old leftmost re.search() was matching
+    # (it returned 84 from "Previous Overall: 84/100 → Current Overall: 87/100").
+    m = re.search(r'OVERALL[:\s]+(\d+)/100\s*\*{0,2}\s*[🟢🟡🔴]', text, re.I)
+    if m:
+        return int(m.group(1))
+    # Fallback if a report ever omits the status emoji: take the LAST
+    # "OVERALL: NN/100" occurrence, never the first. The current score is always
+    # stated after any previous/delta mentions, so last-match beats first-match.
+    hits = re.findall(r'OVERALL[:\s]+(\d+)/100', text, re.I)
+    return int(hits[-1]) if hits else None
 
 def compute_delta(current_scores: dict, previous_scores: dict) -> dict:
     """Compute score changes between two audits."""

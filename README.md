@@ -1,4 +1,4 @@
-# 🤖 AI Stack Doctor v4
+# 🤖 AI Stack Doctor v4.1
 
 > **Know exactly where your AI infrastructure stands — in 90 seconds.**
 
@@ -85,17 +85,18 @@ scheduling, and team features — without managing infrastructure.
 
 ---
 
-## ✨ What's New in v4
+## ✨ What's New in v4.1
 
 | Feature | Description |
 |---------|-------------|
-| 🏭 **Industry Intelligence** | 9 sector profiles — prescriptions weighted by highest-value AI domains per industry |
+| 🏭 **Industry Intelligence** | 10 sector profiles — prescriptions weighted by highest-value AI domains per industry |
 | 🩺 **AI Org Health** | New report section: CAIO signals, AI platform team, production depth |
 | ⚠️ **Scaling Purgatory Flag** | Sharpened maturity ladder — detects companies stuck between Scaling and Optimizing |
 | 🔍 **Sector Benchmark Hints** | Peer comparisons enriched with industry-specific search signals |
 | 🎯 **Smart Intake Forms** | 4 persona-tailored forms — Consultant, Executive, Marketer, General |
 | 💰 **ROI Layer** | Every recommendation includes gap cost, fix cost, projected ROI, payback period |
 | 📖 **User Guide** | Beautiful non-technical landing page at `/guide` with research-backed stats |
+| ⚡ **Quick Readiness Check** | 5-question self-check on `/guide`, instant tier result, no email required — free-tier entry point before the full audit |
 | 🌍 **44 Company Profiles** | US, Europe, Asia, Latin America, Africa — including first-ever African AI benchmarks |
 | 🔍 **Cohort Filtering** | Filter by industry (28 categories), size, and region |
 | ⏱️ **Agentic Scheduler** | Autonomous audit scheduling, change detection, and alerts |
@@ -110,7 +111,7 @@ scheduling, and team features — without managing infrastructure.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       AI STACK DOCTOR v4                             │
+│                         AI STACK DOCTOR v4.1                         │
 │                  ai-stack-doctor.onrender.com                        │
 └──────────────────────────┬──────────────────────────────────────────┘
                             │
@@ -183,9 +184,10 @@ User Input (company + mode)
 │                  AGENTIC AUDIT LOOP                     │
 │                                                         │
 │  Tool 1: detect_ai_stack                                │
-│  └─ 8 targeted searches across 7 domains                │
+│  └─ 8 targeted searches across 7 technical domains      │
 │     GenAI/LLMs · Agentic · ML · Data Eng               │
 │     AI Platforms · MLOps · Cloud AI                     │
+│     (governance is scored separately as an 8th category)│
 │                                                         │
 │  Tool 2: research_stack_health                          │
 │  └─ Deprecations · vendor stability · G2 data           │
@@ -214,7 +216,7 @@ User Input (company + mode)
 │  Executive Summary + ROI Table                          │
 │  Stack Inventory (confirmed tools)                      │
 │  Deprecation Risk Flags (State of Martech 2026)         │
-│  Category Scores (7 domains / 100 pts)                  │
+│  Category Scores (8 categories / 100 pts)               │
 │  Category Deep Dives                                    │
 │  Governance & Compliance Health                         │
 │  Peer Benchmarking                                      │
@@ -233,13 +235,14 @@ User Input (company + mode)
 ```
 DOMAIN                   WEIGHT    WHAT IT MEASURES
 ────────────────────────────────────────────────────────
-GenAI / LLMs              14 pts   Foundation models, RAG, fine-tuning
-Agentic AI                14 pts   Autonomous agents, orchestration
-Machine Learning          14 pts   Training frameworks, model lifecycle
-Data Engineering          14 pts   Pipelines, warehouses, feature stores
-AI Platforms              14 pts   Internal ML platforms, model serving
-MLOps / LLMOps            14 pts   Monitoring, observability, CI/CD
-Cloud AI Services         16 pts   AWS/GCP/Azure AI services maturity
+GenAI / LLMs              13 pts   Foundation models, RAG, fine-tuning
+Agentic AI                13 pts   Autonomous agents, orchestration
+Machine Learning          13 pts   Training frameworks, model lifecycle
+Data Engineering          13 pts   Pipelines, warehouses, feature stores
+AI Platforms              13 pts   Internal ML platforms, model serving
+MLOps / LLMOps            13 pts   Monitoring, observability, CI/CD
+Cloud AI Services         13 pts   AWS/GCP/Azure AI services maturity
+Governance Maturity        9 pts   Ownership clarity, published-artifact evidence, confidence-vs-proof gap
 ────────────────────────────────────────────────────────
 TOTAL                    100 pts
 
@@ -252,9 +255,9 @@ TOTAL                    100 pts
 
 ## 🏭 Industry Value Map (REWIRED Edition)
 
-v4 is the **REWIRED Edition** — calibrated on the methodology from *Rewired: The McKinsey Guide to Outcompeting in the Age of Digital and AI* (Lamarre, Smaje & Zemmel). The core idea: **not every AI domain is worth the same to every industry.** A fraud-detection ML stack is table stakes for a neobank and a footnote for a media company.
+v4.1 is the **REWIRED Edition** — calibrated on the methodology from *Rewired: The McKinsey Guide to Outcompeting in the Age of Digital and AI* (Lamarre, Smaje & Zemmel). The core idea: **not every AI domain is worth the same to every industry.** A fraud-detection ML stack is table stakes for a neobank and a footnote for a media company.
 
-The `INDUSTRY_VALUE_MAP` encodes **9 sector profiles** (plus a default fallback). Each profile prioritizes the audit's prescriptions toward the domains that drive the most value for that sector:
+The `INDUSTRY_VALUE_MAP` encodes **10 sector profiles** (plus a default fallback). Each profile prioritizes the audit's prescriptions toward the domains that drive the most value for that sector:
 
 ```
 SECTOR               HIGHEST-VALUE AI DOMAINS
@@ -268,6 +271,7 @@ Semiconductors       AI Platforms · Machine Learning · Cloud AI
 Logistics            Machine Learning · Data Engineering · Agentic AI
 Telecom              Data Engineering · Machine Learning · Cloud AI
 Social Media         Machine Learning · Data Engineering · MLOps
+Marketing / MarTech  Data Engineering · GenAI/LLMs · Governance
 ```
 
 Each profile carries:

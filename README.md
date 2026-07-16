@@ -614,6 +614,8 @@ MIT License — free to use, modify, and distribute.
 - [Bebas Neue](https://fonts.google.com/specimen/Bebas+Neue) — Display typography
 - [Scott Brinker & Frans Riemersma](https://chiefmartec.com) — State of Martech 2026 research
 - [Eric Lamarre, Kate Smaje & Rodney Zemmel](https://www.wiley.com/en-us/Rewired) — *Rewired: The McKinsey Guide to Outcompeting in the Age of Digital and AI* — industry intelligence framework and maturity calibration methodology
+- [Kana](https://www.kana.ai/) — *The Agentic Divide* (June 2026) — enterprise AI governance and ownership benchmark data
+- [Supermetrics](https://supermetrics.com/marketing-data-report-2026) — *2026 Marketing Data Report* — enterprise AI/data activation and trust benchmark data
 - The open source community — for making tools like this possible
 
 ---

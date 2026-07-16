@@ -1504,6 +1504,14 @@ def get_prescription_context() -> str:
         "  Data Eng:     Audit top 3 pipelines with existing tools — zero cost",
         "  Governance:   Draft 1-page AI policy — costs only time",
         "  Agentic:      Map top 3 automatable workflows — costs only time",
+        "",
+        "FORWARD-LOOKING BENCHMARK (Kana, 2026): 82% of enterprise leaders expect AI",
+        "agents to run 33%+ of routine decisions within two years. Where relevant,",
+        "frame at least one prescription — especially in Agentic AI, MLOps/LLMOps, or",
+        "Governance — around whether this company's CURRENT trajectory (not just",
+        "today's footprint) is built for that scale. Tie it to something concrete in",
+        "this audit (e.g. an observability gap, an ownership gap) rather than stating",
+        "it as a generic disclaimer.",
     ]
     return "\n".join(lines)
 
@@ -2245,6 +2253,67 @@ def ensure_governance_benchmark_line(report: str) -> str:
     return report[:insert_at] + fallback_line + report[insert_at:]
 
 
+def ensure_agentic_trajectory_line(report: str) -> str:
+    """
+    Deterministic safety net for the forward-looking agent-scale framing — same
+    class of fix as ensure_governance_benchmark_line(). The prompt-level nudge in
+    get_prescription_context() to frame a prescription around the Kana 2026
+    trajectory stat ("82% expect agents to run 33%+ of routine decisions within
+    two years") has failed to appear natively in consecutive audits, so this
+    guarantees it rather than trying yet another prompt wording.
+
+    "Already present" is keyed on "33%" AND "routine decisions" appearing
+    together. We do NOT also require a timeframe token: the model naturally
+    writes the year span as "2 years" (numeral), "two years", "24 months",
+    etc., so a literal "two years" check false-negatives and appends a
+    duplicate even when the model DID surface the stat (observed on NVIDIA:
+    "...33%+ of routine decisions within 2 years..." → note wrongly inserted a
+    3rd time). "routine decisions" is a distinctive phrase that, across every
+    report observed, only ever appears as part of this exact stat, so
+    "33%"+"routine decisions" is specific enough to avoid false-skips on
+    unrelated prose (e.g. "grew 33% over two years" lacks "routine decisions").
+    We also deliberately do NOT key on "82%": that figure names the governance
+    trust-deficit baseline ("82% carrying a meaningful AI trust deficit"), which
+    the governance safety net inserts, so it would false-skip whenever the
+    governance comparator fires.
+
+    Unlike the governance net, no section-scoping is needed: the two-token
+    signal is specific enough that there's nothing to bound against.
+    """
+    if "33%" in report and "routine decisions" in report:
+        return report  # model already surfaced the trajectory framing — don't duplicate
+
+    # Anchor at the STRATEGIC RECOMMENDATIONS heading — present in every report
+    # and where forward-looking framing naturally belongs (before Prescription
+    # #1). Match plain text so bounding tolerates the "## " prefix real reports
+    # render, or its absence.
+    marker = "STRATEGIC RECOMMENDATIONS"
+    idx = report.find(marker)
+    if idx == -1:
+        return report  # section heading not found — nothing to anchor to
+
+    # Insert after the END of the heading line so we land right after the
+    # heading and before Prescription #1, tolerant of any bold/"## " decoration.
+    line_end = report.find("\n", idx)
+    insert_at = line_end if line_end != -1 else len(report)
+
+    fallback_line = (
+        "\n\n> **Forward-Looking Note (auto-inserted):** 82% of enterprise leaders "
+        "expect AI agents to run 33%+ of routine decisions within two years "
+        "(Kana, 2026). Evaluate whether this company's current Agentic AI, "
+        "MLOps/LLMOps, and Governance trajectory — not just its present-day "
+        "footprint — is built for that scale."
+    )
+
+    warn = "⚠ Agentic trajectory note auto-inserted — model omitted native framing"
+    if RICH:
+        console.print(f"  [yellow]{warn}[/yellow]")
+    else:
+        print(f"  {warn}")
+
+    return report[:insert_at] + fallback_line + report[insert_at:]
+
+
 def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
     context = f"Run a full AI stack health assessment for {company}."
     if mode == "own":
@@ -2273,7 +2342,12 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=24000,
+            # Capped just under the SDK's non-streaming ceiling: it requires
+            # streaming once expected time (3600 * max_tokens / 128000) exceeds
+            # 600s, i.e. max_tokens > 21,333. 16000 was truncating data-rich
+            # reports; 21000 gives headroom while staying non-streaming.
+            # TODO: switch run_agent to client.messages.stream() to lift this cap.
+            max_tokens=21000,
             system=SYSTEM_PROMPT,
             tools=tools,
             messages=messages
@@ -2298,7 +2372,9 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
         elif response.stop_reason == "end_turn":
             for block in response.content:
                 if hasattr(block, "text"):
-                    return ensure_governance_benchmark_line(block.text)
+                    report_text = ensure_governance_benchmark_line(block.text)
+                    report_text = ensure_agentic_trajectory_line(report_text)
+                    return report_text
             return ""
         elif response.stop_reason == "max_tokens":
             return ("ERROR: Report generation exceeded the token limit before "

@@ -6,7 +6,7 @@ AI Stack Doctor v4
 Phase 5: Industry Intelligence · AI Org Health · Maturity Calibration
 
 New in v4 (REWIRED-inspired additions):
-  - INDUSTRY_VALUE_MAP: 9 sector profiles with highest-value AI domains per industry
+  - INDUSTRY_VALUE_MAP: 10 sector profiles with highest-value AI domains per industry
   - Industry-weighted recommendations: top domains surfaced first per sector
   - AI Org Health section: CAIO/VP AI signals, platform team, production depth
   - Maturity ladder refinement: Scaling Purgatory flag, sharper calibration signals
@@ -171,6 +171,26 @@ COMPANY_INTEL = {
         "known_strengths": ["Agentic AI", "GenAI/LLMs", "AI Platforms"],
         "search_hints": ["Salesforce Einstein AI engineering", "Salesforce Agentforce architecture",
                          "Salesforce xLAM agentic model", "Salesforce AI Cloud platform"],
+    },
+    "hubspot": {
+        "industry": "marketing software / CRM platform",
+        "blogs": ["product.hubspot.com", "hubspot.com/artificial-intelligence"],
+        "known_stack": ["Breeze AI", "Breeze Copilot", "Breeze Agents", "Breeze Intelligence",
+                        "ChatSpot", "Content Assistant", "Smart CRM", "AI Search Grader",
+                        "Content Hub AI", "OpenAI partnership"],
+        "known_strengths": ["GenAI / LLMs", "Agentic AI", "Data Engineering"],
+        "search_hints": ["HubSpot Breeze AI architecture", "HubSpot AI marketing automation stack",
+                         "HubSpot Smart CRM data platform", "HubSpot generative AI content engineering"],
+    },
+    "klaviyo": {
+        "industry": "email marketing automation",
+        "blogs": ["klaviyo.tech", "klaviyo.com/blog"],
+        "known_stack": ["Klaviyo AI", "Predictive analytics (CLV, churn, next order)",
+                        "AI-powered segmentation", "Subject line assistant", "SMS/email AI",
+                        "Klaviyo Data Platform (CDP)", "AI forecasting", "Flows AI"],
+        "known_strengths": ["Machine Learning", "Data Engineering", "GenAI / LLMs"],
+        "search_hints": ["Klaviyo AI predictive analytics architecture", "Klaviyo Data Platform CDP engineering",
+                         "Klaviyo email marketing ML infrastructure", "Klaviyo generative AI content"],
     },
     "mistral": {
         "industry": "AI research / LLM products",
@@ -1383,6 +1403,12 @@ INDUSTRY_VALUE_MAP = {
         "benchmark_hints": ["social media recommendation ML benchmark", "content moderation AI scale"],
         "gap_signals": ["recommendation freshness", "moderation latency", "A/B experimentation velocity"],
     },
+    "marketing_martech": {
+        "top_domains": ["Data Engineering", "GenAI / LLMs", "Governance / Compliance"],
+        "why": "Proving AI ROI is the top barrier — 45% of marketing/agency leaders cite proving AI ROI as their hardest challenge (Supermetrics 2026); clean first-party data pipelines plus measurable GenAI content/personalization are the unlock, so weak ROI-framework/measurement evidence should trigger the Scaling Purgatory flag more readily in this vertical",
+        "benchmark_hints": ["martech AI marketing automation stack benchmark", "adtech GenAI personalization measurement ROI"],
+        "gap_signals": ["first-party data unification / CDP", "AI content measurement & attribution", "campaign ROI / measurement framework"],
+    },
     "default": {
         "top_domains": ["GenAI / LLMs", "MLOps / LLMOps", "Data Engineering"],
         "why": "These three domains deliver the highest cross-industry ROI for most companies",
@@ -1398,12 +1424,15 @@ def detect_industry_slug(company: str, intel: dict, industry_hint: str = "") -> 
         "fintech":            ["fintech", "payment", "banking", "neobank", "credit", "insurance"],
         "healthcare":         ["health", "pharma", "medical", "biotech", "clinical"],
         "ecommerce":          ["ecommerce", "e-commerce", "retail", "marketplace", "shopping"],
+        "marketing_martech":  ["martech", "marketing agency", "marketing cloud", "marketing automation", "email marketing", "marketing software", "marketing platform", "advertising platform", "advertising technology", "ad tech", "adtech", "media buying", "crm platform"],
+        # social_media MUST precede media: "social media ..." strings contain the
+        # substring "media", so media's broad "media" keyword would otherwise win.
+        "social_media":       ["social media", "social network", "social platform"],
         "media":              ["media", "streaming", "entertainment", "content", "music", "video"],
         "enterprise_software":["enterprise software", "saas", "b2b software", "crm", "erp"],
         "semiconductors":     ["semiconductor", "chip", "hardware", "silicon", "gpu"],
         "logistics":          ["logistics", "supply chain", "shipping", "freight", "delivery"],
         "telecom":            ["telecom", "telco", "wireless", "carrier", "network operator"],
-        "social_media":       ["social media", "social network", "platform"],
     }
     for slug, keywords in mapping.items():
         if any(kw in combined for kw in keywords):

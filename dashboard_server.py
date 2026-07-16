@@ -525,6 +525,68 @@ def gov_interest_count():
     except Exception:
         return jsonify({"count": 0})
 
+# ── QUICK READINESS CHECK CAPTURE ─────────────────────────────────────────────
+@app.route("/api/quick-check-interest", methods=["POST"])
+def quick_check_interest():
+    """Save optional follow-up email captures from the free-tier Quick
+    Readiness Check widget.
+
+    The quick check itself is fully client-side — this endpoint fires ONLY if a
+    visitor chooses to leave an email for follow-up. Mirrors /api/gov-interest:
+    persist locally, dedupe by email, notify via the shared Formspree form
+    (distinguished by source="quick_check"), and never block on Formspree.
+    """
+    from flask import request as _req
+    import json as _j
+    data = _req.get_json() or {}
+    email = data.get("email", "").strip()
+    if not email or "@" not in email:
+        return jsonify({"error": "valid email required"}), 400
+    qc_path = pathlib.Path("quick_check_interest.json")
+    entries = []
+    if qc_path.exists():
+        try:
+            with open(qc_path) as f:
+                entries = _j.load(f)
+        except Exception:
+            entries = []
+    if email not in [e.get("email") for e in entries]:
+        entries.append({
+            "email":  email,
+            "score":  data.get("score", ""),
+            "tier":   data.get("tier", ""),
+            "source": data.get("source", "quick_check"),
+            "ts":     data.get("ts", datetime.now().isoformat()),
+        })
+        with open(qc_path, "w") as f:
+            _j.dump(entries, f, indent=2)
+        log_audit_event("quick_check_registered", {
+            "score": data.get("score", ""),
+            "tier": data.get("tier", ""),
+        })
+        # Formspree notification — shared form id, distinguished by source
+        formspree_data = _j.dumps({
+            "email": email,
+            "score": data.get("score", ""),
+            "tier": data.get("tier", ""),
+            "source": "quick_check",
+            "position": len(entries),
+        }).encode("utf-8")
+        formspree_req = urllib.request.Request(
+            "https://formspree.io/f/meebwkdk",
+            data=formspree_data,
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            urllib.request.urlopen(formspree_req, timeout=5)
+        except Exception:
+            pass  # never block a capture if Formspree is down
+    return jsonify({"ok": True, "position": len(entries)})
+
 # ── AGENTIC SCHEDULER ROUTES ──────────────────────────────────────────────────
 
 @app.route("/api/scheduler/status")

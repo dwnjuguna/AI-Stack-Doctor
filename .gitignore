@@ -301,6 +301,8 @@ __pycache__/
 *.pyo
 audit_log.jsonl
 gov_interest.json
+quick_check_interest.json
+waitlist.json
 api_keys.json
 schedules.json
 intake_submissions/

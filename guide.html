@@ -314,6 +314,44 @@ footer{
   .hero-stats{gap:20px}
   footer{flex-direction:column;text-align:center}
 }
+/* ── QUICK READINESS CHECK ── */
+.qc-section{background:var(--bg1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.qc-card{max-width:680px;margin:36px auto 0;background:var(--card);
+  border:1px solid var(--border);border-radius:10px;padding:28px 30px}
+.qc-q{display:flex;gap:14px;align-items:flex-start;padding:14px 0;
+  border-bottom:1px solid var(--border);cursor:pointer}
+.qc-q:last-of-type{border-bottom:none}
+.qc-q input{appearance:none;-webkit-appearance:none;flex:none;
+  width:20px;height:20px;margin-top:1px;border:1.5px solid var(--b2);
+  border-radius:5px;background:var(--bg2);cursor:pointer;position:relative;transition:all .15s}
+.qc-q input:checked{background:var(--cyan);border-color:var(--cyan)}
+.qc-q input:checked::after{content:'✓';position:absolute;inset:0;display:grid;
+  place-items:center;color:#000;font-size:12px;font-weight:700}
+.qc-q span{font-size:14px;color:var(--text);line-height:1.5}
+.qc-actions{margin-top:24px;text-align:center}
+.qc-result{display:none;margin-top:24px;padding:24px;border-radius:8px;
+  background:var(--bg2);border:1px solid var(--border);text-align:center}
+.qc-result.show{display:block}
+.qc-result-tier{font-family:var(--display);font-size:28px;letter-spacing:1px;color:var(--cyan);margin-bottom:8px}
+.qc-result-line{font-size:14px;color:var(--text2);line-height:1.7;max-width:520px;margin:0 auto 22px}
+.qc-followup{margin-top:22px;padding-top:20px;border-top:1px solid var(--border)}
+.qc-followup-label{font-family:var(--mono);font-size:9px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.qc-email-row{display:flex;gap:10px;max-width:420px;margin:0 auto}
+.qc-email{flex:1;background:var(--bg1);border:1px solid var(--border);border-radius:4px;
+  padding:11px 16px;font-family:var(--mono);font-size:12px;color:var(--text);
+  outline:none;transition:border-color .15s}
+.qc-email:focus{border-color:var(--cyan)}
+.qc-email-btn{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;padding:11px 20px;border-radius:4px;background:transparent;
+  color:var(--text2);border:1px solid var(--border);cursor:pointer;white-space:nowrap;transition:all .15s}
+.qc-email-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.qc-email-btn:disabled{opacity:.5;cursor:default}
+.qc-success{display:none;margin-top:14px;padding:12px;background:rgba(0,200,128,.08);
+  border:1px solid rgba(0,200,128,.2);border-radius:4px;font-family:var(--mono);
+  font-size:10px;color:var(--green)}
+.qc-success.show{display:block}
+@media(max-width:600px){.qc-email-row{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -382,6 +420,46 @@ footer{
         </div>
         <div class="mc-cta">
           <a href="/intake" class="mc-link">Audit yours →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK READINESS CHECK -->
+<section class="qc-section" id="quick-check">
+  <div class="section-wrap" style="max-width:760px">
+    <div class="section-eyebrow">// 30-Second Self-Check</div>
+    <h2 class="section-h2">QUICK READINESS<br>CHECK</h2>
+    <p class="section-desc">
+      Five quick questions — no signup, no email, no waiting. Get an instant read on
+      where your AI foundation stands before you run the full audit.
+    </p>
+
+    <div class="qc-card">
+      <form id="qcForm" novalidate>
+        <label class="qc-q"><input type="checkbox"/><span>Do you know which AI tools are actually deployed across your org?</span></label>
+        <label class="qc-q"><input type="checkbox"/><span>Do you have clear cross-system data integration (not manual handoffs)?</span></label>
+        <label class="qc-q"><input type="checkbox"/><span>Is there one clearly accountable owner for AI governance decisions?</span></label>
+        <label class="qc-q"><input type="checkbox"/><span>Do you have a documented AI privacy/compliance policy?</span></label>
+        <label class="qc-q"><input type="checkbox"/><span>Have you defined specific, named AI use cases (not just "using AI")?</span></label>
+        <div class="qc-actions">
+          <button type="submit" class="btn-primary" id="qcSubmit">◈ See My Readiness</button>
+        </div>
+      </form>
+
+      <div class="qc-result" id="qcResult">
+        <div class="qc-result-tier" id="qcTier"></div>
+        <div class="qc-result-line" id="qcLine"></div>
+        <a href="/intake" class="btn-primary">Run your full free AI Stack Health audit →</a>
+
+        <div class="qc-followup">
+          <div class="qc-followup-label">Optional — want a short follow-up with tips for your tier?</div>
+          <div class="qc-email-row" id="qcEmailRow">
+            <input type="email" class="qc-email" id="qcEmail" placeholder="your@company.com" autocomplete="email"/>
+            <button type="button" class="qc-email-btn" id="qcEmailBtn">Email me →</button>
+          </div>
+          <div class="qc-success" id="qcSuccess">✓ Got it — we'll send a short follow-up.</div>
         </div>
       </div>
     </div>
@@ -1135,6 +1213,78 @@ window.addEventListener('load', () => {
     }
   }
 });
+
+// ── Quick Readiness Check ─────────────────────────────────────────────────────
+(function(){
+  var form = document.getElementById('qcForm');
+  if(!form) return;
+  var result = document.getElementById('qcResult');
+  var tierEl = document.getElementById('qcTier');
+  var lineEl = document.getElementById('qcLine');
+  // 3 tiers (not Supermetrics' original tiers), keyed by number of boxes checked.
+  var TIERS = [
+    {min:0,max:1, tier:'Just getting started', color:'var(--amber)',
+     line:"You're early — and most orgs are. Start by simply mapping which AI tools are actually in use; you can't govern or connect what you can't see."},
+    {min:2,max:3, tier:'Building the foundation', color:'var(--cyan)',
+     line:"You've got real pieces in place. The usual next unlock is connecting them — cross-system data integration and one clear governance owner move the needle most."},
+    {min:4,max:5, tier:'Ready to scale', color:'var(--green)',
+     line:"Strong footing — you're in the minority. Now it's about proving ROI and governing agentic decisions before they outrun your controls."}
+  ];
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var checked = form.querySelectorAll('input[type=checkbox]:checked').length;
+    var t = TIERS.find(function(x){ return checked>=x.min && checked<=x.max; });
+    tierEl.textContent = t.tier;
+    tierEl.style.color = t.color;
+    lineEl.textContent = t.line;
+    result.classList.add('show');
+    result.scrollIntoView({behavior:'smooth',block:'nearest'});
+    // stash for the optional follow-up capture
+    form.dataset.score = checked;
+    form.dataset.tier  = t.tier;
+  });
+
+  // Optional follow-up email — the ONLY path that touches the backend.
+  var emailBtn = document.getElementById('qcEmailBtn');
+  var emailEl  = document.getElementById('qcEmail');
+  var emailRow = document.getElementById('qcEmailRow');
+  var success  = document.getElementById('qcSuccess');
+  var defaultLabel = emailBtn.textContent;
+  emailBtn.addEventListener('click', function(){
+    var email = emailEl.value.trim();
+    if(!email || email.indexOf('@')===-1){
+      emailEl.style.borderColor = 'var(--red)';
+      setTimeout(function(){ emailEl.style.borderColor=''; }, 1500);
+      return;
+    }
+    emailBtn.disabled = true;
+    emailBtn.textContent = 'Sending…';
+    fetch('/api/quick-check-interest', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email:  email,
+        score:  form.dataset.score || '',
+        tier:   form.dataset.tier  || '',
+        source: 'quick_check',
+        ts:     new Date().toISOString()
+      })
+    }).then(function(r){
+      return r.json().catch(function(){return null;}).then(function(d){
+        if(!r.ok || !d || !d.ok) throw new Error((d&&d.error)||'request failed');
+        return d;
+      });
+    }).then(function(){
+      emailRow.style.display = 'none';
+      success.classList.add('show');
+    }).catch(function(){
+      emailBtn.disabled = false;
+      emailBtn.textContent = defaultLabel;
+      emailEl.style.borderColor = 'var(--red)';
+      setTimeout(function(){ emailEl.style.borderColor=''; }, 1500);
+    });
+  });
+})();
 
 </script>
 </body>

@@ -1623,6 +1623,21 @@ TRUST BASELINE (Supermetrics, 2026):
 Score the GOVERNANCE category using this context. Do not treat a company's own stated
 confidence in its AI governance as evidence of maturity — look for concrete signals
 (published policies, named ownership, audit trails, DPO/AI officer roles) instead.
+
+GOVERNANCE MATURITY SIGNAL — SCORING RUBRIC (category 8, /9):
+This is a NARROW signal, not a numeric grade of all compliance frameworks in the
+Governance & Compliance Health section. Score /9 as the sum of three sub-scores:
+  1. Ownership clarity (0-3): Clear internal owner = 3; contested / diffuse across
+     teams = 1-2; no defined owner (or externally owned strategy) = 0. Use the
+     Kana/Supermetrics ownership-ambiguity framing above.
+  2. Published-artifact evidence (0-3): concrete, verifiable signals — published
+     policies, audit trails, named DPO / AI-officer roles = 3; partial / mixed = 1-2;
+     stated-but-unpublished claims only = 0.
+  3. Confidence-vs-proof gap severity (0-3): evidence supports the company's stated
+     governance confidence = 3; a WIDE gap between stated confidence and actual
+     published evidence scores LOW (0-1).
+Report the total as "8. Governance Maturity X/9" in CATEGORY SCORES, and state the
+three sub-scores + one-line rationale in the Governance & Compliance Health section.
 """
 
 STATE_OF_AI_STACK_HEALTH_TEASER = """
@@ -1712,13 +1727,14 @@ REDUNDANCY & OVERLAP ALERT 🔁
 [Capability overlaps with estimated waste impact]
 
 CATEGORY SCORES (/100 total)
-1. GenAI / LLMs          ██████████░░ X/14  [Confidence: H/M/L]
-2. Agentic AI            ██████████░░ X/14  [Confidence: H/M/L]
-3. Machine Learning      ██████████░░ X/14  [Confidence: H/M/L]
-4. Data Engineering      ██████████░░ X/14  [Confidence: H/M/L]
-5. AI Platforms          ██████████░░ X/14  [Confidence: H/M/L]
-6. MLOps / LLMOps        ██████████░░ X/14  [Confidence: H/M/L]
-7. Cloud AI Services     ████████████ X/16  [Confidence: H/M/L]
+1. GenAI / LLMs          ██████████░░ X/13  [Confidence: H/M/L]
+2. Agentic AI            ██████████░░ X/13  [Confidence: H/M/L]
+3. Machine Learning      ██████████░░ X/13  [Confidence: H/M/L]
+4. Data Engineering      ██████████░░ X/13  [Confidence: H/M/L]
+5. AI Platforms          ██████████░░ X/13  [Confidence: H/M/L]
+6. MLOps / LLMOps        ██████████░░ X/13  [Confidence: H/M/L]
+7. Cloud AI Services     ██████████░░ X/13  [Confidence: H/M/L]
+8. Governance Maturity   ██████████░░ X/9   [Confidence: H/M/L]
 
 OVERALL: XX/100  🟢 Healthy (80-100) | 🟡 Needs Attention (60-79) | 🔴 At Risk (<60)
 

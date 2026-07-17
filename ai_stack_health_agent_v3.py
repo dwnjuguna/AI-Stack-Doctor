@@ -1439,9 +1439,22 @@ def detect_industry_slug(company: str, intel: dict, industry_hint: str = "") -> 
             return slug
     return "default"
 
-def get_industry_context(company: str, intel: dict, industry_hint: str = "") -> str:
-    """Return industry-weighted priority context for the agent."""
-    slug = detect_industry_slug(company, intel, industry_hint)
+def get_industry_context(company: str, intel: dict, industry_hint: str = "",
+                         industry_category: str = "") -> str:
+    """Return industry-weighted priority context for the agent.
+
+    For pre-loaded companies (intel carries an industry) we keep the existing
+    substring-based detection. For non-preloaded companies we trust the model's
+    enum selection (industry_category) directly — an enum value is already a
+    valid INDUSTRY_VALUE_MAP slug, so it needs no fuzzy matching. We only fall
+    back to "default" when the model returns "unknown" or omits the field.
+    """
+    if intel.get("industry"):
+        slug = detect_industry_slug(company, intel, industry_hint)
+    elif industry_category and industry_category != "unknown" and industry_category in INDUSTRY_VALUE_MAP:
+        slug = industry_category
+    else:
+        slug = "default"
     data = INDUSTRY_VALUE_MAP.get(slug, INDUSTRY_VALUE_MAP["default"])
     lines = [
         f"INDUSTRY-WEIGHTED PRIORITIES ({slug.replace('_', ' ').title()}):",
@@ -1836,8 +1849,15 @@ tools = [
     },
     {
         "name": "audit_governance_and_ownership",
-        "description": "Audit AI governance — GDPR/CCPA, responsible AI frameworks, security, tool ownership signals.",
-        "input_schema": {"type": "object", "properties": {"company_name": {"type": "string"}}, "required": ["company_name"]}
+        "description": "Audit AI governance — GDPR/CCPA, responsible AI frameworks, security, tool ownership signals. If pre-loaded intelligence is unavailable for this company, select the closest matching industry_category from the enum based on what you know about the company — use 'unknown' only if genuinely unclear.",
+        "input_schema": {"type": "object", "properties": {
+            "company_name": {"type": "string"},
+            "industry_category": {
+                "type": "string",
+                "enum": ["fintech", "healthcare", "ecommerce", "marketing_martech", "media", "enterprise_software", "semiconductors", "logistics", "telecom", "social_media", "unknown"],
+                "description": "Closest matching industry for this company, used to weight AI-domain priorities when no pre-loaded intelligence exists. Select 'unknown' only if genuinely unclear."
+            }
+        }, "required": ["company_name"]}
     },
     {
         "name": "detect_redundancies_and_gaps",
@@ -2083,7 +2103,8 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         results = [web_search(q) for q in queries[:7]]
         roi_ctx   = get_roi_context(industry=industry)
         presc_ctx = get_prescription_context()
-        industry_ctx = get_industry_context(company, intel, industry)
+        industry_ctx = get_industry_context(company, intel, industry,
+                                            tool_input.get("industry_category", ""))
         return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" + industry_ctx + "\n\n" +
                 roi_ctx + "\n\n" + presc_ctx + "\n\n" + intel_block +
                 "\n\n═══\n\n".join(results))

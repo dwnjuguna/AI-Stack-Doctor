@@ -2406,18 +2406,14 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
     }
 
     while True:
-        response = client.messages.create(
+        with client.messages.stream(
             model="claude-sonnet-4-6",
-            # Capped just under the SDK's non-streaming ceiling: it requires
-            # streaming once expected time (3600 * max_tokens / 128000) exceeds
-            # 600s, i.e. max_tokens > 21,333. 16000 was truncating data-rich
-            # reports; 21000 gives headroom while staying non-streaming.
-            # TODO: switch run_agent to client.messages.stream() to lift this cap.
-            max_tokens=21000,
+            max_tokens=28000,
             system=SYSTEM_PROMPT,
             tools=tools,
             messages=messages
-        )
+        ) as stream:
+            response = stream.get_final_message()
 
         if response.stop_reason == "tool_use":
             tool_results = []
@@ -2446,7 +2442,7 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
             return ("ERROR: Report generation exceeded the token limit before "
                     "completing. This tends to happen on data-rich companies with "
                     "extensive pre-loaded intelligence. Try re-running, or increase "
-                    "max_tokens in the client.messages.create() call above. Partial "
+                    "max_tokens in the client.messages.stream() call above. Partial "
                     "output was discarded rather than saved as a valid report.")
         else:
             return f"ERROR: Unexpected stop reason: {response.stop_reason}"

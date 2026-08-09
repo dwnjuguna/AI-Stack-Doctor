@@ -1761,9 +1761,25 @@ def get_model_provenance_context(company: str, industry: str = "") -> str:
     governance audit step.
 
     Emits the three risk factors with their rating signals, plus any company-specific
-    priors derivable from COMPANY_INTEL. Ratings are Low / Medium / High / Unknown —
-    'Unknown' is the required answer when public evidence is absent, and this block
-    deliberately does not feed the Governance Maturity /9 sub-score math.
+    priors derivable from COMPANY_INTEL. Ratings are exactly one of Low / Medium /
+    High / Unknown per factor. 'Unknown' means nothing is publicly known about the
+    dependency at all; a visible dependency whose mitigation is undisclosed rates
+    Medium or High, not Unknown. This block deliberately does not feed the Governance
+    Maturity /9 sub-score math.
+
+    REGRESSION FIXTURE — pre-fix output, live Caterpillar audit, Aug 2026.
+    Before the report-template clause forbade compound ratings, the model rendered
+    a range in the rating slot instead of one of the four discrete values:
+
+        **Vendor Access Continuity: MEDIUM–HIGH**
+        Caterpillar's edge AI stack is deeply coupled to NVIDIA (Jetson Thor for
+        on-board inference, NIM for cloud inference, DGX Cloud for training). [...]
+        Rating: **HIGH risk** for edge/on-board stack; **MEDIUM** for cloud LLM layer.
+
+    Post-fix rerun of the same company collapsed this to a single **HIGH**, with the
+    edge-vs-cloud split moved into the evidence line. If a compound or range rating
+    ever reappears in the Model Provenance section, the template clause in
+    SYSTEM_PROMPT has regressed — not this builder, which emits no ratings itself.
     """
     intel   = get_company_intel(company)
     ind     = (intel.get("industry", "") or industry or "").lower()

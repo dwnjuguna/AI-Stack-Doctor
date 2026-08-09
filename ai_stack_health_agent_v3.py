@@ -2511,6 +2511,107 @@ def ensure_governance_benchmark_line(report: str) -> str:
     return report[:insert_at] + fallback_line + report[insert_at:]
 
 
+_PROVENANCE_FACTORS = (
+    "Vendor Access Continuity",
+    "Open-Weight Fallback",
+    "Cross-Border Exposure",
+)
+
+# Match a factor name tolerant of the separators the model actually renders:
+# "Open-Weight Fallback", "Open Weight Fallback", "Open — Weight Fallback".
+_PROVENANCE_FACTOR_RES = {
+    f: re.compile(r"[-–—\s]+".join(re.escape(w) for w in re.split(r"[-\s]+", f)), re.I)
+    for f in _PROVENANCE_FACTORS
+}
+_PROVENANCE_RATING_RE = re.compile(r"\b(low|medium|high|unknown)\b", re.I)
+# How far after a factor name to look for its rating. Real reports pair the two
+# immediately — table cell ("| **Vendor Access Continuity** | **HIGH** |") or
+# inline header ("**Vendor Access Continuity: MEDIUM**") — so this only needs to
+# clear decoration, not span an evidence paragraph.
+_PROVENANCE_RATING_WINDOW = 200
+
+
+def ensure_model_provenance_lines(report: str) -> str:
+    """
+    Deterministic safety net for the Model Provenance & Access-Continuity block —
+    same class of fix as ensure_governance_benchmark_line().
+
+    PRESENCE ONLY, by design. This checks that each of the three factors appears
+    paired with one of Low/Medium/High/Unknown, and nothing more. It deliberately
+    does NOT police format — no single-rating enforcement, no compound-rating
+    rejection. That is the tightened [REQUIRED — Model Provenance] clause's job,
+    and it held across two live audits. A second, independent format authority
+    here would drift out of sync with the prompt the moment either changes.
+
+    Scoped to the Governance section for the same reason the benchmark net is:
+    the rating words are common English and the factor names plausibly recur in
+    PEER BENCHMARKING or STRATEGIC RECOMMENDATIONS prose, so an unscoped check
+    would false-skip and leave the Governance section with no ratings at all.
+
+    The rating must fall within _PROVENANCE_RATING_WINDOW chars after the factor
+    name, and never past the NEXT factor name. Without that second bound a factor
+    rendered with no rating would borrow the following factor's rating and wrongly
+    pass — the exact false-negative the section-scoping fix taught us to look for.
+    """
+    marker = "GOVERNANCE & COMPLIANCE HEALTH"
+    idx = report.find(marker)
+    if idx == -1:
+        return report  # section heading not found — nothing to anchor to
+
+    line_end = report.find("\n", idx)
+    insert_at = line_end if line_end != -1 else len(report)
+
+    candidates = [report.find(h, insert_at) for h in _SECTIONS_AFTER_GOVERNANCE]
+    candidates = [c for c in candidates if c != -1]
+    section_end = min(candidates) if candidates else len(report)
+    governance_section = report[idx:section_end]
+
+    # Every factor-name position in the section, so each factor's search window
+    # can be capped at whichever factor comes next.
+    all_starts = sorted(
+        m.start()
+        for rx in _PROVENANCE_FACTOR_RES.values()
+        for m in rx.finditer(governance_section)
+    )
+
+    missing = []
+    for factor, rx in _PROVENANCE_FACTOR_RES.items():
+        rated = False
+        for m in rx.finditer(governance_section):
+            nxt = next((s for s in all_starts if s > m.start()), len(governance_section))
+            window_end = min(m.end() + _PROVENANCE_RATING_WINDOW, nxt)
+            if _PROVENANCE_RATING_RE.search(governance_section[m.end():window_end]):
+                rated = True
+                break
+        if not rated:
+            missing.append(factor)
+
+    if not missing:
+        return report  # model rated all three within THIS section — don't duplicate
+
+    lines = [
+        "\n\n> **Model Provenance & Access-Continuity Risk (auto-inserted):** the audit did "
+        "not return a rating for the factor(s) below. Each is recorded as **Unknown** — no "
+        "public evidence was assessed either way, and that missing assessment is itself the "
+        "finding, not a clean result. These ratings are a standalone qualitative flag and do "
+        "not feed the Governance Maturity /9 score."
+    ]
+    for factor in missing:
+        lines.append(
+            f"\n> - **{factor}: Unknown** — not rated in this audit; no published evidence assessed."
+        )
+    fallback_line = "".join(lines)
+
+    warn = ("⚠ Model provenance rating(s) auto-inserted — model omitted: "
+            + ", ".join(missing))
+    if RICH:
+        console.print(f"  [yellow]{warn}[/yellow]")
+    else:
+        print(f"  {warn}")
+
+    return report[:insert_at] + fallback_line + report[insert_at:]
+
+
 def ensure_agentic_trajectory_line(report: str) -> str:
     """
     Deterministic safety net for the forward-looking agent-scale framing — same
@@ -2627,6 +2728,7 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
             for block in response.content:
                 if hasattr(block, "text"):
                     report_text = ensure_governance_benchmark_line(block.text)
+                    report_text = ensure_model_provenance_lines(report_text)
                     report_text = ensure_agentic_trajectory_line(report_text)
                     return report_text
             return ""

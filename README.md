@@ -583,6 +583,24 @@ Contributions are very welcome! Priority areas:
 - **Translations** — guide.html in other languages
 - **UI improvements** — dashboard, intake form, guide
 
+### 🔍 Open Items — Model Provenance Risk
+
+The Model Provenance & Access-Continuity flag (three factors rated Low / Medium /
+High / Unknown in `GOVERNANCE & COMPLIANCE HEALTH`) is live, but two aspects are
+validated only partially. Both need production audit data rather than code:
+
+- **The `Unknown` rating path has never fired in a live audit.** Every company
+  audited so far (Meta, Caterpillar ×3) had enough visible dependency structure
+  for all three factors to resolve to a real rating — correct behaviour under the
+  rule, not a defect. The fallback in `ensure_model_provenance_lines()` is
+  therefore stub-verified only. Watch for a genuine `Unknown` on a company whose
+  model dependencies are not publicly visible at all.
+- **Rating stability across runs is unmeasured (n=2).** Cross-Border Exposure
+  swung HIGH → MEDIUM between two identical Caterpillar runs before the rating
+  rules were tightened; the two runs since agree exactly. Too few samples to
+  distinguish a stable rubric from sampling variance. Repeat runs on one company
+  would settle it.
+
 ```bash
 git clone https://github.com/dwnjuguna/AI-Stack-Doctor
 cd AI-Stack-Doctor

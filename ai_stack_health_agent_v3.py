@@ -2279,20 +2279,32 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
                     "Generic mode: score governance against all CRITICAL frameworks above "
                     "plus any HIGH frameworks relevant to the target industry.")
 
+        # 10 queries against a [:10] slice — every one runs. This list was
+        # previously 10 against a [:7] slice, which silently dropped the last
+        # three: a near-duplicate CAIO query (harmless) but also the AI platform
+        # team and production-depth queries that feed AI ORG HEALTH, which had
+        # therefore never been searched. Deduplicating the overlapping
+        # privacy/EU-AI-Act and CAIO queries freed the slots the three
+        # provenance queries now occupy.
         base = [
+            # ── Governance & compliance posture ──
             f"{company} AI governance responsible AI ethics policy {year}",
-            f"{company} GDPR CCPA EU AI Act data privacy compliance",
-            f"{company} AI risk management model governance ISO 42001",
-            f"{company} chief AI officer head of AI ML leadership",
-            f"{company} AI security access control data protection SOC2",
+            f"{company} GDPR CCPA EU AI Act data protection officer DPIA compliance",
+            f"{company} AI risk management model governance ISO 42001 SOC2 access control",
             f"{company} EU AI Act compliance high-risk AI {year}",
-            f"{company} data protection officer DPO DPIA privacy",
+            # ── Ownership & org signals ──
             f"{company} chief AI officer CAIO VP AI head of machine learning {year}",
             f"{company} AI platform team internal developer platform ML infrastructure hiring",
             f"{company} AI production deployment customer-facing product AI feature launch {year}",
+            # ── Model provenance & access continuity ──
+            # One query per factor in MODEL_PROVENANCE_RISK_FACTORS, so each has
+            # a chance of resolving to real evidence rather than Unknown.
+            f"{company} LLM vendor OpenAI Anthropic Azure model provider contract {year}",
+            f"{company} self-hosted open-weight Llama Mistral vLLM inference GPU capacity",
+            f"{company} data residency subprocessor list model inference region cross-border transfer",
         ]
         queries = enrich_queries(base, intel)
-        results = [web_search(q) for q in queries[:7]]
+        results = [web_search(q) for q in queries[:10]]
         roi_ctx   = get_roi_context(industry=industry)
         presc_ctx = get_prescription_context()
         industry_ctx = get_industry_context(company, intel, industry,

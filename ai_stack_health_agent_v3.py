@@ -1842,6 +1842,16 @@ IMPORTANT CONTEXT:
     • Flag specific risks or confirmed gaps
     • Recommend concrete remediation actions
   Focus on confirmed public signals — never fabricate compliance status.
+- MODEL PROVENANCE: Each audit also includes a Model Provenance & Access-Continuity
+  Risk block covering three factors — vendor access continuity, open-weight fallback,
+  and cross-border exposure. In the GOVERNANCE & COMPLIANCE HEALTH section, rate all
+  three against published evidence only, giving EXACTLY ONE rating per factor —
+  Low, Medium, High, or Unknown — never a compound or range like "Medium-High".
+  Unknown means nothing is publicly known about the dependency at all; a visible
+  dependency with undisclosed mitigation is Medium or High, not Unknown. Never
+  read Low risk out of silence. Keep these ratings out of the Governance
+  Maturity X/9 score, which stays 3+3+3 on ownership clarity, published-artifact
+  evidence, and confidence-vs-proof gap.
 
 Your analysis philosophy:
 - Understand WHY tools are used, WHO owns them, and WHETHER they deliver value
@@ -1915,6 +1925,20 @@ explicitly whether this company's evidence beats, matches, or falls short of tha
 citing Kana 2026 / Supermetrics 2026 by name and tying the comparison to real findings from
 this audit. If the company's own published evidence is strong, say so plainly —
 the benchmark is a comparator, not a disclaimer to insert regardless of findings.]
+[REQUIRED — Model Provenance: state EXACTLY ONE rating — Low, Medium, High, or Unknown — for
+EACH of the three factors — Vendor Access Continuity, Open-Weight Fallback, Cross-Border
+Exposure — one line each, naming the specific evidence the rating rests on. No compound or
+range ratings (e.g. "Medium-High"): if exposure is genuinely mixed across sub-components
+(e.g. edge vs. cloud stack), pick the rating reflecting the most exposed component and put
+the split in the evidence line, not the rating itself.
+Two distinct silence cases — do not conflate them:
+  • Nothing is publicly known about the dependency at all → rate Unknown, and say so plainly:
+    the disclosure gap is itself the finding.
+  • The dependency is visible (e.g. confirmed single-vendor coupling) but mitigation is
+    undisclosed → rate based on the visible risk pattern (can be Medium or High). This is
+    NOT Unknown.
+Never infer Low risk from either kind of silence. This is a standalone qualitative flag — do
+NOT fold these ratings into the Governance Maturity X/9 total or any of its three sub-scores.]
 
 AI ORG HEALTH
 [Leadership: CAIO / VP AI present? | AI Platform Team: dedicated internal platform team?
@@ -2000,7 +2024,7 @@ tools = [
     },
     {
         "name": "audit_governance_and_ownership",
-        "description": "Audit AI governance — GDPR/CCPA, responsible AI frameworks, security, tool ownership signals. If pre-loaded intelligence is unavailable for this company, select the closest matching industry_category from the enum based on what you know about the company — use 'unknown' only if genuinely unclear.",
+        "description": "Audit AI governance — GDPR/CCPA, responsible AI frameworks, security, tool ownership signals. Also returns a Model Provenance & Access-Continuity Risk block (vendor access continuity, open-weight fallback, cross-border exposure) to be rated Low/Medium/High/Unknown in the GOVERNANCE & COMPLIANCE HEALTH section, separately from the Governance Maturity /9 score. If pre-loaded intelligence is unavailable for this company, select the closest matching industry_category from the enum based on what you know about the company — use 'unknown' only if genuinely unclear.",
         "input_schema": {"type": "object", "properties": {
             "company_name": {"type": "string"},
             "industry_category": {

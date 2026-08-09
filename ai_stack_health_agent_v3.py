@@ -1670,6 +1670,156 @@ def get_deprecation_context() -> str:
     return MARTECH_2026_CONTEXT + f"\nHIGH DEPRECATION RISK TOOLS: {high_risk} (and similar point solutions)"
 
 
+# ── Model Provenance & Access-Continuity Risk ────────────────────────────────
+# Where do this company's models come from, and what happens if that supply is
+# cut? Deprecation risk (above) covers tools being absorbed by platforms; this
+# covers the layer underneath — vendor terms, weight ownership, and jurisdiction.
+# Assessed qualitatively (Low / Medium / High / Unknown), NOT as a numeric grade.
+
+MODEL_PROVENANCE_RISK_FACTORS = {
+    "VENDOR ACCESS CONTINUITY": {
+        "question": "If a primary model vendor changed pricing or terms, imposed rate limits, "
+                    "or deprecated a model on short notice, could this company keep serving "
+                    "its AI features?",
+        "HIGH": [
+            "single frontier-model vendor with no documented second source",
+            "AI features built directly against one vendor's proprietary SDK / response format",
+            "vendor relationship is also a competitive relationship (vendor sells a rival product)",
+            "no published model-deprecation or version-pinning policy",
+        ],
+        "MEDIUM": [
+            "second vendor contracted but not exercised in production",
+            "abstraction layer / gateway present but only one provider wired up",
+            "multi-vendor for inference, single-vendor for fine-tuning or embeddings",
+        ],
+        "LOW": [
+            "two or more vendors live in production with documented failover",
+            "model-agnostic routing layer (gateway, broker, or internal inference API)",
+            "trains or hosts its own frontier-class models",
+        ],
+    },
+    "OPEN-WEIGHT FALLBACK": {
+        "question": "Does the company retain a usable path to run models it controls — "
+                    "open-weight or self-trained — if commercial API access becomes "
+                    "unavailable or uneconomic?",
+        "HIGH": [
+            "100% closed-API dependency with no self-hosting capability",
+            "no GPU/accelerator capacity, reserved or on-demand, for inference",
+            "no evaluation of open-weight equivalents for its core AI use cases",
+        ],
+        "MEDIUM": [
+            "open-weight models used for peripheral tasks only (classification, embeddings)",
+            "self-hosting capability exists but is unproven at production load",
+            "fallback plan documented but never rehearsed",
+        ],
+        "LOW": [
+            "open-weight models serving production traffic today",
+            "owns model weights it trained, or has perpetual-use licensed weights",
+            "demonstrated ability to fine-tune and serve without a commercial API",
+        ],
+        # Public signals that a company has an open-weight path available to it.
+        "open_weight_markers": [
+            "Llama", "Mistral", "Mixtral", "Qwen", "DeepSeek", "Gemma", "Phi",
+            "Falcon", "Command R", "Granite", "OLMo", "Stable Diffusion",
+            "Whisper", "vLLM", "Ollama", "llama.cpp", "Hugging Face", "SGLang",
+            "Text Generation Inference", "TensorRT-LLM",
+        ],
+    },
+    "CROSS-BORDER EXPOSURE": {
+        "question": "Do model inference, training data, or weights cross a jurisdiction "
+                    "that could restrict or condition that flow — and is that dependency "
+                    "documented?",
+        "HIGH": [
+            "inference routed through a jurisdiction subject to export controls or data-transfer restrictions",
+            "regulated-industry data (health, payments, defense, public sector) sent to an offshore API",
+            "no documented data-residency commitment from the model vendor",
+            "compute or accelerator supply concentrated in a single export-controlled jurisdiction",
+        ],
+        "MEDIUM": [
+            "regional endpoints available and contracted but residency not independently verified",
+            "EU/UK operations served from US infrastructure under transfer-mechanism reliance only",
+            "subprocessor list published but model-layer subprocessors not enumerated",
+        ],
+        "LOW": [
+            "in-region inference with contractual data-residency guarantees",
+            "weights and training data held within the operating jurisdiction",
+            "published subprocessor and data-flow map covering the model layer",
+        ],
+        # Industry / geography cues that raise the stakes on a cross-border finding.
+        "sensitive_industry_cues": [
+            "health", "pharma", "medical", "biotech", "payment", "fintech",
+            "banking", "finance", "insurance", "defense", "government",
+            "public sector", "telecom", "energy",
+        ],
+    },
+}
+
+
+def get_model_provenance_context(company: str, industry: str = "") -> str:
+    """
+    Return a qualitative Model Provenance & Access-Continuity risk framing for the
+    governance audit step.
+
+    Emits the three risk factors with their rating signals, plus any company-specific
+    priors derivable from COMPANY_INTEL. Ratings are Low / Medium / High / Unknown —
+    'Unknown' is the required answer when public evidence is absent, and this block
+    deliberately does not feed the Governance Maturity /9 sub-score math.
+    """
+    intel   = get_company_intel(company)
+    ind     = (intel.get("industry", "") or industry or "").lower()
+    stack   = intel.get("known_stack", [])
+    stack_l = " | ".join(stack).lower()
+
+    ow_markers = MODEL_PROVENANCE_RISK_FACTORS["OPEN-WEIGHT FALLBACK"]["open_weight_markers"]
+    ow_found   = [m for m in ow_markers if m.lower() in stack_l]
+    sensitive  = [c for c in
+                  MODEL_PROVENANCE_RISK_FACTORS["CROSS-BORDER EXPOSURE"]["sensitive_industry_cues"]
+                  if c in ind]
+
+    lines = [
+        "MODEL PROVENANCE & ACCESS-CONTINUITY RISK (qualitative flag):",
+        "",
+        "Assess where this company's models come from and what breaks if that supply is",
+        "interrupted. Rate each factor below Low / Medium / High / Unknown. Use the signal",
+        "lists as evidence patterns, not as a checklist to tick off.",
+        "",
+    ]
+
+    for factor, spec in MODEL_PROVENANCE_RISK_FACTORS.items():
+        lines.append(f"▸ {factor}")
+        lines.append(f"  Q: {spec['question']}")
+        for level in ("HIGH", "MEDIUM", "LOW"):
+            lines.append(f"  {level} risk signals:")
+            for sig in spec[level]:
+                lines.append(f"    • {sig}")
+        lines.append("")
+
+    if ow_found or sensitive:
+        lines.append("COMPANY-SPECIFIC PRIORS (from pre-loaded intel — verify against search results):")
+        if ow_found:
+            lines.append(f"  • Open-weight / self-hosting signals in known stack: {', '.join(ow_found)}")
+            lines.append("    → treat the open-weight fallback factor as evidenced, not assumed absent")
+        if sensitive:
+            lines.append(f"  • Sensitive-industry cues in '{ind}': {', '.join(sensitive)}")
+            lines.append("    → a cross-border finding here carries regulatory weight, not just vendor risk")
+        lines.append("")
+
+    lines += [
+        "RATING RULES:",
+        "  • Unknown is the correct rating when no public evidence exists either way. Do not",
+        "    infer Low risk from silence — absence of disclosure is itself worth reporting.",
+        "  • Rate on published, verifiable evidence (architecture posts, subprocessor lists,",
+        "    model cards, vendor contracts, job postings naming self-hosted serving stacks).",
+        "  • A company that trains its own frontier models still carries cross-border exposure",
+        "    through its compute and accelerator supply — score those factors independently.",
+        "",
+        "SCORING BOUNDARY: this is a standalone qualitative flag. Do NOT fold it into the",
+        "Governance Maturity X/9 total or any of its three sub-scores — that math stays 3+3+3",
+        "on ownership clarity, published-artifact evidence, and confidence-vs-proof gap.",
+    ]
+    return "\n".join(lines)
+
+
 # ── System Prompt v3 ──────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """
 You are an elite AI infrastructure analyst with deep knowledge of the world's leading

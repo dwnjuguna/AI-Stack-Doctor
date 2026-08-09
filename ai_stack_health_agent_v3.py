@@ -2232,9 +2232,10 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         # Build compliance context for this company/industry
         compliance_ctx = get_compliance_context(company, industry)
         maturity_ctx = ENTERPRISE_AI_MATURITY_CONTEXT
+        provenance_ctx = get_model_provenance_context(company, industry)
 
         if is_generic:
-            return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" +
+            return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" + provenance_ctx + "\n\n" +
                     "Generic mode: score governance against all CRITICAL frameworks above "
                     "plus any HIGH frameworks relevant to the target industry.")
 
@@ -2256,8 +2257,8 @@ def run_tool(tool_name: str, tool_input: dict) -> str:
         presc_ctx = get_prescription_context()
         industry_ctx = get_industry_context(company, intel, industry,
                                             tool_input.get("industry_category", ""))
-        return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" + industry_ctx + "\n\n" +
-                roi_ctx + "\n\n" + presc_ctx + "\n\n" + intel_block +
+        return (compliance_ctx + "\n\n" + maturity_ctx + "\n\n" + provenance_ctx + "\n\n" +
+                industry_ctx + "\n\n" + roi_ctx + "\n\n" + presc_ctx + "\n\n" + intel_block +
                 "\n\n═══\n\n".join(results))
 
     elif tool_name == "detect_redundancies_and_gaps":

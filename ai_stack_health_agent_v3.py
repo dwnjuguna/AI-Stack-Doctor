@@ -2705,7 +2705,7 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
 
     messages = [{"role": "user", "content": context}]
     step = 0
-    requested_model = "claude-sonnet-4-6"
+    requested_model = os.environ.get("ASD_MODEL", "claude-sonnet-4-6")
     usage = {"calls": 0, "input": 0, "output": 0, "cache_read": 0, "cache_write": 0,
              "per_turn_input": []}
     response = None

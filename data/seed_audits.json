@@ -176,49 +176,6 @@
       "created_at": "2026-06-17T00:55:30+00:00"
     },
     {
-      "company": "amazon web services",
-      "mode": "competitor",
-      "overall": 91,
-      "scores": {
-        "GenAI / LLMs": {
-          "score": 12,
-          "total": 14,
-          "conf": "H"
-        },
-        "Agentic AI": {
-          "score": 10,
-          "total": 14,
-          "conf": "M"
-        },
-        "Machine Learning": {
-          "score": 14,
-          "total": 14,
-          "conf": "H"
-        },
-        "Data Engineering": {
-          "score": 14,
-          "total": 14,
-          "conf": "H"
-        },
-        "AI Platforms": {
-          "score": 13,
-          "total": 14,
-          "conf": "H"
-        },
-        "MLOps / LLMOps": {
-          "score": 12,
-          "total": 14,
-          "conf": "H"
-        },
-        "Cloud AI Services": {
-          "score": 16,
-          "total": 16,
-          "conf": "H"
-        }
-      },
-      "created_at": "2026-06-17T00:55:30+00:00"
-    },
-    {
       "company": "stripe",
       "mode": "competitor",
       "overall": 90,
@@ -341,49 +298,6 @@
         },
         "Cloud AI Services": {
           "score": 13,
-          "total": 16,
-          "conf": "H"
-        }
-      },
-      "created_at": "2026-06-17T00:55:30+00:00"
-    },
-    {
-      "company": "open ai",
-      "mode": "competitor",
-      "overall": 88,
-      "scores": {
-        "GenAI / LLMs": {
-          "score": 14,
-          "total": 14,
-          "conf": "H"
-        },
-        "Agentic AI": {
-          "score": 13,
-          "total": 14,
-          "conf": "H"
-        },
-        "Machine Learning": {
-          "score": 12,
-          "total": 14,
-          "conf": "M"
-        },
-        "Data Engineering": {
-          "score": 10,
-          "total": 14,
-          "conf": "M"
-        },
-        "AI Platforms": {
-          "score": 13,
-          "total": 14,
-          "conf": "H"
-        },
-        "MLOps / LLMOps": {
-          "score": 12,
-          "total": 14,
-          "conf": "H"
-        },
-        "Cloud AI Services": {
-          "score": 14,
           "total": 16,
           "conf": "H"
         }
@@ -2000,49 +1914,6 @@
           "score": 12,
           "total": 16,
           "conf": "M"
-        }
-      },
-      "created_at": "2026-06-17T00:55:30+00:00"
-    },
-    {
-      "company": "mistral ai",
-      "mode": "competitor",
-      "overall": 0,
-      "scores": {
-        "GenAI / LLMs": {
-          "score": 14,
-          "total": 14,
-          "conf": "H"
-        },
-        "Agentic AI": {
-          "score": 11,
-          "total": 14,
-          "conf": "M"
-        },
-        "Machine Learning": {
-          "score": 7,
-          "total": 14,
-          "conf": "M"
-        },
-        "Data Engineering": {
-          "score": 5,
-          "total": 14,
-          "conf": "L"
-        },
-        "AI Platforms": {
-          "score": 12,
-          "total": 14,
-          "conf": "H"
-        },
-        "MLOps / LLMOps": {
-          "score": 10,
-          "total": 14,
-          "conf": "M"
-        },
-        "Cloud AI Services": {
-          "score": 13,
-          "total": 16,
-          "conf": "H"
         }
       },
       "created_at": "2026-06-17T00:55:30+00:00"

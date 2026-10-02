@@ -127,6 +127,15 @@ COMPANY_INTEL = {
         "search_hints": ["Google TPU infrastructure Gemini", "Google Vertex AI engineering",
                          "DeepMind research infrastructure", "Google ML platform TensorFlow JAX"],
     },
+    "stripe": {
+        "industry": "payments infrastructure / fintech",
+        "blogs": ["stripe.com/blog/engineering", "stripe.com/blog"],
+        "known_stack": ["OpenAI GPT-4", "Stripe Radar", "Payments Foundation Model",
+                        "BigQuery", "PostgreSQL", "Kafka", "AWS", "GCP"],
+        "known_strengths": ["real-time ML fraud detection", "agentic commerce platform",
+                            "self-supervised payments model"],
+        "search_hints": ["Stripe AI stack", "Stripe Radar ML", "Stripe Sessions 2026 AI"],
+    },
     "amazon": {
         "industry": "e-commerce / cloud / AI",
         "blogs": ["aws.amazon.com/blogs/machine-learning", "amazon.science"],

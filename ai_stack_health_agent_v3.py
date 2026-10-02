@@ -2705,6 +2705,10 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
 
     messages = [{"role": "user", "content": context}]
     step = 0
+    requested_model = "claude-sonnet-4-6"
+    usage = {"calls": 0, "input": 0, "output": 0, "cache_read": 0, "cache_write": 0,
+             "per_turn_input": []}
+    response = None
     tool_labels = {
         "detect_ai_stack": "Detecting AI Stack",
         "research_stack_health": "Researching Stack Health",
@@ -2714,48 +2718,65 @@ def run_agent(company: str, mode: str, prev_report: dict | None = None) -> str:
         "benchmark_against_peers": "Benchmarking Against Peers",
     }
 
-    while True:
-        with client.messages.stream(
-            model="claude-sonnet-4-6",
-            max_tokens=28000,
-            system=SYSTEM_PROMPT,
-            tools=tools,
-            messages=messages
-        ) as stream:
-            response = stream.get_final_message()
+    try:
+        while True:
+            with client.messages.stream(
+                model=requested_model,
+                max_tokens=28000,
+                system=SYSTEM_PROMPT,
+                tools=tools,
+                messages=messages
+            ) as stream:
+                response = stream.get_final_message()
 
-        if response.stop_reason == "tool_use":
-            tool_results = []
-            for block in response.content:
-                if block.type == "tool_use":
-                    step += 1
-                    label = tool_labels.get(block.name, block.name)
-                    subject = list(block.input.values())[0]
-                    if RICH:
-                        console.print(f"  [bold cyan]Step {step}[/bold cyan] [dim]→[/dim] [yellow]{label}[/yellow] [dim]— {subject}[/dim]")
-                    else:
-                        print(f"  Step {step} → {label} — {subject}")
-                    result = run_tool(block.name, block.input)
-                    tool_results.append({"type": "tool_result", "tool_use_id": block.id, "content": result})
-            messages.append({"role": "assistant", "content": response.content})
-            messages.append({"role": "user", "content": tool_results})
+            u = response.usage
+            usage["calls"] += 1
+            usage["input"] += u.input_tokens or 0
+            usage["output"] += u.output_tokens or 0
+            usage["cache_read"] += getattr(u, "cache_read_input_tokens", 0) or 0
+            usage["cache_write"] += getattr(u, "cache_creation_input_tokens", 0) or 0
+            usage["per_turn_input"].append(u.input_tokens or 0)
 
-        elif response.stop_reason == "end_turn":
-            for block in response.content:
-                if hasattr(block, "text"):
-                    report_text = ensure_governance_benchmark_line(block.text)
-                    report_text = ensure_model_provenance_lines(report_text)
-                    report_text = ensure_agentic_trajectory_line(report_text)
-                    return report_text
-            return ""
-        elif response.stop_reason == "max_tokens":
-            return ("ERROR: Report generation exceeded the token limit before "
-                    "completing. This tends to happen on data-rich companies with "
-                    "extensive pre-loaded intelligence. Try re-running, or increase "
-                    "max_tokens in the client.messages.stream() call above. Partial "
-                    "output was discarded rather than saved as a valid report.")
-        else:
-            return f"ERROR: Unexpected stop reason: {response.stop_reason}"
+            if response.stop_reason == "tool_use":
+                tool_results = []
+                for block in response.content:
+                    if block.type == "tool_use":
+                        step += 1
+                        label = tool_labels.get(block.name, block.name)
+                        subject = list(block.input.values())[0]
+                        if RICH:
+                            console.print(f"  [bold cyan]Step {step}[/bold cyan] [dim]→[/dim] [yellow]{label}[/yellow] [dim]— {subject}[/dim]")
+                        else:
+                            print(f"  Step {step} → {label} — {subject}")
+                        result = run_tool(block.name, block.input)
+                        tool_results.append({"type": "tool_result", "tool_use_id": block.id, "content": result})
+                messages.append({"role": "assistant", "content": response.content})
+                messages.append({"role": "user", "content": tool_results})
+
+            elif response.stop_reason == "end_turn":
+                for block in response.content:
+                    if hasattr(block, "text"):
+                        report_text = ensure_governance_benchmark_line(block.text)
+                        report_text = ensure_model_provenance_lines(report_text)
+                        report_text = ensure_agentic_trajectory_line(report_text)
+                        return report_text
+                return ""
+            elif response.stop_reason == "max_tokens":
+                return ("ERROR: Report generation exceeded the token limit before "
+                        "completing. This tends to happen on data-rich companies with "
+                        "extensive pre-loaded intelligence. Try re-running, or increase "
+                        "max_tokens in the client.messages.stream() call above. Partial "
+                        "output was discarded rather than saved as a valid report.")
+            else:
+                return f"ERROR: Unexpected stop reason: {response.stop_reason}"
+    finally:
+        print(
+            f"[usage] requested_model={requested_model} "
+            f"response_model={response.model if response is not None else None} "
+            f"stop_reason={response.stop_reason if response is not None else None} "
+            f"{json.dumps(usage)}",
+            file=sys.stderr,
+        )
 
 
 # ── Export Helpers ────────────────────────────────────────────────────────────

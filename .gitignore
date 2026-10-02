@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -13,6 +12,8 @@ build/
 
 # Virtual environments
 .env
+.env.*
+!.env.example
 .venv
 env/
 venv/
@@ -54,20 +55,14 @@ desktop.ini
 # Logs
 *.log
 logs/
-=======
 # Byte-compiled / optimized / DLL files
-__pycache__/
 *.py[codz]
 *$py.class
 
 # C extensions
-*.so
 
 # Distribution / packaging
-.Python
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -78,9 +73,7 @@ sdist/
 var/
 wheels/
 share/python-wheels/
-*.egg-info/
 .installed.cfg
-*.egg
 MANIFEST
 
 # PyInstaller
@@ -113,7 +106,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -192,11 +184,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .envrc
-.venv
-env/
-venv/
 ENV/
 env.bak/
 venv.bak/
@@ -262,7 +250,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
->>>>>>> 79221cfbfc9506616a772700baa2396750ffcf5b
 
 # ── Confidential / Pricing / Enterprise ─────────────────────
 guide.html
@@ -271,38 +258,21 @@ legal.html
 dashboard.html
 dashboard_server.py
 pdf_export.py
-ai_stack_health_agent_v3.py
 intake_form.html
 scheduler.py
 
 # ── Runtime / Never commit ───────────────────────────────────
 *.db
 *.sqlite
-__pycache__/
 *.pyc
-*.pyo
 
-# -- Confidential / Pricing / Enterprise ---------------------
-guide.html
-MCP_SERVER_SPEC.md
-legal.html
-dashboard.html
-dashboard_server.py
-pdf_export.py
-ai_stack_health_agent_v3.py
-intake_form.html
-scheduler.py
 
-# -- Runtime / Never commit ----------------------------------
-*.db
-*.sqlite
-__pycache__/
-*.pyc
-*.pyo
 audit_log.jsonl
 gov_interest.json
 quick_check_interest.json
 waitlist.json
-api_keys.json
 schedules.json
 intake_submissions/
+
+# Per-model audit comparison outputs
+runs/

@@ -111,7 +111,7 @@ def seed_from_json_if_needed():
                 "INSERT INTO reports (company,mode,overall,scores_json,report_text,created_at) VALUES (?,?,?,?,?,?)",
                 (a["company"], a.get("mode", "competitor"), a.get("overall"),
                  json.dumps(a.get("scores", {})),
-                 f"Seeded from {SEED_PATH} — {snapshot.get('source','')}",
+                 a.get("report_text") or f"Seeded from {SEED_PATH} — {snapshot.get('source','')}",
                  a.get("created_at")),
             )
         conn.commit()

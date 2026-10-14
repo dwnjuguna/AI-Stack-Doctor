@@ -175,7 +175,7 @@ scheduling, and team features — without managing infrastructure.
 ## 🤖 Agent Architecture
 
 The audit agent uses a **6-tool agentic loop** powered by Anthropic Claude:
-
+> 📐 Function-level flow diagrams (agent loop, tool execution, search fallback) are in **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 ```
 User Input (company + mode)
         │
@@ -409,6 +409,7 @@ ai-stack-doctor/
 ├── ⚙️  requirements.txt             # Python dependencies
 ├── ☁️  render.yaml                  # Render.com deployment config
 ├── 🔐  .env.example                 # Environment variable template
+├── 📐  ARCHITECTURE.md              # Mermaid diagrams of the audit agent flo       
 └── 📚  README.md                    # This file
 
 # Auto-created at runtime:
